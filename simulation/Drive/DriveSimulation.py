@@ -22,7 +22,7 @@ class DriveSimulation(threading.Thread):
             self.environment.addAgent(StandardAgent(1))
 
         for i in range(0, 2):
-            self.environment.addAgent(RobotAgent(2))
+            self.environment.addAgent(RobotAgent(1))
 
         self.ready = True
 

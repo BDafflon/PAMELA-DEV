@@ -2,6 +2,7 @@ from pyglet.gl import (
     glBegin, glEnd, glColor3f,
     glVertex2f, GL_TRIANGLES)
 
+from environment.application.DriveEnvironment.agentType import AgentType
 from gui.guigl import GuiGL
 
 # Define some colors
@@ -22,10 +23,10 @@ class GuiDriveGL(GuiGL):
 
     def render_agent(self, b):
         glBegin(GL_TRIANGLES)
-        if b.type == "Robot":
+        if b.type == AgentType.MANU :
             glColor3f(*colors[1])
         else:
-            if b.type == "StandardAgent":
+            if b.type == AgentType.ROBOT :
                 glColor3f(*colors[2])
         glVertex2f(-(5), 0.0)
         glVertex2f(5, 0.0)

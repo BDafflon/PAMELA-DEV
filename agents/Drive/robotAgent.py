@@ -1,8 +1,8 @@
 import random
 from agents.agent import Agent
 from environment.animateAction import AnimateAction
+from environment.application.DriveEnvironment.agentType import AgentType
 from environment.application.DriveEnvironment.robotBody import RobotBody
-from environment.application.DriveEnvironment.stardardAgentBody import StadardAgentBody
 from helper import util
 from helper.vector2D import Vector2D
 
@@ -12,7 +12,7 @@ class RobotAgent(Agent):
         Agent.__init__(self)
         self.body = RobotBody()
         self.collisionDVel = 1
-        self.type = "Robot"
+        self.type = AgentType.ROBOT
         self.famille = 1
         self.body.mass = 80
         self.body.fustrum.radius = 100
@@ -26,7 +26,7 @@ class RobotAgent(Agent):
     def __init__(self, f):
         Agent.__init__(self)
         self.body = RobotBody()
-        self.type = "Robot"
+        self.type = AgentType.ROBOT
         self.famille = f
         self.body.mass = 80
         self.body.fustrum.radius = 100
