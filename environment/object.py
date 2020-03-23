@@ -1,3 +1,4 @@
+from helper.BoundingBox.aabb import AABB
 from helper.vector2D import Vector2D
 
 
@@ -34,3 +35,8 @@ class Marchandise(EnvironmentalObject):
         self.location = Vector2D(x, y)
         self.orientation = 0
         self.type = "Marchandise"
+
+class Wall(EnvironmentalObject):
+    def __init__(self, x, y):
+        EnvironmentalObject.__init__(self)
+        self.aabb = AABB()

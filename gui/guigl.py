@@ -88,7 +88,7 @@ class GuiGL():
             if self.kill:
                 pyglet.app.exit()
 
-            glClearColor(0.1, 0.1, 0.1, 1.0)
+            glClearColor(1, 1, 1, 0)
             window.clear()
             glLoadIdentity()
 

@@ -19,7 +19,7 @@ colors = [WHITE, GREEN, RED, BLUE]
 class GuiDriveGL(GuiGL):
     def __init__(self, map):
         GuiGL.__init__(self, map)
-        self.title = "GUI Boids Simulation"
+        self.title = "GUI Drive Simulation"
 
     def render_agent(self, b):
         glBegin(GL_TRIANGLES)
