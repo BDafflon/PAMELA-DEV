@@ -15,14 +15,6 @@ class EnvironmentalObject(Object):
         self.type = "EnvironmentalObject"
 
 
-class Destination(EnvironmentalObject):
-    def __init__(self, x, y):
-        EnvironmentalObject.__init__(self)
-        self.location = Vector2D(x, y)
-        self.orientation = 0
-        self.type = "Destination"
-
-
 class TargetObjet(EnvironmentalObject):
     def __init__(self, x, y):
         EnvironmentalObject.__init__(self)
@@ -39,4 +31,20 @@ class Marchandise(EnvironmentalObject):
 class Wall(EnvironmentalObject):
     def __init__(self, x, y):
         EnvironmentalObject.__init__(self)
+        self.aabb = AABB()
+
+class Dropoff(EnvironmentalObject):
+    def __init__(self, x, y):
+        EnvironmentalObject.__init__(self)
+        self.location = Vector2D(x, y)
+        self.orientation = 0
+        self.type = "Dropoff"
+        self.aabb = AABB()
+
+class Pickup(EnvironmentalObject):
+    def __init__(self, x, y):
+        EnvironmentalObject.__init__(self)
+        self.location = Vector2D(x, y)
+        self.orientation = 0
+        self.type = "Pickup"
         self.aabb = AABB()
