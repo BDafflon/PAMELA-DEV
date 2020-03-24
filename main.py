@@ -1,6 +1,6 @@
 
 from gui.guiDrivegl import GuiDriveGL
-from helper.importer.driveImporter import testimg
+from helper.importer.driveImporter import importation
 
 from simulation.Drive.DriveSimulation import DriveSimulation
 
@@ -23,5 +23,4 @@ def runSIRMSimulation(path):
     return []
 
 
-#runSIRMSimulation("")
-testimg()
+runSIRMSimulation("")

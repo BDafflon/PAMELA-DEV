@@ -3,8 +3,8 @@ from helper.vector2D import Vector2D
 
 
 class AABB(BoundingBox):
-    def __init__(self):
+    def __init__(self,l,h,w):
         BoundingBox.__init__(self)
-        self.uperLeftLocation = Vector2D(0,0)
-        self.height=1
-        self.width=1
+        self.uperLeftLocation = l
+        self.height=h
+        self.width=w

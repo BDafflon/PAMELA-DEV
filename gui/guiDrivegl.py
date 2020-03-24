@@ -1,6 +1,6 @@
 from pyglet.gl import (
     glBegin, glEnd, glColor3f,
-    glVertex2f, GL_TRIANGLES)
+    glVertex2f, GL_TRIANGLES, GL_POLYGON)
 
 from environment.application.DriveEnvironment.agentType import AgentType
 from gui.guigl import GuiGL
@@ -13,7 +13,7 @@ GREEN = [0, 1, 0]
 RED = [1, 0, 0]
 BLUE = [0, 0, 1]
 _CHANGE_VECTOR_LENGTH = 15.0
-colors = [WHITE, GREEN, RED, BLUE]
+colors = [BLACK, GREEN, RED, BLUE]
 
 
 class GuiDriveGL(GuiGL):
@@ -23,12 +23,50 @@ class GuiDriveGL(GuiGL):
 
     def render_agent(self, b):
         glBegin(GL_TRIANGLES)
-        if b.type == AgentType.MANU :
+        if b.type == AgentType.MANU:
             glColor3f(*colors[1])
         else:
-            if b.type == AgentType.ROBOT :
+            if b.type == AgentType.ROBOT:
                 glColor3f(*colors[2])
         glVertex2f(-(5), 0.0)
         glVertex2f(5, 0.0)
         glVertex2f(0.0, 5 * 3.0)
+        glEnd()
+
+    def renderObject(self, b):
+        glBegin(GL_POLYGON)
+        glColor3f(*colors[1])
+
+        w = 10
+        h = 10
+
+
+
+        if b.type == "Wall":
+
+            w = 10
+            h = b.aabb.height
+            w = b.aabb.width
+            glColor3f(*colors[0])
+
+
+        else:
+            if b.type == "Dropoff":
+                w = 10
+                h = 10
+
+                glColor3f(*colors[2])
+
+            else:
+                if b.type == "Pickup":
+                    w = 10
+                    h = 10
+
+                    glColor3f(*colors[3])
+
+        glVertex2f(0, 0)
+        glVertex2f(w, 0)
+        glVertex2f(w, h)
+        glVertex2f(0, h)
+
         glEnd()

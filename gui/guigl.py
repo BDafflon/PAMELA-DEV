@@ -190,6 +190,7 @@ class GuiGL():
     def drawObject(self, o):
         glPushMatrix()
         # apply the transformation for the boid
+
         glTranslatef(o.location.x/self.scaleFactor, o.location.y/self.scaleFactor, 0.0)
 
         # render the object itself

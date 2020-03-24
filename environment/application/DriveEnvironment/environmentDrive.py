@@ -1,3 +1,4 @@
+from environment.application.DriveEnvironment import agentType
 from environment.environment import Environment
 import time
 from helper.vector2D import Vector2D
@@ -13,8 +14,8 @@ class EnvironmentDrive(Environment):
                 return a
         return None
 
-    def getFirstBoid(self):
-        return self.getRandomAgent("Boid")
+    def getFirstRobot(self):
+        return self.getRandomAgent(agentType.ROBOT)
 
     def update(self, dt):
         self.clock = (time.time())
@@ -49,7 +50,7 @@ class EnvironmentDrive(Environment):
                 self.edges(agentBody)
 
     def edges(self,b):
-        print(self.boardW)
+
         if b.location.x > self.boardW:
             b.location.x = 1
         elif b.location.x < 0:
