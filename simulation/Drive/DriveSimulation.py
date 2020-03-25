@@ -11,17 +11,19 @@ from helper.importer.driveImporter import importation
 
 
 class DriveSimulation(threading.Thread):
-    def __init__(self, pathEnv, pathScenario):
+    def __init__(self, pathEnv, pathScenario, pathStock):
         threading.Thread.__init__(self)
         self.environment = EnvironmentDrive()
-        self.path = pathEnv
+        self.pathEnv = pathEnv
+        self.pathStock = pathStock
         self.pathScenario = pathScenario
         self.ready = False
 
     def loadDefault(self):
         objetList = importation(self.pathEnv)
-        j=0
-
+        j = 0
+        k = 0
+        pickupList = []
         for i in objetList:
 
             x = i['coord'][0]
@@ -30,14 +32,23 @@ class DriveSimulation(threading.Thread):
             h = i['coord'][3]
 
             if i['type'] == "dropoff":
-                self.environment.addObject(Dropoff(x, y, h, w))
-            else :
+                j = j + 1
+                self.environment.addObject(Dropoff(x, y, h, w, j))
+            else:
                 if i['type'] == "pickup":
-                    self.environment.addObject(Pickup(x, y, h, w))
-                else :
-                    if i['type'] == "wall" and j<40:
-                        j=j+1
+                    k = k + 1
+                    a = Pickup(x, y, h, w, k)
+                    pickupList.append(a)
+                    self.environment.addObject(a)
+                else:
+                    if i['type'] == "wall":
                         self.environment.addObject(Wall(x, y, h, w))
+
+        stock = self.loadStock()
+
+        i = 0
+        for r in stock:
+            pickupList[i % len(pickupList)].stock.append(r)
 
         self.environment.addObject(TargetObjet(0, 0))
         for i in range(0, 10):
@@ -48,11 +59,26 @@ class DriveSimulation(threading.Thread):
 
         self.ready = True
 
-
     def run(self):
         if self.ready:
             self.environment.start()
-            #TODO Scenario
+            # TODO Scenario
 
         else:
             print("Erreur de simulation")
+
+    def loadStock(self):
+        stock = []
+
+        line_count = 0
+
+        print("Load Stock "+self.pathStock)
+
+        with open(self.pathStock) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=';')
+            for row in csv_reader:
+                print(row)
+                if row[0]!='':
+                    stock.append([row[0], int(row[1])])
+
+        return stock
