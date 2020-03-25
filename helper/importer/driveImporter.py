@@ -1,18 +1,11 @@
 import cv2
-import matplotlib.pyplot as plt
-import numpy as np
-import scipy.misc
-import scipy.ndimage
-import skimage.filters
-import sklearn.metrics
-import random as rng
 import imutils
 
 
-def importation():
+def importation(path):
     font = cv2.FONT_HERSHEY_SIMPLEX
     # Read image*
-    image = cv2.imread("C:\\Users\\baudo\\PycharmProjects\\PAMELA-DRIVE\\helper\\importer\\drive1.bmp")
+    image = cv2.imread(path)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     ret, gray = cv2.threshold(gray, 180, 255, cv2.THRESH_BINARY)
 

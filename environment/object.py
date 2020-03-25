@@ -6,6 +6,13 @@ class Object:
     def __init__(self):
         self.type = "Object"
 
+class Marchandise(Object):
+    def __init__(self, pickup):
+        EnvironmentalObject.__init__(self)
+        self.pickupStation = pickup
+        self.mass = 1
+        self.volume = 1
+        self.type = "Marchandise"
 
 class EnvironmentalObject(Object):
     def __init__(self):
@@ -21,12 +28,6 @@ class TargetObjet(EnvironmentalObject):
         self.location = Vector2D(x, y)
         self.type = "Attractor"
 
-class Marchandise(EnvironmentalObject):
-    def __init__(self, x, y):
-        EnvironmentalObject.__init__(self)
-        self.location = Vector2D(x, y)
-        self.orientation = 0
-        self.type = "Marchandise"
 
 class Wall(EnvironmentalObject):
     def __init__(self, x, y,h,w):

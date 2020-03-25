@@ -8,8 +8,8 @@ from simulation.Drive.DriveSimulation import DriveSimulation
 
 
 
-def runSIRMSimulation(path):
-    s = DriveSimulation(path)
+def runDriveSimulation(pathEnv, pathSce):
+    s = DriveSimulation(pathEnv, pathSce)
 
     s.loadDefault()
 
@@ -23,4 +23,4 @@ def runSIRMSimulation(path):
     return []
 
 
-runSIRMSimulation("")
+runDriveSimulation("C:\\Users\\baudo\\PycharmProjects\\PAMELA-DRIVE\\helper\\importer\\drive1.bmp","C:\Users\baudo\PycharmProjects\PAMELA-DRIVE\simulation\Drive\drive-25-03-20.csv")

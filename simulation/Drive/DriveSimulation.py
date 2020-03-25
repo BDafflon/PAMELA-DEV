@@ -11,25 +11,17 @@ from helper.importer.driveImporter import importation
 
 
 class DriveSimulation(threading.Thread):
-    def __init__(self, path):
+    def __init__(self, pathEnv, pathScenario):
         threading.Thread.__init__(self)
-
-
-
-
-
-
         self.environment = EnvironmentDrive()
-        self.path = path
+        self.path = pathEnv
+        self.pathScenario = pathScenario
         self.ready = False
 
     def loadDefault(self):
-        objetList = importation()
+        objetList = importation(self.pathEnv)
         j=0
-        for i in objetList:
-            print(i)
 
-        print('----')
         for i in objetList:
 
             x = i['coord'][0]
@@ -45,7 +37,6 @@ class DriveSimulation(threading.Thread):
                 else :
                     if i['type'] == "wall" and j<40:
                         j=j+1
-                        print(i)
                         self.environment.addObject(Wall(x, y, h, w))
 
         self.environment.addObject(TargetObjet(0, 0))
@@ -57,8 +48,11 @@ class DriveSimulation(threading.Thread):
 
         self.ready = True
 
+
     def run(self):
         if self.ready:
             self.environment.start()
+            #TODO Scenario
+
         else:
             print("Erreur de simulation")
