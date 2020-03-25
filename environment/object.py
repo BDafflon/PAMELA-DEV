@@ -43,6 +43,7 @@ class Dropoff(EnvironmentalObject):
         self.location = Vector2D((int(x), int(y)))
         self.orientation = 0
         self.type = "Dropoff"
+        self.stock = []
         self.aabb = AABB(Vector2D(x,y), h,w)
 
 class Pickup(EnvironmentalObject):
@@ -51,4 +52,5 @@ class Pickup(EnvironmentalObject):
         self.location = Vector2D(x, y)
         self.orientation = 0
         self.type = "Pickup"
+        self.stock = []
         self.aabb = AABB(Vector2D(x,y), h,w)
