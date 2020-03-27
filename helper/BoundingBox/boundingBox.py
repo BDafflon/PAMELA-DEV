@@ -5,10 +5,10 @@ class BoundingBox:
     def __init__(self):
         self.center = Vector2D(0,0)
 
-    def intersection(self,point2d):
+    def intersection(self,point2d,r):
         #TODO
         return False
 
-    def intersection(self,box):
+    def intersection(self,box,r):
         #TODO
         return False

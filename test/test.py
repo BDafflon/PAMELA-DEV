@@ -1,7 +1,8 @@
-from helper.util import signedAngle
-from helper.vector2D import Vector2D
+from math import sqrt
 
-v =Vector2D(0,10)
-v1 =Vector2D(0,-10)
-a = signedAngle(v,v1)
-print(a)
+
+def pointRectDist (px, py, b):
+
+    cx = max(min(px, b.location.x+b.width ), b.location.x)
+    cy = max(min(py, b.location.y+b.height),  b.location.y)
+    return sqrt( (px-cx)*(px-cx) + (py-cy)*(py-cy) )

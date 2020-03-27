@@ -91,6 +91,29 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
 
     return x, y
 
+
+def distance(xB, yB, xE, yE, xM, yM):
+    a = xE - xB
+    b = yE - yB
+    w1 = -a * xB - b * yB
+    w2 = -a * xE - b * yE
+    w3 = a * yB - b * xB
+
+    PMD1 = a * xM + b * yM + w1
+
+    PMD2 = a * xM + b * yM + w2
+
+    PBD2 = a * xB + b * yB + w2
+
+    PED1 = a * xE + b * yE + w1
+
+    if PMD1 * PED1 < 0:
+        return math.sqrt((xM - xB) * (xM - xB) + (yM - yB) * (yM - yB))  # pas de quotient
+    if PMD2 * PBD2 < 0:
+        return math.sqrt((xM - xE) * (xM - xE) + (yM - yE) * (yM - yE))  # idem
+
+    return abs(b * xM - a * yM + w3) / math.sqrt(a * a + b * b)
+
 def get_four_byte_color(color) :
     """
     Given a RGB list, it will return RGBA.
