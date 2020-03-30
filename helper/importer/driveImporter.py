@@ -40,7 +40,7 @@ def importation(path):
                 i=i+1
 
                 k = image[cY, cX]
-                k1=image[cY, cX]
+                k1 = image[cY, cX]
 
                 if k[0] == 0 and k[1] == 255 and k[2]==0:
                     cv2.putText(image, "pickup", (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,

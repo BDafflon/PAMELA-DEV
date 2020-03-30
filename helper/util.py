@@ -131,8 +131,7 @@ def distance(xB, yB, xE, yE, xM, yM):
 
     x = abs(b * xM - a * yM + w3)
     y = math.sqrt(a * a + b * b)
-    print(x)
-    print(y)
+
     v = Vector2D(a,b)
     d = Vector2D(xM-xB, yM-yB)
     angle = angle_between(d,v)

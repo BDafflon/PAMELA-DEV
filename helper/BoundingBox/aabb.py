@@ -19,7 +19,7 @@ class AABB(BoundingBox):
         dright,vr = distance(self.uperLeftLocation.x + self.width, self.uperLeftLocation.y,
                           self.uperLeftLocation.x + self.width, self.uperLeftLocation.y + self.height, point2d.x,
                           point2d.y)
-        dbottom,vb = distance(self.uperLeftLocation.x + self.width, self.uperLeftLocation.y ,
+        dbottom,vb = distance(self.uperLeftLocation.x , self.uperLeftLocation.y + self.height,
                            self.uperLeftLocation.x + self.width, self.uperLeftLocation.y + self.height, point2d.x,
                            point2d.y)
 

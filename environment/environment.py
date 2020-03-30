@@ -103,6 +103,8 @@ class Environment(threading.Thread):
                     collision,point = objet.aabb.intersection(a.body.location, a.body.fustrum.radius)
                     if collision:
                         self.perceptionList[a].append(PerceivedObject(point,objet.type))
+                        t=self.getFirstObjectByName("Attractor")
+                        t.location = point
             else :
                 if a.body.insidePerception(objet.location, agent.type):
                     self.perceptionList[a].append(objet)
