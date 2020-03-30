@@ -29,16 +29,9 @@ def importation(path):
             shape = "unidentified"
             print(str(i)+str(len(approx)))
             if len(approx) == 4:
-                # compute the bounding box of the contour and use the
-                # bounding box to compute the aspect ratio
+
                 (x, y, w, h) = cv2.boundingRect(approx)
                 ar = w / float(h)
-                # a square will have an aspect ratio that is approximately
-                # equal to one, otherwise, the shape is a rectangle
-                shape = "square" if ar >= 0.95 and ar <= 1.05 else "rectangle"
-
-                # multiply the contour (x, y)-coordinates by the resize ratio,
-                # then draw the contours and the name of the shape on the image
 
                 c = c.astype("int")
                 image = cv2.drawContours(image, [c], -1, (255, 0, 0), 2)

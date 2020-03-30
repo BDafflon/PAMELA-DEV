@@ -30,5 +30,5 @@ def runDriveSimulation(pathEnv, pathSce, pathStock):
     return []
 
 
-runDriveSimulation("C:\\Users\\baudo\\PycharmProjects\\PAMELA-DRIVE\\helper\\importer\\drive1.bmp", "C:\\Users\\baudo\\PycharmProjects\\PAMELA-DRIVE\\simulation\\Drive\\drive-25-03-20.csv", "C:\\Users\\baudo\\PycharmProjects\\PAMELA-DRIVE\\simulation\\Drive\\stock.csv")
+runDriveSimulation(".\\helper\\importer\\drive1.bmp", ".\\simulation\\Drive\\drive-25-03-20.csv", ".\\simulation\\Drive\\stock.csv")
 

@@ -52,15 +52,15 @@ class GuiDriveGL(GuiGL):
 
         else:
             if b.type == "Dropoff":
-                w = 10
-                h = 10
+                h = b.aabb.height
+                w = b.aabb.width
 
                 glColor3f(*colors[2])
 
             else:
                 if b.type == "Pickup":
-                    w = 10
-                    h = 10
+                    h = b.aabb.height
+                    w = b.aabb.width
 
                     glColor3f(*colors[3])
 
