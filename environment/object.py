@@ -34,7 +34,7 @@ class Wall(EnvironmentalObject):
     def __init__(self, x, y,h,w):
         EnvironmentalObject.__init__(self)
         self.location = Vector2D(x, y)
-        self.orientation = 0
+        self.id = 0
         self.type = "Wall"
         self.aabb = AABB(Vector2D(x,y), h,w)
 

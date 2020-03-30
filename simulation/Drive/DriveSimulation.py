@@ -49,6 +49,8 @@ class DriveSimulation(threading.Thread):
         i = 0
         for r in stock:
             pickupList[i % len(pickupList)].stock.append(r)
+            i=i+1
+
 
         self.environment.addObject(TargetObjet(0, 0))
         for i in range(0, 10):
@@ -77,8 +79,9 @@ class DriveSimulation(threading.Thread):
         with open(self.pathStock) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=';')
             for row in csv_reader:
-                print(row)
+
                 if row[0]!='':
+                    print(row)
                     stock.append([row[0], int(row[1])])
 
         return stock

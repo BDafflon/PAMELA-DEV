@@ -32,6 +32,17 @@ class EnvironmentDrive(Environment):
         self.applyInfluence(dt)
         #print("dt : " + str(dt))
 
+    def getContent(self,point2d):
+        for o in self.objects:
+            if hasattr(o,'aabb'):
+                if o.aabb.inside(point2d):
+                    txt = o.type +" "+str(o.id)+" "+str(o.aabb.uperLeftLocation.y)+" :\n"
+                    if hasattr(o, 'stock'):
+                        if(len(o.stock)>0):
+
+                            txt=txt+ '\n'.join(map(str, o.stock))
+                        return txt
+
     def applyInfluence(self, dt):
         actionList = {}
         for k, influence in self.influenceList.items():

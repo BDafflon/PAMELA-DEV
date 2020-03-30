@@ -32,13 +32,15 @@ class GuiGL():
     def __init__(self, map):
         self.kill = False
         self.printFustrum = False
-        self.printVel = False
-        self.width = 1
-        self.height = 1
+        self.printVel = True
+        self.width = 1280
+        self.height = 720
         self.margin = 0
         self.environment = map
         self.title = "GUI"
-        self.fullscreen = False;
+        self.fullscreen = False
+        self.printInfo = True
+        self.printInfoMouse = True
         self.scaleFactor=1
 
     def get_window_config(self):
@@ -49,6 +51,7 @@ class GuiGL():
         template = Config(double_buffer=True, sample_buffers=1, samples=4)
         try:
             config = screen.get_best_config(template)
+
         except pyglet.window.NoSuchConfigException:
             template = Config()
             config = screen.get_best_config(template)
@@ -85,6 +88,9 @@ class GuiGL():
 
         @window.event
         def on_draw():
+
+
+
             if self.kill:
                 pyglet.app.exit()
 
@@ -96,6 +102,22 @@ class GuiGL():
                 self.drawAgent(b)
             for o in self.environment.objects:
                 self.drawObject(o)
+
+            render_txt_mouse()
+
+        def render_txt_mouse():
+            if self.printInfoMouse:
+                nonlocal mouse_location
+                txt = self.environment.getContent(Vector2D(mouse_location[0],mouse_location[1]))
+                if txt !="" and txt != None:
+                    document = pyglet.text.document.FormattedDocument(txt)
+                    document.set_style(0, len(document.text), dict(color=(0, 0, 0, 255)))
+                    text = pyglet.text.layout.TextLayout(document, 420, 420, multiline=True)
+                    text.x=mouse_location[0]
+                    text.y=self.height-mouse_location[1]
+                    text.anchor_x = "left"
+                    text.anchor_y="top"
+                    text.draw()
 
         @window.event
         def on_key_press(symbol, modifiers):
@@ -117,6 +139,8 @@ class GuiGL():
 
         @window.event
         def on_mouse_leave(x, y):
+            nonlocal mouse_location
+            mouse_location = 0, 0
             o = self.environment.getFirstObjectByName("Attractor")
             print("leave")
             if o is not None:
@@ -146,7 +170,8 @@ class GuiGL():
         @window.event
         def on_mouse_motion(x, y, *args):
             nonlocal mouse_location
-            mouse_location = x, y
+            mouse_location = x, self.height-y
+            print(mouse_location)
 
 
         pyglet.app.run()
@@ -191,7 +216,10 @@ class GuiGL():
         glPushMatrix()
         # apply the transformation for the boid
 
-        glTranslatef(o.location.x/self.scaleFactor, o.location.y/self.scaleFactor, 0.0)
+        if hasattr(o, 'aabb'):
+            glTranslatef(o.aabb.uperLeftLocation.x / self.scaleFactor, (self.height - o.aabb.uperLeftLocation.y- o.aabb.height) / self.scaleFactor, 0.0)
+        else:
+            glTranslatef(o.location.x/self.scaleFactor, (self.height-o.location.y)/self.scaleFactor, 0.0)
 
         # render the object itself
         self.renderObject(o)
@@ -200,10 +228,11 @@ class GuiGL():
     def drawAgent(self, b):
         glPushMatrix()
         # apply the transformation for the boid
-        glTranslatef(b.body.location.x/self.scaleFactor, b.body.location.y/self.scaleFactor, 0.0)
+        print(b.body.location)
+        glTranslatef(b.body.location.x/self.scaleFactor, (self.height-b.body.location.y)/self.scaleFactor, 0.0)
 
         # a = signedAngle()
-        glRotatef(math.degrees(math.atan2(b.body.velocity.x, b.body.velocity.y)), 0.0, 0.0, -1.0)
+        glRotatef(math.degrees(math.atan2(b.body.velocity.x, -b.body.velocity.y)), 0.0, 0.0, -1.0)
 
         # render the boid's velocity
         if self.printVel:

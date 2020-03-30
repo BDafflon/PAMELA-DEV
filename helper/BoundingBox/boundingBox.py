@@ -9,6 +9,10 @@ class BoundingBox:
         #TODO
         return False
 
+    def inside(self,point2d):
+        #TODO
+        return False
+
     def intersection(self,box,r):
         #TODO
         return False

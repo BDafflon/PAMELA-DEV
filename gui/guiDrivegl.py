@@ -20,6 +20,9 @@ class GuiDriveGL(GuiGL):
     def __init__(self, map):
         GuiGL.__init__(self, map)
         self.title = "GUI Drive Simulation"
+        self.txt =""
+
+
 
     def render_agent(self, b):
         glBegin(GL_TRIANGLES)
