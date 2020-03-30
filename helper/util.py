@@ -1,6 +1,8 @@
 import random
 import string
 
+from shapely.geometry import LineString, Point
+
 from helper.vector2D import Vector2D
 
 
@@ -54,16 +56,18 @@ def magnitude(x, y):
 
 
 def dot(a, b):
-    return sum(i * j for i, j in zip(a, b))
+    aV=[a.x,a.y]
+    bV=[b.x,b.y]
+    return sum(i * j for i, j in zip(aV, bV))
 
 
 def angle_between(a, b):
-    angle = math.degrees(math.acos(dot(a, b) / (magnitude(*a) * magnitude(*b))))
+
+    angle = math.degrees(math.acos(dot(a, b) / (a.getLength() * b.getLength())))
     return angle
 
 
 def limit_magnitude(vector, max_magnitude, min_magnitude=0.0):
-
     mag = magnitude(*vector)
     if mag > max_magnitude:
         normalizing_factor = max_magnitude / mag
@@ -92,6 +96,17 @@ def rotate_point(x: float, y: float, cx: float, cy: float,
     return x, y
 
 
+def getIntersectionPoint(center,r, origin, dest):
+    p = Point(center.x,center.y)
+    c = p.buffer(r).boundary
+    l = LineString([(origin.x, origin.y), (dest.x, dest.y)])
+    i = c.intersection(l)
+    print(len(i))
+    if len(i)==1:
+        print(i.x)
+
+
+
 def distance(xB, yB, xE, yE, xM, yM):
     a = xE - xB
     b = yE - yB
@@ -108,23 +123,27 @@ def distance(xB, yB, xE, yE, xM, yM):
     PED1 = a * xE + b * yE + w1
 
     if PMD1 * PED1 < 0:
-        return math.sqrt((xM - xB) * (xM - xB) + (yM - yB) * (yM - yB))  # pas de quotient
+        return math.sqrt((xM - xB) * (xM - xB) + (yM - yB) * (yM - yB)), Vector2D(xB,yB)  # pas de quotient
     if PMD2 * PBD2 < 0:
-        return math.sqrt((xM - xE) * (xM - xE) + (yM - yE) * (yM - yE))  # idem
+        return math.sqrt((xM - xE) * (xM - xE) + (yM - yE) * (yM - yE)) , Vector2D(xE,yE) # idem
     if math.sqrt(a * a + b * b) == 0:
-        return 99990
-    return abs(b * xM - a * yM + w3) / math.sqrt(a * a + b * b)
+        return 99990, Vector2D
 
-def get_four_byte_color(color) :
-    """
-    Given a RGB list, it will return RGBA.
-    Given a RGBA list, it will return the same RGBA.
+    x = abs(b * xM - a * yM + w3)
+    y = math.sqrt(a * a + b * b)
+    print(x)
+    print(y)
+    v = Vector2D(a,b)
+    d = Vector2D(xM-xB, yM-yB)
+    angle = angle_between(d,v)
+    norme = d.getLength() * math.cos(math.radians(angle))
+    v=v.getNormalized()
+    v=v.scale(norme)
+    h = Vector2D(xB+v.x,yB+v.y)
+    return abs(b * xM - a * yM + w3) / math.sqrt(a * a + b * b), h
 
-    :param Color color: Three or four byte tuple
 
-    :returns:  return: Four byte RGBA tuple
-    """
-
+def get_four_byte_color(color):
     if len(color) == 4:
         return color
     elif len(color) == 3:

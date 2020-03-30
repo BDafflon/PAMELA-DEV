@@ -6,14 +6,16 @@ class Object:
     def __init__(self):
         self.type = "Object"
 
+
 class Marchandise(Object):
-    def __init__(self, pickup,n):
+    def __init__(self, pickup, n):
         EnvironmentalObject.__init__(self)
         self.pickupStation = pickup
         self.mass = 1
         self.volume = 1
         self.type = "Marchandise"
-        self.nom=n
+        self.nom = n
+
 
 class EnvironmentalObject(Object):
     def __init__(self):
@@ -31,27 +33,35 @@ class TargetObjet(EnvironmentalObject):
 
 
 class Wall(EnvironmentalObject):
-    def __init__(self, x, y,h,w):
+    def __init__(self, x, y, h, w):
         EnvironmentalObject.__init__(self)
         self.location = Vector2D(x, y)
         self.id = 0
         self.type = "Wall"
-        self.aabb = AABB(Vector2D(x,y), h,w)
+        self.aabb = AABB(Vector2D(x, y), h, w)
+
 
 class Dropoff(EnvironmentalObject):
-    def __init__(self, x, y,h,w,id):
+    def __init__(self, x, y, h, w, id):
         EnvironmentalObject.__init__(self)
         self.location = Vector2D((int(x), int(y)))
         self.id = id
         self.type = "Dropoff"
         self.stock = []
-        self.aabb = AABB(Vector2D(x,y), h,w)
+        self.aabb = AABB(Vector2D(x, y), h, w)
+
 
 class Pickup(EnvironmentalObject):
-    def __init__(self, x, y,h,w,id):
+    def __init__(self, x, y, h, w, id):
         EnvironmentalObject.__init__(self)
         self.location = Vector2D(x, y)
         self.id = id
         self.type = "Pickup"
         self.stock = []
-        self.aabb = AABB(Vector2D(x,y), h,w)
+        self.aabb = AABB(Vector2D(x, y), h, w)
+
+
+class PerceivedObject(EnvironmentalObject):
+    def __init__(self, location, type):
+        self.type = type
+        self.location = location

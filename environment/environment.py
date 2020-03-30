@@ -1,3 +1,4 @@
+from environment.object import PerceivedObject
 from helper import util
 import time
 from helper.vector2D import Vector2D
@@ -99,8 +100,9 @@ class Environment(threading.Thread):
         for objet in self.objects:
             if hasattr(objet,"aabb"):
                 if hasattr(a.body.fustrum,"radius"):
-                    if objet.aabb.intersection(a.body.location, a.body.fustrum.radius):
-                        self.perceptionList[a].append(objet)
+                    collision,point = objet.aabb.intersection(a.body.location, a.body.fustrum.radius)
+                    if collision:
+                        self.perceptionList[a].append(PerceivedObject(point,objet.type))
             else :
                 if a.body.insidePerception(objet.location, agent.type):
                     self.perceptionList[a].append(objet)

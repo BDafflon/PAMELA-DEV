@@ -1,10 +1,14 @@
 import math
 from math import sqrt
 
+import shapely as shapely
+
 from gui.guiDrivegl import GuiDriveGL
+from helper import util
 from helper.BoundingBox import aabb
 from helper.BoundingBox.aabb import AABB
 from helper.importer.driveImporter import importation
+from helper.util import getIntersectionPoint, distance
 from helper.vector2D import Vector2D
 
 from simulation.Drive.DriveSimulation import DriveSimulation
