@@ -2,6 +2,7 @@ import cv2
 import imutils
 
 
+
 def importation(path):
     font = cv2.FONT_HERSHEY_SIMPLEX
     # Read image*
@@ -64,6 +65,7 @@ def importation(path):
         i = i + 1
 
     cv2.imshow('image', image)
+
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     return result

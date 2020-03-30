@@ -97,8 +97,13 @@ class Environment(threading.Thread):
                     self.perceptionList[a].append(agent)
 
         for objet in self.objects:
-            if a.body.insidePerception(objet.location, agent.type):
-                self.perceptionList[a].append(objet)
+            if hasattr(objet,"aabb"):
+                if hasattr(a.body.fustrum,"radius"):
+                    if objet.aabb.intersection(a.body.location, a.body.fustrum.radius):
+                        self.perceptionList[a].append(objet)
+            else :
+                if a.body.insidePerception(objet.location, agent.type):
+                    self.perceptionList[a].append(objet)
 
         a.body.fustrum.perceptionList = self.perceptionList[a]
 

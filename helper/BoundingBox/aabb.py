@@ -18,22 +18,18 @@ class AABB(BoundingBox):
         dright = distance(self.uperLeftLocation.x + self.width, self.uperLeftLocation.y,
                           self.uperLeftLocation.x + self.width, self.uperLeftLocation.y + self.height, point2d.x,
                           point2d.y)
-        dbottom = distance(self.uperLeftLocation.x + self.width, self.uperLeftLocation.y + self.height,
+        dbottom = distance(self.uperLeftLocation.x + self.width, self.uperLeftLocation.y ,
                            self.uperLeftLocation.x + self.width, self.uperLeftLocation.y + self.height, point2d.x,
                            point2d.y)
 
         dmin = min(dup, dleft, dbottom, dright)
 
         if dmin < r:
-            return dmin
-
-        return -1
+            return True
+        return False
 
     def inside(self,point2d):
         if point2d.x>self.uperLeftLocation.x and point2d.x<self.uperLeftLocation.x+self.width and point2d.y > self.uperLeftLocation.y and point2d.y < self.uperLeftLocation.y+self.height :
             return True
         return False
 
-    def intersection(self, box, r):
-        # TODO
-        return False

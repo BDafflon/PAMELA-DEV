@@ -31,8 +31,8 @@ colors = [BLACK, GREEN, RED, BLUE]
 class GuiGL():
     def __init__(self, map):
         self.kill = False
-        self.printFustrum = False
-        self.printVel = True
+        self.printFustrum = True
+        self.printVel = False
         self.width = 1280
         self.height = 720
         self.margin = 0
@@ -165,13 +165,13 @@ class GuiGL():
         def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
             o = self.environment.getFirstObjectByName("Attractor")
             if o is not None:
-                o.location = Vector2D(x, y)
+                o.location = Vector2D(x, self.height-y)
 
         @window.event
         def on_mouse_motion(x, y, *args):
             nonlocal mouse_location
             mouse_location = x, self.height-y
-            print(mouse_location)
+
 
 
         pyglet.app.run()
@@ -228,7 +228,7 @@ class GuiGL():
     def drawAgent(self, b):
         glPushMatrix()
         # apply the transformation for the boid
-        print(b.body.location)
+
         glTranslatef(b.body.location.x/self.scaleFactor, (self.height-b.body.location.y)/self.scaleFactor, 0.0)
 
         # a = signedAngle()

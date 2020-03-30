@@ -111,7 +111,8 @@ def distance(xB, yB, xE, yE, xM, yM):
         return math.sqrt((xM - xB) * (xM - xB) + (yM - yB) * (yM - yB))  # pas de quotient
     if PMD2 * PBD2 < 0:
         return math.sqrt((xM - xE) * (xM - xE) + (yM - yE) * (yM - yE))  # idem
-
+    if math.sqrt(a * a + b * b) == 0:
+        return 99990
     return abs(b * xM - a * yM + w3) / math.sqrt(a * a + b * b)
 
 def get_four_byte_color(color) :

@@ -47,16 +47,17 @@ class DriveSimulation(threading.Thread):
         stock = self.loadStock()
 
         i = 0
-        for r in stock:
-            pickupList[i % len(pickupList)].stock.append(r)
-            i=i+1
+        if len(pickupList)>0:
+            for r in stock:
+                pickupList[i % len(pickupList)].stock.append(r)
+                i=i+1
 
 
         self.environment.addObject(TargetObjet(0, 0))
-        for i in range(0, 10):
+        for i in range(0, 1):
             self.environment.addAgent(StandardAgent(1))
 
-        for i in range(0, 2):
+        for i in range(0, 0):
             self.environment.addAgent(RobotAgent(1))
 
         self.ready = True
