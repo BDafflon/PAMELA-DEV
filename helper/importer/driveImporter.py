@@ -1,9 +1,18 @@
+import json
+import tkinter
+
 import cv2
 import imutils
 
+from gui.launcherGui import LauncherGui
 
 
-def importation(path):
+def importationJSON(path):
+    with open(path, 'r') as f:
+        jsonEnv = json.load(f)
+        return jsonEnv
+
+def importationIMG(path):
     font = cv2.FONT_HERSHEY_SIMPLEX
     # Read image*
     image = cv2.imread(path)
@@ -64,10 +73,11 @@ def importation(path):
 
         i = i + 1
 
-    cv2.imshow('image', image)
-
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    return result
+    l = LauncherGui(tkinter.Tk(), "Environement",image)
+    print (l.validation)
+    if l.validation :
+        return result
+    else :
+        return []
     # show the output image
 

@@ -1,13 +1,15 @@
 import csv
 import threading
 import time
+import tkinter
 
 from agents.Drive.robotAgent import RobotAgent
 from agents.Drive.standardAgent import StandardAgent
 from environment.application.DriveEnvironment.environmentDrive import EnvironmentDrive
 
 from environment.object import TargetObjet, Dropoff, Pickup, Wall
-from helper.importer.driveImporter import importation
+from helper.importer.configurator import Configurator
+from helper.importer.driveImporter import importationIMG, importationJSON
 
 
 class DriveSimulation(threading.Thread):
@@ -20,7 +22,15 @@ class DriveSimulation(threading.Thread):
         self.ready = False
 
     def loadDefault(self):
-        objetList = importation(self.pathEnv)
+        if self.pathEnv == "" or self.pathScenario == "" or self.pathStock == "":
+            configurator = Configurator(tkinter.Tk(),self.pathEnv,self.pathStock,self.pathScenario)
+            self.pathEnv,self.pathStock,self.pathScenario = configurator.getFile()
+
+        if self.pathEnv.endswith('.json'):
+            objetList = importationJSON(self.pathEnv)
+        else :
+            objetList = importationIMG(self.pathEnv)
+            print(objetList)
         j = 0
         k = 0
         pickupList = []
@@ -53,7 +63,7 @@ class DriveSimulation(threading.Thread):
                 i = i + 1
 
         self.environment.addObject(TargetObjet(0, 0))
-        for i in range(0, 1):
+        for i in range(0, 10):
             self.environment.addAgent(StandardAgent(1))
 
         for i in range(0, 0):
