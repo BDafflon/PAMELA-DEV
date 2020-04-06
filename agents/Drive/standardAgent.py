@@ -82,9 +82,11 @@ class StandardAgent(Agent):
         for obj in objs:
             if hasattr(obj,"location"):
                 diff = obj.location.x - self.body.location.x, obj.location.y - self.body.location.y
-                inv_sqr_magnitude = 1 / ((util.magnitude(*diff) - 10) ** 2)
+                facteur = ((util.magnitude(*diff) - 10) ** 2)
+                if facteur != 0:
+                    inv_sqr_magnitude = 1 / ((util.magnitude(*diff) - 10) ** 2)
 
-                c[0] = c[0] - inv_sqr_magnitude * diff[0]
-                c[1] = c[1] - inv_sqr_magnitude * diff[1]
+                    c[0] = c[0] - inv_sqr_magnitude * diff[0]
+                    c[1] = c[1] - inv_sqr_magnitude * diff[1]
 
         return util.limit_magnitude(c, self.body.maxCollisionVel)

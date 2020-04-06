@@ -16,5 +16,5 @@ def runDriveSimulation(pathEnv, pathSce, pathStock):
     return []
 
 
-runDriveSimulation(".\\helper\\importer\\env.json", ".\\simulation\\Drive\\drive-25-03-20.csv", ".\\simulation\\Drive\\stock.csv")
+runDriveSimulation(".\\helper\\importer\\env.json", "", ".\\simulation\\Drive\\stock.csv")
 

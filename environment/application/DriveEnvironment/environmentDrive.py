@@ -1,12 +1,23 @@
 from environment.application.DriveEnvironment import agentType
 from environment.environment import Environment
 import time
+
+from helper import util
 from helper.vector2D import Vector2D
 
 
 class EnvironmentDrive(Environment):
     def __init__(self):
         Environment.__init__(self)
+
+
+    def addAgent(self, a):
+
+        finished = True
+        while finished:
+            a.body.location = Vector2D(util.randomInt(self.boardW), util.randomInt(self.boardH))
+            finished = self.insideWall(a)
+        self.agents.append(a)
 
     def getRandomAgent(self, typeO):
         for a in self.agents:
@@ -71,3 +82,11 @@ class EnvironmentDrive(Environment):
             b.location.y = 1
         elif b.location.y < 0:
             b.location.y = b.location.y % self.boardH-1
+
+    def insideWall(self, a):
+        for i in self.objects:
+            if i.type == "Wall":
+                inside = i.aabb.inside(a.body.location)
+                print ("inside")
+                return inside
+        return False

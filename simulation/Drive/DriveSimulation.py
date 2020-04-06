@@ -26,11 +26,18 @@ class DriveSimulation(threading.Thread):
             configurator = Configurator(tkinter.Tk(),self.pathEnv,self.pathStock,self.pathScenario)
             self.pathEnv,self.pathStock,self.pathScenario = configurator.getFile()
 
+        objetList = []
         if self.pathEnv.endswith('.json'):
             objetList = importationJSON(self.pathEnv)
         else :
-            objetList = importationIMG(self.pathEnv)
-            print(objetList)
+            if self.pathEnv.endswith('.jpg') or self.pathEnv.endswith('.bmp') or self.pathEnv.endswith('.png'):
+                objetList = importationIMG(self.pathEnv)
+            else:
+                print("Fichier environement incompatible")
+
+
+
+        print(objetList)
         j = 0
         k = 0
         pickupList = []
@@ -66,6 +73,7 @@ class DriveSimulation(threading.Thread):
         for i in range(0, 10):
             self.environment.addAgent(StandardAgent(1))
 
+
         for i in range(0, 0):
             self.environment.addAgent(RobotAgent(1))
 
@@ -82,16 +90,18 @@ class DriveSimulation(threading.Thread):
     def loadStock(self):
         stock = []
 
-        line_count = 0
+        if self.pathStock.endswith('.csv'):
+            line_count = 0
 
-        print("Load Stock " + self.pathStock)
+            print("Load Stock " + self.pathStock)
 
-        with open(self.pathStock) as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=';')
-            for row in csv_reader:
+            with open(self.pathStock) as csv_file:
+                csv_reader = csv.reader(csv_file, delimiter=';')
+                for row in csv_reader:
 
-                if row[0] != '':
-                    print(row)
-                    stock.append([row[0], int(row[1])])
-
+                    if row[0] != '':
+                        print(row)
+                        stock.append([row[0], int(row[1])])
+        else:
+            print("Erreur : fichier stock incompatible")
         return stock

@@ -22,6 +22,7 @@ class Environment(threading.Thread):
     def addAgent(self, a):
         self.agents.append(a)
 
+
     def addObject(self, o):
         self.objects.append(o)
 
