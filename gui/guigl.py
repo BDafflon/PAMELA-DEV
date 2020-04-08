@@ -1,5 +1,6 @@
 import math
 import pyglet
+from pyglet import image
 from pyglet.gl import (
     Config,
     glEnable, glBlendFunc, glLoadIdentity, glClearColor,
@@ -167,6 +168,9 @@ class GuiGL():
             if o is not None:
                 o.location = Vector2D(x, self.height-y)
 
+
+
+
         @window.event
         def on_mouse_motion(x, y, *args):
             nonlocal mouse_location
@@ -175,6 +179,13 @@ class GuiGL():
 
 
         pyglet.app.run()
+
+    def render_texture(self, x, y,s):
+        #pic = image.load('./tex.png')
+        #sprite = pyglet.sprite.Sprite(pic)
+        s.x = x
+        s.y=y
+        s.draw()
 
     def render_velocity(self, b):
         glColor3f(0.6, 0.6, 0.6)
@@ -218,11 +229,13 @@ class GuiGL():
 
         if hasattr(o, 'aabb'):
             glTranslatef(o.aabb.uperLeftLocation.x / self.scaleFactor, (self.height - o.aabb.uperLeftLocation.y- o.aabb.height) / self.scaleFactor, 0.0)
+            self.renderObject(o)
         else:
             glTranslatef(o.location.x/self.scaleFactor, (self.height-o.location.y)/self.scaleFactor, 0.0)
+            self.renderObject(o)
 
         # render the object itself
-        self.renderObject(o)
+
         glPopMatrix()
 
     def drawAgent(self, b):

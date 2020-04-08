@@ -14,8 +14,9 @@ class EnvironmentDrive(Environment):
     def addAgent(self, a):
 
         finished = True
+
         while finished:
-            a.body.location = Vector2D(util.randomInt(self.boardW), util.randomInt(self.boardH))
+            a.body.location = Vector2D(20+util.randomInt(self.boardW-20), 20+util.randomInt(self.boardH-20))
             finished = self.insideWall(a)
         self.agents.append(a)
 

@@ -1,3 +1,4 @@
+from pyglet import image
 from pyglet.gl import (
     glBegin, glEnd, glColor3f,
     glVertex2f, GL_TRIANGLES, GL_POLYGON)
@@ -35,6 +36,7 @@ class GuiDriveGL(GuiGL):
         glVertex2f(5, 0.0)
         glVertex2f(0.0, 5 * 3.0)
         glEnd()
+
 
     def renderObject(self, b):
         glBegin(GL_POLYGON)

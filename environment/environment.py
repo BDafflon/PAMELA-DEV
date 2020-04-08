@@ -9,7 +9,7 @@ import ctypes
 class Environment(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.center=Vector2D(800/2,600/2)
+        self.center=Vector2D(1280/2,720/2)
         self.boardW = 1280
         self.boardH = 720
         self.running = 1
@@ -104,8 +104,7 @@ class Environment(threading.Thread):
                     collision,point = objet.aabb.intersection(a.body.location, a.body.fustrum.radius)
                     if collision:
                         self.perceptionList[a].append(PerceivedObject(point,objet.type))
-                        t=self.getFirstObjectByName("Attractor")
-                        t.location = point
+
             else :
                 if a.body.insidePerception(objet.location, agent.type):
                     self.perceptionList[a].append(objet)

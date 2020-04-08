@@ -21,6 +21,7 @@ class StandardAgent(Agent):
         self.velocity = [random.uniform(-50.0, 50.0), random.uniform(-50.0, 50.0)]
         self.target = Vector2D(0, 0)
         self.obstacleFactor = 500
+        self.attractorFactor = 0.35
 
     def __init__(self, f):
         Agent.__init__(self)
@@ -34,6 +35,7 @@ class StandardAgent(Agent):
         self.velocity = [random.uniform(-50.0, 50.0), random.uniform(-50.0, 50.0)]
         self.target = Vector2D(0, 0)
         self.obstacleFactor = 500
+        self.attractorFactor = 0.35
 
     def moveRandom(self):
         x = int(random.uniform(-2, 2))
@@ -57,7 +59,8 @@ class StandardAgent(Agent):
                     if o.type == "Pickup":
                         pickup.append(o)
                     else:
-                        other.append(o)
+                        if o.type == "Attractor":
+                            other.append(o)
 
         return walls, other, dropoff, pickup
 
@@ -66,9 +69,13 @@ class StandardAgent(Agent):
 
         walls, other, dropoff, pickp = self.filtrePerception()
         obstacle_avoidance_vector = self.avoid_collisions(walls)
+        attractor_vector = self.attraction(other)
 
         self.velocity[0] += self.obstacleFactor * obstacle_avoidance_vector[0]
         self.velocity[1] += self.obstacleFactor * obstacle_avoidance_vector[1]
+
+        self.velocity[0] += self.attractorFactor * attractor_vector[0]
+        self.velocity[1] += self.attractorFactor * attractor_vector[1]
 
         self.velocity = util.limit_magnitude(self.velocity, self.body.vitesseMax, self.body.vitesseMin)
         inf.move = Vector2D(self.velocity[0], self.velocity[1])
@@ -90,3 +97,13 @@ class StandardAgent(Agent):
                     c[1] = c[1] - inv_sqr_magnitude * diff[1]
 
         return util.limit_magnitude(c, self.body.maxCollisionVel)
+
+    def attraction(self, attractors):
+        # generate a vector that moves the boid towards the attractors
+        a = [0.0, 0.0]
+
+        for attractor in attractors:
+            a[0] += attractor.location.x - self.body.location.x
+            a[1] += attractor.location.y - self.body.location.y
+
+        return a
