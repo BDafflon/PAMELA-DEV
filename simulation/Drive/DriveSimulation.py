@@ -10,11 +10,13 @@ from environment.application.DriveEnvironment.environmentDrive import Environmen
 from environment.object import TargetObjet, Dropoff, Pickup, Wall
 from helper.importer.configurator import Configurator
 from helper.importer.driveImporter import importationIMG, importationJSON
+from helper.drawPopulation import drawPopulation
 
 
 class DriveSimulation(threading.Thread):
     def __init__(self, pathEnv, pathScenario, pathStock):
         threading.Thread.__init__(self)
+        self.drawPopulation = False
         self.environment = EnvironmentDrive()
         self.pathEnv = pathEnv
         self.pathStock = pathStock
@@ -74,14 +76,17 @@ class DriveSimulation(threading.Thread):
             self.environment.addAgent(StandardAgent(1))
 
 
-        for i in range(0, 0):
+        for i in range(0, 10):
             self.environment.addAgent(RobotAgent(1))
 
         self.ready = True
 
     def run(self):
+
         if self.ready:
             self.environment.start()
+            if self.drawPopulation:
+                drawPopulation(self.environment)
             # TODO Scenario
 
         else:

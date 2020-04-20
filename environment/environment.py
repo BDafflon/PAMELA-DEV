@@ -9,8 +9,8 @@ import ctypes
 class Environment(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.boardW = 1280
-        self.boardH = 720
+        self.boardW = 3000
+        self.boardH = 3000
         self.running = 1
         self.clock=0
         self.agents = []
@@ -24,6 +24,17 @@ class Environment(threading.Thread):
 
     def addObject(self, o):
         self.objects.append(o)
+
+    def getPopulation(self):
+        data={}
+
+        for a in self.agents:
+            if a.type in data.keys():
+                data[a.type]=data[a.type]+1
+            else:
+                data[a.type]=1
+        return data
+
 
     def getRandomObject(self, typeO):
         while True:

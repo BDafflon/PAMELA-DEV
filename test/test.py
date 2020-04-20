@@ -1,5 +1,0 @@
-print("Bonjour")
-print("Calculons une fraction.\n")
-nombre1=int(input("Entrez le numerateur:"))
-nombre2=int(input("Entrez le denumerateur : "))
-print("Le résultat est : "+str(nombre1/nombre2))

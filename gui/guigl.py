@@ -172,7 +172,7 @@ class GuiGL():
             if buttons == mouse.LEFT:
                 o = self.environment.getFirstObjectByName("Attractor")
                 if o is not None:
-                    o.location = Vector2D(-self.translation.x+x*self.scaleFactor,self.translation.y+self.height-y*self.scaleFactor)
+                    o.location = Vector2D((-self.translation.x+x)*self.scaleFactor,self.translation.y+self.height-y*self.scaleFactor)
             elif buttons == mouse.RIGHT:
                 self.translation.x+=dx
                 self.translation.y+=dy

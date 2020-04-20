@@ -3,7 +3,7 @@ from simulation.Drive.DriveSimulation import DriveSimulation
 
 def runDriveSimulation(pathEnv, pathSce, pathStock):
     s = DriveSimulation(pathEnv, pathSce, pathStock)
-
+    s.drawPopulation = True
     s.loadDefault()
 
     g = GuiDriveGL(s.environment)
@@ -16,5 +16,5 @@ def runDriveSimulation(pathEnv, pathSce, pathStock):
     return []
 
 
-runDriveSimulation(".\\helper\\importer\\env.json", "", ".\\simulation\\Drive\\stock.csv")
+runDriveSimulation(".\\helper\\importer\\env.json", ".\\simulation\\Drive\\drive.csv", ".\\simulation\\Drive\\stock.csv")
 
