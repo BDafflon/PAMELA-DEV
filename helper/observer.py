@@ -19,7 +19,7 @@ class Observer:
 
 class RobotObserver(Observer):
     def __init__(self, id, h):
-        Observer.__init__(self, id, "Taxi")
+        Observer.__init__(self, id, "Agent")
         self.idDeplacement = ""
         self.HDepart = h
         self.distance = 0.0

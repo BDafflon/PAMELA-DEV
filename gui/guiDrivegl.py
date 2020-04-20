@@ -32,9 +32,9 @@ class GuiDriveGL(GuiGL):
         else:
             if b.type == AgentType.ROBOT:
                 glColor3f(*colors[2])
-        glVertex2f(-(5), 0.0)
-        glVertex2f(5, 0.0)
-        glVertex2f(0.0, 5 * 3.0)
+        glVertex2f(-(5)/ self.scaleFactor, 0.0)
+        glVertex2f(5/ self.scaleFactor, 0.0)
+        glVertex2f(0.0, 5 * 3.0/ self.scaleFactor)
         glEnd()
 
 
@@ -42,30 +42,29 @@ class GuiDriveGL(GuiGL):
         glBegin(GL_POLYGON)
         glColor3f(*colors[1])
 
-        w = 10
-        h = 10
+        w = 10/ self.scaleFactor
+        h = 10/ self.scaleFactor
 
 
 
         if b.type == "Wall":
 
-            w = 10
-            h = b.aabb.height
-            w = b.aabb.width
+            h = b.aabb.height/ self.scaleFactor
+            w = b.aabb.width/ self.scaleFactor
             glColor3f(*colors[0])
 
 
         else:
             if b.type == "Dropoff":
-                h = b.aabb.height
-                w = b.aabb.width
+                h = b.aabb.height/ self.scaleFactor
+                w = b.aabb.width/ self.scaleFactor
 
                 glColor3f(*colors[2])
 
             else:
                 if b.type == "Pickup":
-                    h = b.aabb.height
-                    w = b.aabb.width
+                    h = b.aabb.height/ self.scaleFactor
+                    w = b.aabb.width/ self.scaleFactor
 
                     glColor3f(*colors[3])
 

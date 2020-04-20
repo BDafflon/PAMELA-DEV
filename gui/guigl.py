@@ -1,6 +1,6 @@
 import math
 import pyglet
-from pyglet import image
+
 from pyglet.gl import (
     Config,
     glEnable, glBlendFunc, glLoadIdentity, glClearColor,
@@ -13,11 +13,7 @@ from pyglet.gl import (
 
 from pyglet.window import key, mouse
 
-# Define some colors
-from pyglet.window.mouse import LEFT
-from setuptools.msvc import winreg
 
-from helper import util
 from helper.vector2D import Vector2D
 
 BLACK = [0, 0, 0]
@@ -43,6 +39,7 @@ class GuiGL():
         self.printInfo = True
         self.printInfoMouse = True
         self.scaleFactor=1
+        self.translation = Vector2D(0,0)
 
     def get_window_config(self):
         platform = pyglet.window.get_platform()
@@ -74,7 +71,7 @@ class GuiGL():
             resizable=True)
 
         window.set_minimum_size(1280,720)
-        window.set_maximum_size(1280,720)
+        window.set_maximum_size(4000,3000)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
@@ -132,6 +129,13 @@ class GuiGL():
             elif symbol == key.V:
                 nonlocal show_vectors
                 show_vectors = not show_vectors
+            elif symbol == key.P:
+                self.scaleFactor=self.scaleFactor+0.1
+            elif symbol == key.M and self.scaleFactor >0.1:
+                self.scaleFactor=self.scaleFactor-0.1
+            elif symbol == key.O:
+                self.scaleFactor=1
+                self.translation = Vector2D(0, 0)
 
         @window.event
         def on_mouse_drag(x, y, *args):
@@ -157,17 +161,21 @@ class GuiGL():
         @window.event
         def on_mouse_press(x, y, button, modifiers):
             if button == mouse.LEFT:
-                print("The Left Mouse Was Pressed")
+                print("The Left Mouse Was Pressed"+str(x)+" "+str(y))
 
             elif button == mouse.RIGHT:
                 print("Right Mouse Was Pressed")
 
         @window.event
         def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
-            o = self.environment.getFirstObjectByName("Attractor")
-            if o is not None:
-                o.location = Vector2D(x, self.height-y)
-
+            print("drag "+str(dx)+" "+str(dy))
+            if buttons == mouse.LEFT:
+                o = self.environment.getFirstObjectByName("Attractor")
+                if o is not None:
+                    o.location = Vector2D(-self.translation.x+x*self.scaleFactor,self.translation.y+self.height-y*self.scaleFactor)
+            elif buttons == mouse.RIGHT:
+                self.translation.x+=dx
+                self.translation.y+=dy
 
 
 
@@ -209,18 +217,18 @@ class GuiGL():
     def render_agent(self, b):
         glBegin(GL_TRIANGLES)
         glColor3f(*colors[1])
-        glVertex2f(-(5), 0.0)
-        glVertex2f(5, 0.0)
-        glVertex2f(0.0, 5 * 3.0)
+        glVertex2f(-(5)/ self.scaleFactor, 0.0)
+        glVertex2f(5/ self.scaleFactor, 0.0)
+        glVertex2f(0.0, 5 * 3.0/ self.scaleFactor)
         glEnd()
 
     def renderObject(self, b):
         glBegin(GL_POLYGON)
         glColor3f(*colors[1])
-        glVertex2f(-(5), -5)
-        glVertex2f(5, -5)
-        glVertex2f(5, 5)
-        glVertex2f(-5, 5)
+        glVertex2f(-(5)/ self.scaleFactor, -5/ self.scaleFactor)
+        glVertex2f(5/ self.scaleFactor, -5/ self.scaleFactor)
+        glVertex2f(5/ self.scaleFactor, 5/ self.scaleFactor)
+        glVertex2f(-5/ self.scaleFactor, 5/ self.scaleFactor)
         glEnd()
 
     def drawObject(self, o):
@@ -228,10 +236,10 @@ class GuiGL():
         # apply the transformation for the boid
 
         if hasattr(o, 'aabb'):
-            glTranslatef(o.aabb.uperLeftLocation.x / self.scaleFactor, (self.height - o.aabb.uperLeftLocation.y- o.aabb.height) / self.scaleFactor, 0.0)
+            glTranslatef(self.translation.x+o.aabb.uperLeftLocation.x / self.scaleFactor, (self.translation.y+self.height - o.aabb.uperLeftLocation.y- o.aabb.height) / self.scaleFactor, 0.0)
             self.renderObject(o)
         else:
-            glTranslatef(o.location.x/self.scaleFactor, (self.height-o.location.y)/self.scaleFactor, 0.0)
+            glTranslatef(self.translation.x+o.location.x/self.scaleFactor, (self.translation.y+self.height-o.location.y)/self.scaleFactor, 0.0)
             self.renderObject(o)
 
         # render the object itself
@@ -242,7 +250,7 @@ class GuiGL():
         glPushMatrix()
         # apply the transformation for the boid
 
-        glTranslatef(b.body.location.x/self.scaleFactor, (self.height-b.body.location.y)/self.scaleFactor, 0.0)
+        glTranslatef(self.translation.x+b.body.location.x/self.scaleFactor, (self.translation.y+self.height-b.body.location.y)/self.scaleFactor, 0.0)
 
         # a = signedAngle()
         glRotatef(math.degrees(math.atan2(b.body.velocity.x, -b.body.velocity.y)), 0.0, 0.0, -1.0)
