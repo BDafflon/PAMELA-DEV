@@ -10,7 +10,7 @@ from gui.launcherGui import LauncherGui
 def importationJSON(path):
     with open(path, 'r') as f:
         jsonEnv = json.load(f)
-        return jsonEnv
+        return jsonEnv,[3000,3000]
 
 def image_resize(image, width = None, height = None, inter = cv2.INTER_AREA):
     # initialize the dimensions of the image to be resized and

@@ -1,3 +1,5 @@
+from random import randint
+
 from environment.application.Drive.agentType import AgentType
 from environment.object import PerceivedObject
 from helper import util
@@ -24,6 +26,7 @@ class Environment(threading.Thread):
         self.objects = []
         self.perceptionList = {}
         self.influenceList = {}
+        self.zone={}
 
     def addAgent(self, a):
         self.agents.append(a)
@@ -46,6 +49,9 @@ class Environment(threading.Thread):
 
         return data
 
+    def moveTo(self,a,zone):
+        if zone in self.zone.keys() :
+            a.body.location=Vector2D(randint(self.zone[zone].uperLeftLocation.x,self.zone[zone].uperLeftLocation.x+self.zone[zone].width),randint(self.zone[zone].uperLeftLocation.y,self.zone[zone].uperLeftLocation.y+self.zone[zone].height))
 
     def getRandomObject(self, typeO):
         while True:
@@ -73,6 +79,7 @@ class Environment(threading.Thread):
         self.influenceList = {}
 
         for agent in self.agents:
+
             if agent.type != AgentType.MORT :
                 self.computePerception(agent)
 
@@ -124,6 +131,9 @@ class Environment(threading.Thread):
                     self.perceptionList[a].append(agent)
 
         for objet in self.objects:
+            if objet.type == "Dropoff":
+                self.perceptionList[a].append(PerceivedObject(objet.location, objet.type))
+
             if hasattr(objet,"aabb"):
                 if hasattr(a.body.fustrum,"radius"):
                     collision,point = objet.aabb.intersection(a.body.location, a.body.fustrum.radius)

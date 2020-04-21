@@ -6,15 +6,18 @@ import tkinter
 from agents.Drive.robotAgent import RobotAgent
 from agents.Drive.standardAgent import StandardAgent
 from agents.SIRM.sirmAgent import SirmAgent
+from environment.application.Drive.agentState import AgentState
 from environment.application.Drive.agentType import AgentType
 
 from environment.application.Drive.environmentDrive import EnvironmentDrive
 from environment.application.SIRM.contamination import Contamination
 
 from environment.object import TargetObjet, Dropoff, Pickup, Wall
+from helper.BoundingBox.aabb import AABB
 from helper.importer.configurator import Configurator
 from helper.importer.driveImporter import importationIMG, importationJSON
 from helper.drawPopulation import drawPopulation, Afficheur
+from helper.vector2D import Vector2D, randint
 
 
 class SIRMSimulation(threading.Thread):
@@ -34,19 +37,17 @@ class SIRMSimulation(threading.Thread):
 
         objetList = []
         if self.pathEnv.endswith('.json'):
-            objetList = importationJSON(self.pathEnv)
+            objetList,dim = importationJSON(self.pathEnv)
         else :
             if self.pathEnv.endswith('.jpg') or self.pathEnv.endswith('.bmp') or self.pathEnv.endswith('.png'):
                 objetList,dim = importationIMG(self.pathEnv)
 
-                self.environment.boardW = dim[1]
-                self.environment.boardH = dim[0]
+
             else:
                 print("Fichier environement incompatible")
 
-
-
-
+        self.environment.boardW = dim[1]
+        self.environment.boardH = dim[0]
         j = 0
         k = 0
         pickupList = []
@@ -70,6 +71,8 @@ class SIRMSimulation(threading.Thread):
                     if i['type'] == "wall":
                         self.environment.addObject(Wall(x, y, h, w))
 
+        self.environment.zone['quarantaine']=AABB(Vector2D(100,100),500,500)
+
         stock = self.loadStock()
 
         i = 0
@@ -82,13 +85,16 @@ class SIRMSimulation(threading.Thread):
 
         for i in range(0, 100):
             a = SirmAgent(1)
-            a.type = AgentType.SEIN
+            a.body.location = Vector2D(randint(0, self.environment.boardW), randint(0, self.environment.boardH))
+            a.type = AgentState.SEIN
             self.environment.addAgent(a)
 
 
         for i in range(0, 10):
             a = SirmAgent(1)
-            a.type = AgentType.INFECTE
+            a.body.location = Vector2D(randint(0,self.environment.boardW),randint(0,self.environment.boardH))
+
+            a.type = AgentState.INFECTE
             a.contamination = Contamination(time.time())
             self.environment.addAgent(a)
 
@@ -112,14 +118,13 @@ class SIRMSimulation(threading.Thread):
         if self.pathStock.endswith('.csv'):
             line_count = 0
 
-            print("Load Stock " + self.pathStock)
+
 
             with open(self.pathStock) as csv_file:
                 csv_reader = csv.reader(csv_file, delimiter=';')
                 for row in csv_reader:
 
                     if row[0] != '':
-                        print(row)
                         stock.append([row[0], int(row[1])])
         else:
             print("Erreur : fichier stock incompatible")

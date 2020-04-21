@@ -3,6 +3,7 @@ from pyglet.gl import (
     glBegin, glEnd, glColor3f,
     glVertex2f, GL_TRIANGLES, GL_POLYGON)
 
+from environment.application.Drive.agentState import AgentState
 from environment.application.Drive.agentType import AgentType
 from gui.guigl import GuiGL
 
@@ -27,23 +28,18 @@ class GuiDriveGL(GuiGL):
 
     def render_agent(self, b):
         glBegin(GL_TRIANGLES)
-        if b.type == AgentType.MANU:
+        if b.type == AgentState.SEIN:
             glColor3f(*colors[1])
         else:
-            if b.type == AgentType.ROBOT:
+            if b.type == AgentState.INFECTE:
                 glColor3f(*colors[2])
             else:
-                if b.type == AgentType.SEIN:
-                    glColor3f(*colors[1])
+                if b.type == AgentState.RETABLI:
+                    glColor3f(*colors[3])
                 else:
-                    if b.type == AgentType.INFECTE:
-                        glColor3f(*colors[2])
-                    else:
-                        if b.type == AgentType.RETABLI:
-                            glColor3f(*colors[3])
-                        else:
-                            if b.type == AgentType.MORT:
-                                glColor3f(*colors[0])
+                    if b.type == AgentState.MORT:
+                        glColor3f(*colors[0])
+
         glVertex2f(-(5)/ self.scaleFactor, 0.0)
         glVertex2f(5/ self.scaleFactor, 0.0)
         glVertex2f(0.0, 5 * 3.0/ self.scaleFactor)

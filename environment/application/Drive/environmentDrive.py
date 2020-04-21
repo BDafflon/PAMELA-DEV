@@ -1,4 +1,8 @@
+from random import randint
+
 from environment.application.Drive import agentType
+from environment.application.Drive.agentState import AgentState
+from environment.application.Drive.agentType import AgentType
 from environment.environment import Environment
 import time
 
@@ -11,13 +15,13 @@ class EnvironmentDrive(Environment):
         Environment.__init__(self)
 
 
+
+
     def addAgent(self, a):
+        print(self.zone['quarantaine'])
+        if self.zone['quarantaine'].inside(a.body.location):
 
-        finished = True
-
-        while finished:
-            a.body.location = Vector2D(20+util.randomInt(self.boardW-20), 20+util.randomInt(self.boardH-20))
-            finished = self.insideWall(a)
+            a.body.location = Vector2D(self.boardW/2,self.boardH/2)
         self.agents.append(a)
 
     def getRandomAgent(self, typeO):
@@ -41,6 +45,23 @@ class EnvironmentDrive(Environment):
 
                             txt=txt+ '\n'.join(map(str, o.stock))
                         return txt
+
+    def update(self, dt):
+        self.influenceList = {}
+
+        for agent in self.agents:
+            if agent.type == AgentState.QUARANTAINE and not self.zone['quarantaine'].inside(agent.body.location):
+                self.moveTo(agent,"quarantaine")
+
+            if agent.type != AgentState.MORT:
+                self.computePerception(agent)
+
+        for agent in self.agents:
+            if agent.type != AgentState.MORT:
+                self.influenceList[agent.id] = None
+                self.influenceList[agent.id] = agent.update()
+
+        self.applyInfluence(dt)
 
     def applyInfluence(self, dt):
         actionList = {}

@@ -31,5 +31,5 @@ def runSIRMSimulation(pathEnv, pathSce, pathStock):
 
     return []
 
-runSIRMSimulation(".\\helper\\importer\\sim1.bmp", ".\\simulation\\Drive\\drive.csv", ".\\simulation\\Drive\\stock.csv")
+runSIRMSimulation(".\\helper\\importer\\env.json", ".\\simulation\\Drive\\drive.csv", ".\\simulation\\Drive\\stock.csv")
 

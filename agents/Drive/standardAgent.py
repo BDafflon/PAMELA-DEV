@@ -26,7 +26,7 @@ class StandardAgent(Agent):
     def __init__(self, f):
         Agent.__init__(self)
         self.body = StadardAgentBody()
-        self.type = AgentType.MANU
+        self.type = AgentType.STANDARD
         self.famille = f
         self.body.mass = 80
         self.body.fustrum.radius = 100

@@ -44,7 +44,7 @@ class Wall(EnvironmentalObject):
 class Dropoff(EnvironmentalObject):
     def __init__(self, x, y, h, w, id):
         EnvironmentalObject.__init__(self)
-        self.location = Vector2D((int(x), int(y)))
+        self.location = Vector2D((int(x+w/2), int(y+h/2)))
         self.id = id
         self.type = "Dropoff"
         self.stock = []
