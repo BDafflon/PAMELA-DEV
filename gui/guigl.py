@@ -28,7 +28,7 @@ colors = [BLACK, GREEN, RED, BLUE]
 class GuiGL():
     def __init__(self, map):
         self.kill = False
-        self.printFustrum = True
+        self.printFustrum = False
         self.printVel = False
         self.width = 1280
         self.height = 720
@@ -36,10 +36,12 @@ class GuiGL():
         self.environment = map
         self.title = "GUI"
         self.fullscreen = False
-        self.printInfo = True
-        self.printInfoMouse = True
+        self.printInfo = False
+        self.printInfoMouse = False
         self.scaleFactor=1
-        self.translation = Vector2D(0,0)
+        self.scaleFactor = self.environment.boardH / 720
+        self.translation = Vector2D(self.environment .boardW/2/self.scaleFactor,-self.height +self.environment.boardH)
+        print(self.translation)
 
     def get_window_config(self):
         platform = pyglet.window.get_platform()
@@ -134,8 +136,9 @@ class GuiGL():
             elif symbol == key.M and self.scaleFactor >0.1:
                 self.scaleFactor=self.scaleFactor-0.1
             elif symbol == key.O:
-                self.scaleFactor=1
-                self.translation = Vector2D(0, 0)
+                self.scaleFactor = self.environment.boardH / 720
+                self.translation = Vector2D(self.environment.boardW / 2 / self.scaleFactor,
+                                            -self.height + self.environment.boardH)
 
         @window.event
         def on_mouse_drag(x, y, *args):
@@ -154,6 +157,7 @@ class GuiGL():
         @window.event
         def on_mouse_release(x, y, button, modifiers):
             nonlocal mouse_location
+            print(self.translation)
             o = self.environment.getFirstObjectByName("Attractor")
             if o is not None:
                 o.location = Vector2D(-1000, -1000)

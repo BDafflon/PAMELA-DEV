@@ -5,15 +5,19 @@ import tkinter
 
 from agents.Drive.robotAgent import RobotAgent
 from agents.Drive.standardAgent import StandardAgent
+from agents.SIRM.sirmAgent import SirmAgent
+from environment.application.Drive.agentType import AgentType
+
 from environment.application.Drive.environmentDrive import EnvironmentDrive
+from environment.application.SIRM.contamination import Contamination
 
 from environment.object import TargetObjet, Dropoff, Pickup, Wall
 from helper.importer.configurator import Configurator
 from helper.importer.driveImporter import importationIMG, importationJSON
-from helper.drawPopulation import drawPopulation
+from helper.drawPopulation import drawPopulation, Afficheur
 
 
-class DriveSimulation(threading.Thread):
+class SIRMSimulation(threading.Thread):
     def __init__(self, pathEnv, pathScenario, pathStock):
         threading.Thread.__init__(self)
         self.drawPopulation = False
@@ -33,13 +37,16 @@ class DriveSimulation(threading.Thread):
             objetList = importationJSON(self.pathEnv)
         else :
             if self.pathEnv.endswith('.jpg') or self.pathEnv.endswith('.bmp') or self.pathEnv.endswith('.png'):
-                objetList = importationIMG(self.pathEnv)
+                objetList,dim = importationIMG(self.pathEnv)
+
+                self.environment.boardW = dim[1]
+                self.environment.boardH = dim[0]
             else:
                 print("Fichier environement incompatible")
 
 
 
-        print(objetList)
+
         j = 0
         k = 0
         pickupList = []
@@ -72,12 +79,18 @@ class DriveSimulation(threading.Thread):
                 i = i + 1
 
         self.environment.addObject(TargetObjet(0, 0))
-        for i in range(0, 10):
-            self.environment.addAgent(StandardAgent(1))
+
+        for i in range(0, 100):
+            a = SirmAgent(1)
+            a.type = AgentType.SEIN
+            self.environment.addAgent(a)
 
 
         for i in range(0, 10):
-            self.environment.addAgent(RobotAgent(1))
+            a = SirmAgent(1)
+            a.type = AgentType.INFECTE
+            a.contamination = Contamination(time.time())
+            self.environment.addAgent(a)
 
         self.ready = True
 
@@ -86,7 +99,8 @@ class DriveSimulation(threading.Thread):
         if self.ready:
             self.environment.start()
             if self.drawPopulation:
-                drawPopulation(self.environment)
+                a = Afficheur(self.environment)
+                a.start()
             # TODO Scenario
 
         else:

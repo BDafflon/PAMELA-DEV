@@ -1,4 +1,4 @@
-from environment.application.DriveEnvironment import agentType
+from environment.application.Drive import agentType
 from environment.environment import Environment
 import time
 
@@ -29,20 +29,7 @@ class EnvironmentDrive(Environment):
     def getFirstRobot(self):
         return self.getRandomAgent(agentType.ROBOT)
 
-    def update(self, dt):
-        self.clock = (time.time())
 
-        self.influenceList = {}
-
-        for agent in self.agents:
-            self.computePerception(agent)
-
-        for agent in self.agents:
-            self.influenceList[agent.id] = None
-            self.influenceList[agent.id] = agent.update()
-
-        self.applyInfluence(dt)
-        #print("dt : " + str(dt))
 
     def getContent(self,point2d):
         for o in self.objects:

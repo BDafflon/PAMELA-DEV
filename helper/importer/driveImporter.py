@@ -12,6 +12,37 @@ def importationJSON(path):
         jsonEnv = json.load(f)
         return jsonEnv
 
+def image_resize(image, width = None, height = None, inter = cv2.INTER_AREA):
+    # initialize the dimensions of the image to be resized and
+    # grab the image size
+    dim = None
+    (h, w) = image.shape[:2]
+
+    # if both the width and height are None, then return the
+    # original image
+    if width is None and height is None:
+        return image
+
+    # check to see if the width is None
+    if width is None:
+        # calculate the ratio of the height and construct the
+        # dimensions
+        r = height / float(h)
+        dim = (int(w * r), height)
+
+    # otherwise, the height is None
+    else:
+        # calculate the ratio of the width and construct the
+        # dimensions
+        r = width / float(w)
+        dim = (width, int(h * r))
+
+    # resize the image
+    resized = cv2.resize(image, dim, interpolation = inter)
+
+    # return the resized image
+    return resized
+
 def importationIMG(path):
     font = cv2.FONT_HERSHEY_SIMPLEX
     # Read image*
@@ -72,11 +103,12 @@ def importationIMG(path):
 
 
         i = i + 1
-
+    dimensions = image.shape
+    image = image_resize(image, height=800)
     l = LauncherGui(tkinter.Tk(), "Environement",image)
     print (l.validation)
     if l.validation :
-        return result
+        return result,dimensions
     else :
         return []
     # show the output image

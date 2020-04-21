@@ -1,3 +1,4 @@
+from environment.application.Drive.agentType import AgentType
 from environment.object import PerceivedObject
 from helper import util
 import time
@@ -6,11 +7,17 @@ import threading
 import ctypes
 
 
+class clock:
+    def __init__(self):
+        self.t=0
+
+c= clock()
+
 class Environment(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.boardW = 3000
-        self.boardH = 3000
+        self.boardW = 1280
+        self.boardH = 720
         self.running = 1
         self.clock=0
         self.agents = []
@@ -25,14 +32,18 @@ class Environment(threading.Thread):
     def addObject(self, o):
         self.objects.append(o)
 
+
     def getPopulation(self):
         data={}
+        for d in AgentType:
+            data[d]=0
 
         for a in self.agents:
             if a.type in data.keys():
                 data[a.type]=data[a.type]+1
             else:
                 data[a.type]=1
+
         return data
 
 
@@ -55,16 +66,20 @@ class Environment(threading.Thread):
         return None
 
     def update(self, dt):
+
+
         self.clock = (time.time())
 
         self.influenceList = {}
 
         for agent in self.agents:
-            self.computePerception(agent)
+            if agent.type != AgentType.MORT :
+                self.computePerception(agent)
 
         for agent in self.agents:
-            self.influenceList[agent.id] = None
-            self.influenceList[agent.id] = agent.update()
+            if agent.type != AgentType.MORT:
+                self.influenceList[agent.id] = None
+                self.influenceList[agent.id] = agent.update()
 
         self.applyInfluence(dt)
         # print("dt : " + str(dt))

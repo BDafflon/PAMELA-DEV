@@ -1,17 +1,21 @@
 import random
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+import random
+import sys
+from threading import Thread
+import time
 
-
-def update(i, data, dataEnv):
+data = []
+def update(i,   dataEnv):
     j = 0
 
     for d in dataEnv:
         if len(data) <= j:
             data.append([])
-            data[j].append(dataEnv[d])
+        data[j].append(dataEnv[d])
         j = j + 1
-    print(data)
+
     return data, dataEnv.keys()
 
 
@@ -20,7 +24,7 @@ def animate(j, data, env):
 
     if j > 0:
         dataEnv = env.getPopulation()
-        data, k = update(j, data, dataEnv)
+        data, k = update(j,  dataEnv)
 
         plt.cla()
         width = 0.35
@@ -31,11 +35,26 @@ def animate(j, data, env):
 
         plt.tight_layout()
 
-data = []
-def drawPopulation(env):
-    plt.style.use('fivethirtyeight')
 
-    ani = FuncAnimation(plt.gcf(), animate, fargs=(data, env,), interval=1000)
+def drawPopulation(env):
+
+
+    ani = FuncAnimation(plt.gcf(), animate, fargs=(data, env,), interval=2000)
 
     plt.tight_layout()
     plt.show()
+
+
+
+class Afficheur(Thread):
+
+    """Thread chargé simplement d'afficher une lettre dans la console."""
+
+    def __init__(self, env):
+        Thread.__init__(self)
+        self.env = env
+
+    def run(self):
+        """Code à exécuter pendant l'exécution du thread."""
+
+        drawPopulation(self.env)

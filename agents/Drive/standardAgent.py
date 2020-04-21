@@ -1,8 +1,8 @@
 import random
 from agents.agent import Agent
 from environment.animateAction import AnimateAction
-from environment.application.DriveEnvironment.agentType import AgentType
-from environment.application.DriveEnvironment.stardardAgentBody import StadardAgentBody
+from environment.application.Drive.agentType import AgentType
+from environment.application.Drive.stardardAgentBody import StadardAgentBody
 from helper import util
 from helper.vector2D import Vector2D
 
