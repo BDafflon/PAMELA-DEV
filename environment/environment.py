@@ -4,6 +4,8 @@ from environment.application.Drive.agentType import AgentType
 from environment.object import PerceivedObject
 from helper import util
 import time
+
+from helper.datastructure import kdtree
 from helper.vector2D import Vector2D
 import threading
 import ctypes
@@ -72,8 +74,6 @@ class Environment(threading.Thread):
         return None
 
     def update(self, dt):
-
-
         self.clock = (time.time())
 
         self.influenceList = {}
@@ -125,23 +125,29 @@ class Environment(threading.Thread):
 
     def computePerception(self, a):
         self.perceptionList[a] = []
-        for agent in self.agents:
+
+        tree = kdtree.create(self.agents)
+        n = tree.search_nn_dist(a, a.body.fustrum.radius)
+        self.perceptionList[a] = n
+
+        '''for agent in self.agents:
             if agent != a:
                 if a.body.insidePerception(agent.body.location, agent.type):
-                    self.perceptionList[a].append(agent)
+                    self.perceptionList[a].append(agent)'''
 
         for objet in self.objects:
-            if objet.type == "Dropoff":
-                self.perceptionList[a].append(PerceivedObject(objet.location, objet.type))
 
             if hasattr(objet,"aabb"):
+                if objet.type == "Dropoff":
+                    self.perceptionList[a].append(PerceivedObject(objet.location, objet.aabb, objet.type))
+
                 if hasattr(a.body.fustrum,"radius"):
                     collision,point = objet.aabb.intersection(a.body.location, a.body.fustrum.radius)
                     if collision:
-                        self.perceptionList[a].append(PerceivedObject(point,objet.type))
+                        self.perceptionList[a].append(PerceivedObject(objet.location, objet.aabb, objet.type))
 
             else :
-                if a.body.insidePerception(objet.location, agent.type):
+                if a.body.insidePerception(objet.location):
                     self.perceptionList[a].append(objet)
 
         a.body.fustrum.perceptionList = self.perceptionList[a]

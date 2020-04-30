@@ -18,7 +18,6 @@ class EnvironmentDrive(Environment):
 
 
     def addAgent(self, a):
-        print(self.zone['quarantaine'])
         if self.zone['quarantaine'].inside(a.body.location):
 
             a.body.location = Vector2D(self.boardW/2,self.boardH/2)
@@ -34,6 +33,19 @@ class EnvironmentDrive(Environment):
         return self.getRandomAgent(agentType.ROBOT)
 
 
+    def getPopulation(self):
+        data={}
+        for d in AgentState:
+            data[d]=0
+
+        for a in self.agents:
+
+            if a.stat in data.keys():
+                data[a.stat]=data[a.stat]+1
+            else:
+                data[a.stat]=1
+
+        return data
 
     def getContent(self,point2d):
         for o in self.objects:
@@ -50,14 +62,14 @@ class EnvironmentDrive(Environment):
         self.influenceList = {}
 
         for agent in self.agents:
-            if agent.type == AgentState.QUARANTAINE and not self.zone['quarantaine'].inside(agent.body.location):
+            if agent.stat == AgentState.QUARANTAINE and not self.zone['quarantaine'].inside(agent.body.location):
                 self.moveTo(agent,"quarantaine")
 
-            if agent.type != AgentState.MORT:
+            if agent.stat != AgentState.MORT:
                 self.computePerception(agent)
 
         for agent in self.agents:
-            if agent.type != AgentState.MORT:
+            if agent.stat != AgentState.MORT:
                 self.influenceList[agent.id] = None
                 self.influenceList[agent.id] = agent.update()
 
@@ -69,6 +81,7 @@ class EnvironmentDrive(Environment):
 
             if influence == None:
                 continue
+
 
             agentBody = self.getAgentBody(k)
 

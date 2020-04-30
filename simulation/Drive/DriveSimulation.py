@@ -39,7 +39,7 @@ class DriveSimulation(threading.Thread):
 
 
 
-        print(objetList)
+        #print(objetList)
         j = 0
         k = 0
         pickupList = []
@@ -105,7 +105,6 @@ class DriveSimulation(threading.Thread):
                 for row in csv_reader:
 
                     if row[0] != '':
-                        print(row)
                         stock.append([row[0], int(row[1])])
         else:
             print("Erreur : fichier stock incompatible")

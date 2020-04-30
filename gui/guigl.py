@@ -28,7 +28,7 @@ colors = [BLACK, GREEN, RED, BLUE]
 class GuiGL():
     def __init__(self, map):
         self.kill = False
-        self.printFustrum = False
+        self.printFustrum = True
         self.printVel = False
         self.width = 1280
         self.height = 720

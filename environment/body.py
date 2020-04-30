@@ -21,7 +21,7 @@ class Body:
         self.accelerationMax = 15
 
 
-    def insidePerception(self, p, t):
+    def insidePerception(self, p):
         return self.fustrum.inside(self.location, p)
 
     def computeMove(self, v):

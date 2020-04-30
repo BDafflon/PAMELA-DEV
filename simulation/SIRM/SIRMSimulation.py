@@ -37,41 +37,51 @@ class SIRMSimulation(threading.Thread):
 
         objetList = []
         if self.pathEnv.endswith('.json'):
-            objetList,dim = importationJSON(self.pathEnv)
+            objetList = importationJSON(self.pathEnv)
         else :
             if self.pathEnv.endswith('.jpg') or self.pathEnv.endswith('.bmp') or self.pathEnv.endswith('.png'):
                 objetList,dim = importationIMG(self.pathEnv)
-
+                self.environment.boardW = dim[1]
+                self.environment.boardH = dim[0]
 
             else:
                 print("Fichier environement incompatible")
 
-        self.environment.boardW = dim[1]
-        self.environment.boardH = dim[0]
+
         j = 0
         k = 0
         pickupList = []
         for i in objetList:
-
-            x = i['coord'][0]
-            y = i['coord'][1]
-            w = i['coord'][2]
-            h = i['coord'][3]
-
-            if i['type'] == "dropoff":
-                j = j + 1
-                self.environment.addObject(Dropoff(x, y, h, w, j))
+            if i['type'] == "zone":
+                x = i['coord'][0]
+                y = i['coord'][1]
+                w = i['coord'][2]
+                h = i['coord'][3]
+                self.environment.zone[i['name']] = AABB(Vector2D(x, y), h, w)
             else:
-                if i['type'] == "pickup":
-                    k = k + 1
-                    a = Pickup(x, y, h, w, k)
-                    pickupList.append(a)
-                    self.environment.addObject(a)
-                else:
-                    if i['type'] == "wall":
-                        self.environment.addObject(Wall(x, y, h, w))
+                x = i['coord'][0]
+                y = i['coord'][1]
+                w = i['coord'][2]
+                h = i['coord'][3]
 
-        self.environment.zone['quarantaine']=AABB(Vector2D(100,100),500,500)
+                if i['type'] == "dropoff":
+                    j = j + 1
+                    self.environment.addObject(Dropoff(x, y, h, w, j))
+                else:
+                    if i['type'] == "pickup":
+                        k = k + 1
+                        a = Pickup(x, y, h, w, k)
+                        pickupList.append(a)
+                        self.environment.addObject(a)
+                    else:
+                        if i['type'] == "wall":
+                            self.environment.addObject(Wall(x, y, h, w))
+                        else:
+                            if i['type'] == "environement":
+                                self.environment.boardW = w
+                                self.environment.boardH = h
+
+
 
         stock = self.loadStock()
 
@@ -86,17 +96,9 @@ class SIRMSimulation(threading.Thread):
         for i in range(0, 100):
             a = SirmAgent(1)
             a.body.location = Vector2D(randint(0, self.environment.boardW), randint(0, self.environment.boardH))
-            a.type = AgentState.SEIN
+            a.stat = AgentState.SEIN
             self.environment.addAgent(a)
 
-
-        for i in range(0, 10):
-            a = SirmAgent(1)
-            a.body.location = Vector2D(randint(0,self.environment.boardW),randint(0,self.environment.boardH))
-
-            a.type = AgentState.INFECTE
-            a.contamination = Contamination(time.time())
-            self.environment.addAgent(a)
 
         self.ready = True
 
@@ -108,6 +110,19 @@ class SIRMSimulation(threading.Thread):
                 a = Afficheur(self.environment)
                 a.start()
             # TODO Scenario
+            limit = 10
+            start=time.time()
+            i=0
+
+            while i<limit:
+                i+=1
+
+                a = SirmAgent(1)
+                a.body.location = Vector2D(randint(200, 250), randint(200, 250))
+                a.stat = AgentState.INFECTE
+                a.contamination = Contamination(time.time())
+                self.environment.addAgent(a)
+                time.sleep(5)
 
         else:
             print("Erreur de simulation")

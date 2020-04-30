@@ -39,7 +39,7 @@ def animate(j, data, env):
 def drawPopulation(env):
 
 
-    ani = FuncAnimation(plt.gcf(), animate, fargs=(data, env,), interval=2000)
+    ani = FuncAnimation(plt.gcf(), animate, fargs=(data, env,), interval=1000)
 
     plt.tight_layout()
     plt.show()

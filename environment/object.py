@@ -62,6 +62,7 @@ class Pickup(EnvironmentalObject):
 
 
 class PerceivedObject(EnvironmentalObject):
-    def __init__(self, location, type):
+    def __init__(self, location,aabb, type):
         self.type = type
         self.location = location
+        self.aabb=aabb

@@ -19,7 +19,7 @@ class SirmAgent(StandardAgent):
         self.body = StadardAgentBody()
         self.collisionDVel = 1
         self.type = AgentType.PATIENT
-        self.stat=AgentState.SEIN
+        self.stat = AgentState.SEIN
         self.famille = 1
         self.body.mass = 80
         self.body.fustrum.radius = 20
@@ -27,19 +27,18 @@ class SirmAgent(StandardAgent):
         self.body.vitesseMin = 2.0
         self.velocity = [random.uniform(-50.0, 50.0), random.uniform(-50.0, 50.0)]
         self.target = Vector2D(0, 0)
-        self.obstacleFactor = 0
+        self.obstacleFactor = 500
         self.attractorFactor = 0.35
-        self.contamination=None
+        self.contamination = None
 
     def __init__(self, f):
-        StandardAgent.__init__(self,f)
+        StandardAgent.__init__(self, f)
         self.body = StadardAgentBody()
         self.type = AgentType.PATIENT
         self.famille = f
-        self.body.fustrum.radius = 100
-        self.contamination=None
+        self.body.fustrum.radius = 20
+        self.contamination = None
         self.stat = AgentState.SEIN
-
 
     def filtrePerception(self):
         walls = []
@@ -60,16 +59,16 @@ class SirmAgent(StandardAgent):
                     else:
                         if o.type == "Attractor":
                             other.append(o)
-                        '''else:
-                            if o.type == AgentType.INFECTE:
+                        else:
+                            if o.stat == AgentState.INFECTE:
                                 sick.append(o)
                                 other.append(o)
                             else:
-                                if o.type == AgentType.RETABLI:
+                                if o.stat == AgentState.RETABLI:
                                     other.append(o)
                                 else:
-                                    if o.type == AgentType.SEIN:
-                                        other.append(o)'''
+                                    if o.stat == AgentState.SEIN:
+                                        other.append(o)
 
         return walls, other, dropoff, pickup, sick
 
@@ -83,24 +82,62 @@ class SirmAgent(StandardAgent):
         return Vector2D(x, y)
 
     def update(self):
-        influence = AnimateAction(None, None, None)
+        influence = AnimateAction(Vector2D(), Vector2D(), Vector2D())
 
         walls, other, dropoff, pickp, sick = self.filtrePerception()
         sickness = Sickness()
 
-        if self.type == AgentState.SEIN:
-            influence.move = self.moveRandom()
-        elif self.type == AgentState.INFECTE:
-            influence.move = self.moveRandom()
-        elif self.type == AgentState.QUARANTAINE:
-            influence.move = self.moveRandom()
-        elif self.type == AgentState.RETABLI:
+        if self.stat == AgentState.SEIN:
+            if len(sick) > 0:
+                for s in sick:
+                    if s.body.location.distance(self.body.location) < sickness.contagionRadius:
+                        if (s.contamination.start + sickness.contagionStart) < time.time() < s.contamination.start + sickness.contagionStop:
+
+                            r = randint(0, 100) / 100
+                            if r < sickness.contagionFactor:
+                                self.stat = AgentState.INFECTE
+                                s.contamination.nbContamination += 1
+                                self.contamination = Contamination(time.time())
+
             influence.move = self.moveRandom()
 
+        elif self.stat == AgentState.INFECTE:
+            influence.move = self.moveRandom()
+            if (self.contamination.start + sickness.symptomeStart) < time.time():
+                influence.move = self.moveTo(dropoff[0])
+                if dropoff[0].aabb.inside(self.body.location):
+                    self.stat =AgentState.QUARANTAINE
+
+            if self.contamination.start + sickness.mortalityTime < time.time():
+                r = randint(0, 100) / 100
+                if r < sickness.mortality:
+                    self.stat = AgentState.MORT
+                else:
+                    if (self.contamination.start + sickness.mortalityEnd) < time.time():
+                        self.stat = AgentState.RETABLI
+
+
+
+        elif self.stat == AgentState.QUARANTAINE:
+            influence.move = self.moveRandom()
+            if (self.contamination.start + sickness.contagionStop) < time.time():
+                self.stat=AgentState.RETABLI
+
+        elif self.stat == AgentState.RETABLI:
+            influence.move = self.moveRandom()
+        elif self.stat == AgentState.MORT:
+            influence.move=Vector2D()
+            self.body.velocity = influence.move
+            return influence
 
 
         self.velocity[0] += influence.move.x
         self.velocity[1] += influence.move.y
+
+        obstacle_avoidance_vector = self.avoid_collisions(walls)
+
+        self.velocity[0] += self.obstacleFactor * obstacle_avoidance_vector[0]
+        self.velocity[1] += self.obstacleFactor * obstacle_avoidance_vector[1]
 
         self.velocity = util.limit_magnitude(self.velocity, self.body.vitesseMax, self.body.vitesseMin)
         influence.move = Vector2D(self.velocity[0], self.velocity[1])

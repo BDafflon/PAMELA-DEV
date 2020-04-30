@@ -28,16 +28,16 @@ class GuiDriveGL(GuiGL):
 
     def render_agent(self, b):
         glBegin(GL_TRIANGLES)
-        if b.type == AgentState.SEIN:
+        if b.stat == AgentState.SEIN:
             glColor3f(*colors[1])
         else:
-            if b.type == AgentState.INFECTE:
+            if b.stat == AgentState.INFECTE:
                 glColor3f(*colors[2])
             else:
-                if b.type == AgentState.RETABLI:
+                if b.stat == AgentState.RETABLI:
                     glColor3f(*colors[3])
                 else:
-                    if b.type == AgentState.MORT:
+                    if b.stat == AgentState.MORT:
                         glColor3f(*colors[0])
 
         glVertex2f(-(5)/ self.scaleFactor, 0.0)

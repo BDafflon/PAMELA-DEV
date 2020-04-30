@@ -10,7 +10,8 @@ from gui.launcherGui import LauncherGui
 def importationJSON(path):
     with open(path, 'r') as f:
         jsonEnv = json.load(f)
-        return jsonEnv,[3000,3000]
+
+        return jsonEnv
 
 def image_resize(image, width = None, height = None, inter = cv2.INTER_AREA):
     # initialize the dimensions of the image to be resized and
@@ -68,7 +69,6 @@ def importationIMG(path):
             peri = cv2.arcLength(c, True)
             approx = cv2.approxPolyDP(c, 5, True)
             shape = "unidentified"
-            print(str(i)+str(len(approx)))
             if len(approx) == 4:
 
                 (x, y, w, h) = cv2.boundingRect(approx)

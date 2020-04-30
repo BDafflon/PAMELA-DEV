@@ -69,6 +69,8 @@ def angle_between(a, b):
 
 def limit_magnitude(vector, max_magnitude, min_magnitude=0.0):
     mag = magnitude(*vector)
+    if mag == 0 :
+        return Vector2D()
     if mag > max_magnitude:
         normalizing_factor = max_magnitude / mag
     elif mag < min_magnitude:
@@ -101,9 +103,7 @@ def getIntersectionPoint(center,r, origin, dest):
     c = p.buffer(r).boundary
     l = LineString([(origin.x, origin.y), (dest.x, dest.y)])
     i = c.intersection(l)
-    print(len(i))
-    if len(i)==1:
-        print(i.x)
+
 
 
 

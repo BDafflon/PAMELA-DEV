@@ -16,3 +16,17 @@ class Agent:
     def update(self):
         print(self.id)
         print(len(self.body.fustrum.perceptionList))
+
+        # KDTREE
+
+    def __len__(self):
+        return 2
+
+    def __getitem__(self, i):
+        if i == 0:
+            return self.body.location.x
+        else:
+            return self.body.location.y
+
+    def __repr__(self):
+        return 'Agent({}, {}, {})'.format(self.body.location.x, self.body.location.y, self.id)
