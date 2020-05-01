@@ -6,7 +6,7 @@ import tkinter
 from agents.Drive.robotAgent import RobotAgent
 from agents.Drive.standardAgent import StandardAgent
 from agents.SIRM.sirmAgent import SirmAgent
-from environment.application.Drive.agentState import AgentState
+from environment.application.Drive.smirAgentState import SmirAgentState
 from environment.application.Drive.agentType import AgentType
 
 from environment.application.Drive.environmentDrive import EnvironmentDrive
@@ -93,7 +93,7 @@ class SIRMSimulation(threading.Thread):
         for i in range(0, 100):
             a = SirmAgent(1)
             a.body.location = Vector2D(randint(0, self.environment.boardW), randint(0, self.environment.boardH))
-            a.stat = AgentState.SEIN
+            a.stat = SmirAgentState.SAIN
             self.environment.addAgent(a)
 
 
@@ -107,19 +107,7 @@ class SIRMSimulation(threading.Thread):
                 a = Afficheur(self.environment)
                 a.start()
             # TODO Scenario
-            limit = 10
-            start=time.time()
-            i=0
 
-            while i<limit:
-                i+=1
-
-                a = SirmAgent(1)
-                a.body.location = Vector2D(randint(200, 250), randint(200, 250))
-                a.stat = AgentState.INFECTE
-                a.contamination = Contamination(time.time())
-                self.environment.addAgent(a)
-                time.sleep(5)
 
         else:
             print("Erreur de simulation")

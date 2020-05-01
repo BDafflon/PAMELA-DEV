@@ -29,9 +29,9 @@ class StandardAgent(Agent):
         self.type = AgentType.STANDARD
         self.famille = f
         self.body.mass = 80
-        self.body.fustrum.radius = 100
-        self.body.vitesseMax = 150.0
-        self.body.vitesseMin = 20.0
+        self.body.fustrum.radius = 10
+        self.body.vitesseMax = 5.0
+        self.body.vitesseMin = 1.0
         self.velocity = [random.uniform(-50.0, 50.0), random.uniform(-50.0, 50.0)]
         self.target = Vector2D(0, 0)
         self.obstacleFactor = 500

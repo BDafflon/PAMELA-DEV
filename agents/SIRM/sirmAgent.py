@@ -3,7 +3,7 @@ from random import random, randint
 
 from agents.Drive.standardAgent import StandardAgent
 from environment.animateAction import AnimateAction
-from environment.application.Drive.agentState import AgentState
+from environment.application.Drive.smirAgentState import SmirAgentState
 
 from environment.application.Drive.agentType import AgentType
 from environment.application.Drive.stardardAgentBody import StadardAgentBody
@@ -19,7 +19,7 @@ class SirmAgent(StandardAgent):
         self.body = StadardAgentBody()
         self.collisionDVel = 1
         self.type = AgentType.PATIENT
-        self.stat = AgentState.SEIN
+        self.stat = SmirAgentState.SEIN
         self.famille = 1
         self.body.mass = 80
         self.body.fustrum.radius = 20
@@ -38,7 +38,7 @@ class SirmAgent(StandardAgent):
         self.famille = f
         self.body.fustrum.radius = 20
         self.contamination = None
-        self.stat = AgentState.SEIN
+        self.stat = SmirAgentState.SAIN
 
     def filtrePerception(self):
         walls = []
@@ -60,14 +60,14 @@ class SirmAgent(StandardAgent):
                         if o.type == "Attractor":
                             other.append(o)
                         else:
-                            if o.stat == AgentState.INFECTE:
+                            if o.stat == SmirAgentState.INFECTE:
                                 sick.append(o)
                                 other.append(o)
                             else:
-                                if o.stat == AgentState.RETABLI:
+                                if o.stat == SmirAgentState.RETABLI:
                                     other.append(o)
                                 else:
-                                    if o.stat == AgentState.SEIN:
+                                    if o.stat == SmirAgentState.SAIN:
                                         other.append(o)
 
         return walls, other, dropoff, pickup, sick
@@ -87,7 +87,7 @@ class SirmAgent(StandardAgent):
         walls, other, dropoff, pickp, sick = self.filtrePerception()
         sickness = Sickness()
 
-        if self.stat == AgentState.SEIN:
+        if self.stat == SmirAgentState.SAIN:
             if len(sick) > 0:
                 for s in sick:
                     if s.body.location.distance(self.body.location) < sickness.contagionRadius:
@@ -95,37 +95,37 @@ class SirmAgent(StandardAgent):
 
                             r = randint(0, 100) / 100
                             if r < sickness.contagionFactor:
-                                self.stat = AgentState.INFECTE
+                                self.stat = SmirAgentState.INFECTE
                                 s.contamination.nbContamination += 1
                                 self.contamination = Contamination(time.time())
 
             influence.move = self.moveRandom()
 
-        elif self.stat == AgentState.INFECTE:
+        elif self.stat == SmirAgentState.INFECTE:
             influence.move = self.moveRandom()
             if (self.contamination.start + sickness.symptomeStart) < time.time():
                 influence.move = self.moveTo(dropoff[0])
                 if dropoff[0].aabb.inside(self.body.location):
-                    self.stat =AgentState.QUARANTAINE
+                    self.stat =SmirAgentState.QUARANTAINE
 
             if self.contamination.start + sickness.mortalityTime < time.time():
                 r = randint(0, 100) / 100
                 if r < sickness.mortality:
-                    self.stat = AgentState.MORT
+                    self.stat = SmirAgentState.MORT
                 else:
                     if (self.contamination.start + sickness.mortalityEnd) < time.time():
-                        self.stat = AgentState.RETABLI
+                        self.stat = SmirAgentState.RETABLI
 
 
 
-        elif self.stat == AgentState.QUARANTAINE:
+        elif self.stat == SmirAgentState.QUARANTAINE:
             influence.move = self.moveRandom()
             if (self.contamination.start + sickness.contagionStop) < time.time():
-                self.stat=AgentState.RETABLI
+                self.stat=SmirAgentState.RETABLI
 
-        elif self.stat == AgentState.RETABLI:
+        elif self.stat == SmirAgentState.RETABLI:
             influence.move = self.moveRandom()
-        elif self.stat == AgentState.MORT:
+        elif self.stat == SmirAgentState.MORT:
             influence.move=Vector2D()
             self.body.velocity = influence.move
             return influence

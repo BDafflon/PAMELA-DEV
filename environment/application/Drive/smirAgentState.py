@@ -1,8 +1,8 @@
 from enum import Enum
 
 
-class AgentState(Enum):
-    SEIN = 3
+class SmirAgentState(Enum):
+    SAIN = 3
     INFECTE = 4
     RETABLI = 5
     MORT = 6

@@ -9,10 +9,12 @@ import time
 from PyQt5 import QtOpenGL, QtCore
 from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot, QPoint
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QAction, QMainWindow, QGridLayout, QWidget, QPushButton
+from PyQt5.QtWidgets import QApplication, QAction, QMainWindow, QGridLayout, QWidget, QPushButton, QMenu
 from PyQt5.uic.Compiler.qtproxies import QtGui
 
+from agents.agent import Agent
 from gui.CustomWidget.zoomPanel import ZoomPanelWidget
+from helper.util import inspectAgents
 from helper.vector2D import Vector2D
 
 try:
@@ -37,15 +39,16 @@ class GLWidget(QtOpenGL.QGLWidget):
 
         self.startTimer(40)
         self.setWindowTitle(self.tr("PAMELA View"))
-
-        self.printFustrum = True
-        self.printVel = True
+        self.agentColor = {}
+        self.printFustrum = False
+        self.printVel = False
         self.printInfo = False
         self.printInfoMouse = False
         self.width = 1280
         self.height = 720
         self.scaleFactor = .2
         self.translation = Vector2D()
+
 
 
     def initializeGL(self):
@@ -80,7 +83,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         for o in self.environment.objects:
             self.drawObject(o)
 
-        self.draw_center()
+
         dt = time.time() - t
 
 
@@ -152,6 +155,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glEnd()
 
     def render_agent(self, b):
+        GL.glColor3f(0.6, 0.6, 0.6)
         GL.glBegin(GL.GL_TRIANGLES)
         GL.glVertex2f(-(1) / self.scaleFactor, 0.0)
         GL.glVertex2f(1 / self.scaleFactor, 0.0)
@@ -182,6 +186,7 @@ class MainWindow(QMainWindow):
         self.__createFileMenu()
         self.__createConfMenu()
         self.__createEnvMenu()
+        self.__createAgentMenu()
 
 
 
@@ -281,6 +286,34 @@ class MainWindow(QMainWindow):
         environment.addAction(actSave)
         environment.addAction(actStop)
 
+    def __createAgentMenu(self):
+
+        impMenu = QMenu('Add Agent', self)
+        impMenuR = QMenu('Remove Agent', self)
+        impActR = QAction("All", self)
+        impMenuR.addAction(impActR)
+        impMenuR.addSeparator()
+
+        n = inspectAgents(Agent)
+        for a in n :
+
+            impAct = QAction(a, self)
+            impMenu.addAction(impAct)
+
+            impActR = QAction(a, self)
+            impMenuR.addAction(impActR)
+
+
+
+
+
+
+        menuBar = self.menuBar()
+
+        agents = menuBar.addMenu("&Agents")
+        agents.addMenu(impMenu)
+        agents.addMenu(impMenuR)
+
     def mousePressEvent(self, event):
         self.drag = True
         self.oldMousePos=Vector2D(event.x(),event.y())
@@ -353,7 +386,7 @@ class getUpdateThread(QThread):
         super(getUpdateThread, self).__init__(parent)
         self.env = simu.environment
         self.dt=.1
-        self.running = False
+        self.running = True
 
     def __del__(self):
         self.wait()
@@ -367,15 +400,17 @@ class getUpdateThread(QThread):
         self.running = False
 
     def run(self):
+        print("run")
         while True:
+            print(self.dt)
             if self.running:
                 t = time.time()
                 self.env.update(self.dt)
-                self.msleep(50)
+                self.msleep(25)
                 self.dt= time.time() - t
             else:
                 self.dt = .1
-                self.msleep(50)
+                self.msleep(25)
 
 
 

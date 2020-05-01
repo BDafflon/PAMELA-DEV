@@ -12,6 +12,7 @@ class Agent:
         self.body = Body()
         self.stat = 0
         self.observer = Observer(self.id,"Agent")
+        self.kill = False
 
     def update(self):
         print(self.id)

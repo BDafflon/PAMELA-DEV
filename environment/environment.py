@@ -80,11 +80,11 @@ class Environment(threading.Thread):
 
         for agent in self.agents:
 
-            if agent.type != AgentType.MORT :
+            if not agent.kill :
                 self.computePerception(agent)
 
         for agent in self.agents:
-            if agent.type != AgentType.MORT:
+            if not agent.kill :
                 self.influenceList[agent.id] = None
                 self.influenceList[agent.id] = agent.update()
 
@@ -130,10 +130,6 @@ class Environment(threading.Thread):
         n = tree.search_nn_dist(a, a.body.fustrum.radius)
         self.perceptionList[a] = n
 
-        '''for agent in self.agents:
-            if agent != a:
-                if a.body.insidePerception(agent.body.location, agent.type):
-                    self.perceptionList[a].append(agent)'''
 
         for objet in self.objects:
 

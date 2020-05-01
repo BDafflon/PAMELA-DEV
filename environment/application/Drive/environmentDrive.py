@@ -1,7 +1,7 @@
 from random import randint
 
 from environment.application.Drive import agentType
-from environment.application.Drive.agentState import AgentState
+from environment.application.Drive.smirAgentState import SmirAgentState
 from environment.application.Drive.agentType import AgentType
 from environment.environment import Environment
 import time
@@ -35,7 +35,7 @@ class EnvironmentDrive(Environment):
 
     def getPopulation(self):
         data={}
-        for d in AgentState:
+        for d in SmirAgentState:
             data[d]=0
 
         for a in self.agents:
@@ -62,14 +62,14 @@ class EnvironmentDrive(Environment):
         self.influenceList = {}
 
         for agent in self.agents:
-            if agent.stat == AgentState.QUARANTAINE and not self.zone['quarantaine'].inside(agent.body.location):
+            if agent.stat == SmirAgentState.QUARANTAINE and not self.zone['quarantaine'].inside(agent.body.location):
                 self.moveTo(agent,"quarantaine")
 
-            if agent.stat != AgentState.MORT:
+            if agent.stat != SmirAgentState.MORT:
                 self.computePerception(agent)
 
         for agent in self.agents:
-            if agent.stat != AgentState.MORT:
+            if agent.stat != SmirAgentState.MORT:
                 self.influenceList[agent.id] = None
                 self.influenceList[agent.id] = agent.update()
 

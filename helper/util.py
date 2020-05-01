@@ -149,3 +149,17 @@ def get_four_byte_color(color):
         return color[0], color[1], color[2], 255
     else:
         raise ValueError("This isn't a 3 or 4 byte color")
+
+def inspectAgents(c):
+    l = all_subclasses(c)
+    n=[]
+    for i in l:
+        print(i.__name__)
+        n.append(i.__name__)
+    return n
+
+
+
+def all_subclasses(cls):
+    return set(cls.__subclasses__()).union(
+        [s for c in cls.__subclasses__() for s in all_subclasses(c)])
