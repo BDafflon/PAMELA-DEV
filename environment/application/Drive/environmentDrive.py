@@ -18,9 +18,9 @@ class EnvironmentDrive(Environment):
 
 
     def addAgent(self, a):
-        if self.zone['quarantaine'].inside(a.body.location):
-
-            a.body.location = Vector2D(self.boardW/2,self.boardH/2)
+        if 'quarantaine' in self.zone.keys():
+            if self.zone['quarantaine'].inside(a.body.location):
+                a.body.location = Vector2D(self.boardW/2,self.boardH/2)
         self.agents.append(a)
 
     def getRandomAgent(self, typeO):

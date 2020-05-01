@@ -31,9 +31,6 @@ class SIRMSimulation(threading.Thread):
         self.ready = False
 
     def loadDefault(self):
-        if self.pathEnv == "" or self.pathScenario == "" or self.pathStock == "":
-            configurator = Configurator(tkinter.Tk(),self.pathEnv,self.pathStock,self.pathScenario)
-            self.pathEnv,self.pathStock,self.pathScenario = configurator.getFile()
 
         objetList = []
         if self.pathEnv.endswith('.json'):

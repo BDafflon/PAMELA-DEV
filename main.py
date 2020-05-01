@@ -1,6 +1,10 @@
+import test
+
 from gui.guiDrivegl import GuiDriveGL
+from gui.pamelaView import PamGui
 from simulation.Drive.DriveSimulation import DriveSimulation
 from simulation.SIRM.SIRMSimulation import SIRMSimulation
+
 
 
 def runDriveSimulation(pathEnv, pathSce, pathStock):
@@ -22,7 +26,8 @@ def runSIRMSimulation(pathEnv, pathSce, pathStock):
     s.drawPopulation = False
     s.loadDefault()
 
-    g = GuiDriveGL(s.environment)
+
+    g = PamGui(s)
 
     s.Gui = g
     s.start()
@@ -31,5 +36,5 @@ def runSIRMSimulation(pathEnv, pathSce, pathStock):
 
     return []
 
-runSIRMSimulation(".\\helper\\importer\\env.json", ".\\simulation\\Drive\\drive.csv", ".\\simulation\\Drive\\stock.csv")
+runSIRMSimulation("", ".\\simulation\\Drive\\drive.csv", ".\\simulation\\Drive\\stock.csv")
 
