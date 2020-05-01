@@ -153,7 +153,7 @@ class GLWidget(QtOpenGL.QGLWidget):
                        (b.body.fustrum.radius/self.scaleFactor * math.cos(math.radians(i))))
         #glVertex2f(0.0, 0.0)
         GL.glEnd()
-
+    #TODO couleur agent
     def render_agent(self, b):
         GL.glColor3f(0.6, 0.6, 0.6)
         GL.glBegin(GL.GL_TRIANGLES)
@@ -183,6 +183,7 @@ class MainWindow(QMainWindow):
 
         super(MainWindow, self).__init__(parent)
 
+        #TODO Event Menu
         self.__createFileMenu()
         self.__createConfMenu()
         self.__createEnvMenu()
@@ -330,6 +331,7 @@ class MainWindow(QMainWindow):
         print(str(event.x())+" "+str(event.y()))
         if event.buttons() == QtCore.Qt.LeftButton :
             print("left")
+            #TODO Corriger drag & drop
             self.gl.translation.x += dxy.x
             self.gl.translation.y += dxy.y
 
