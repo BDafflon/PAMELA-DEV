@@ -183,17 +183,20 @@ class MainWindow(QMainWindow):
 
         super(MainWindow, self).__init__(parent)
 
-        #TODO Event Menu
-        self.__createFileMenu()
-        self.__createConfMenu()
-        self.__createEnvMenu()
-        self.__createAgentMenu()
+
 
 
 
         self.simulation = simu
         self.controlSim = control
         self.gl=GLWidget(simu.environment)
+
+        # TODO Event Menu
+        self.__createFileMenu()
+        self.__createDisplayMenu()
+        self.__createConfMenu()
+        self.__createEnvMenu()
+        self.__createAgentMenu()
 
         self.signalStart.connect(self.controlSim.startSim)
         self.signalPause.connect(self.controlSim.pauseSim)
@@ -270,6 +273,27 @@ class MainWindow(QMainWindow):
         scenario.addAction(actOpen)
         scenario.addAction(actSave)
         scenario.addAction(actStop)
+
+    def __createDisplayMenu(self):
+
+        viewStatAct = QAction('View Fustrum', self, checkable=True)
+        viewStatAct.setChecked(self.gl.printFustrum)
+        viewStatAct.triggered.connect(self.toggleFustrum)
+
+        viewVel = QAction('View Velocity', self, checkable=True)
+        viewVel.setChecked(self.gl.printVel)
+        viewVel.triggered.connect(self.toggleVel)
+
+        viewInfo = QAction('View Info', self, checkable=True)
+        viewInfo.setChecked(self.gl.printInfoMouse)
+        viewInfo.triggered.connect(self.toggleInfo)
+
+        menuBar = self.menuBar()
+        environment = menuBar.addMenu("&View")
+        environment.addAction(viewStatAct)
+        environment.addAction(viewVel)
+        environment.addAction(viewInfo)
+
 
     def __createEnvMenu(self):
         actOpen = QAction(  "&Load Image Environment", self)
@@ -362,7 +386,17 @@ class MainWindow(QMainWindow):
         self.signalStart.emit("foo", "baz", 10)
 
     def pauseSim(self):
+        self.statusBar().showMessage("Pause")
         self.signalPause.emit("foo","baz",10)
+
+    def toggleFustrum(self,state):
+        self.gl.printFustrum = state
+
+    def toggleVel(self,state):
+        self.gl.printVel = state
+
+    def toggleInfo(self, state):
+        self.gl.printInfoMouse = state
 
     def close(self):
         print("Exit menu item clicked")
