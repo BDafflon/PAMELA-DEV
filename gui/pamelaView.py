@@ -197,6 +197,7 @@ class MainWindow(QMainWindow):
         self.__createConfMenu()
         self.__createEnvMenu()
         self.__createAgentMenu()
+        self.__createMetriqueMenu()
 
         self.signalStart.connect(self.controlSim.startSim)
         self.signalPause.connect(self.controlSim.pauseSim)
@@ -338,6 +339,19 @@ class MainWindow(QMainWindow):
         agents = menuBar.addMenu("&Agents")
         agents.addMenu(impMenu)
         agents.addMenu(impMenuR)
+
+    def __createMetriqueMenu(self):
+
+        actOpen = QAction("&Agents Population (graph)", self)
+
+        actSave = QAction("&Agent Observer (csv)", self)
+
+
+        menuBar = self.menuBar()
+        environment = menuBar.addMenu("&Metrique")
+        environment.addAction(actOpen)
+        environment.addAction(actSave)
+
 
     def mousePressEvent(self, event):
         self.drag = True
