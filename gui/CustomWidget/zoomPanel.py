@@ -24,7 +24,8 @@ class ZoomPanelWidget(QtWidgets.QWidget):
         self.popup_penColor = QtGui.QColor(200, 200, 200, 255)
 
         self.zoomIn_btn = QtWidgets.QPushButton(self)
-        self.zoomIn_btn.setText("+")
+        rMyIcon = QtGui.QPixmap("gui/ressources/zoomIn.png");
+        self.zoomIn_btn.setIcon(QtGui.QIcon(rMyIcon))
         font = QtGui.QFont()
         font.setPixelSize(30)
         font.setBold(True)
@@ -38,7 +39,9 @@ class ZoomPanelWidget(QtWidgets.QWidget):
 
 
         self.zoomOut_btn = QtWidgets.QPushButton(self)
-        self.zoomOut_btn.setText("-")
+        rMyIcon = QtGui.QPixmap("gui/ressources/zoomOut.png");
+        self.zoomOut_btn.setIcon(QtGui.QIcon(rMyIcon))
+
         font = QtGui.QFont()
         font.setPixelSize(30)
         font.setBold(True)
@@ -51,7 +54,9 @@ class ZoomPanelWidget(QtWidgets.QWidget):
 
 
         self.razOut_btn = QtWidgets.QPushButton(self)
-        self.razOut_btn.setText("o")
+        rMyIcon = QtGui.QPixmap("gui/ressources/zoomRaz.png");
+        self.razOut_btn.setIcon(QtGui.QIcon(rMyIcon))
+
         font = QtGui.QFont()
         font.setPixelSize(30)
         font.setBold(True)
