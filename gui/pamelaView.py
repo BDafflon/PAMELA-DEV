@@ -7,7 +7,7 @@ import math
 import time
 
 from PyQt5 import QtOpenGL, QtCore
-from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot, QPoint
+from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot, QPoint, QCoreApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QAction, QMainWindow, QGridLayout, QWidget, QPushButton, QMenu, QFileDialog, \
     QMessageBox
@@ -240,16 +240,8 @@ class MainWindow(QMainWindow):
 
 
     def __createFileMenu(self):
-        actOpen = QAction(  "&Start", self)
-        actOpen.setStatusTip("Start Sim")
-        actOpen.triggered.connect(self.startSim)
-
-        actSave = QAction(  "&Pause", self)
-        actSave.setStatusTip("Pause Sim")
-        actSave.triggered.connect(self.pauseSim)
-
-        actStop = QAction(  "S&top", self)
-        #actStop.triggered.connect(lambda: self.stop())
+        actOpen = QAction(  "&Configuration", self)
+        actAide = QAction("&Aide", self)
 
         actExit = QAction("&Quit", self)
         actExit.setShortcut("Ctrl+Q")
@@ -257,10 +249,9 @@ class MainWindow(QMainWindow):
         actExit.triggered.connect(self.close)
 
         menuBar = self.menuBar()
-        file = menuBar.addMenu("&Simulation")
+        file = menuBar.addMenu("&Pamela")
         file.addAction(actOpen)
-        file.addAction(actSave)
-        file.addAction(actStop)
+        file.addAction(actAide)
         file.addSeparator()
         file.addAction(actExit)
 
@@ -461,15 +452,9 @@ class MainWindow(QMainWindow):
                             self.pauseSim(True)
 
 
-
-
-
-
-
-
-
     def close(self):
         print("Exit menu item clicked")
+        QCoreApplication.quit()
 
 class PamGui():
     def __init__(self,simu):
