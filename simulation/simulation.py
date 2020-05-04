@@ -31,6 +31,7 @@ class Simulation(threading.Thread):
         self.limitSimulation = 600
         self.pause = False
 
+
     def loadDefault(self):
         self.ready = True
 
@@ -141,7 +142,7 @@ class Simulation(threading.Thread):
             print("=====================Scenario START =====================")
             iterator = 0;
             startTime = int(time.time())
-
+            elapseTime = 0
 
 
             while iterator < len(self.event):

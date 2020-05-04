@@ -178,7 +178,7 @@ class GLWidget(QtOpenGL.QGLWidget):
 
 class MainWindow(QMainWindow):
     signalStart = pyqtSignal(str, str, int)
-    signalPause = pyqtSignal(str, str, int)
+    signalPause = pyqtSignal(str, str, bool)
 
     def __init__(self, simu = None, control = None, parent=None):
 
@@ -268,8 +268,6 @@ class MainWindow(QMainWindow):
         actOpen = QAction(  "&Load Scenario", self)
         actOpen.triggered.connect(self.showDialog)
 
-        actSave = QAction(  "&(Re)start Scenario", self)
-       #TODO Restart
 
         self.actPause = QAction("Pause Scenario", self,checkable=True)
         self.actPause.setChecked(self.pauseS)
@@ -281,7 +279,6 @@ class MainWindow(QMainWindow):
         menuBar = self.menuBar()
         scenario = menuBar.addMenu("&Scenario")
         scenario.addAction(actOpen)
-        scenario.addAction(actSave)
         scenario.addAction(self.actPause)
         scenario.addAction(actStop)
 
@@ -409,10 +406,11 @@ class MainWindow(QMainWindow):
     def startSim(self):
         self.signalStart.emit("foo", "baz", 10)
 
+
     def pauseSim(self,state):
         self.pauseS = state
         self.actPause.setChecked(state)
-        self.signalPause.emit("foo","baz",10)
+        self.signalPause.emit("foo","baz",state)
         self.simulation.pause = state
 
 
@@ -427,6 +425,9 @@ class MainWindow(QMainWindow):
     def toggleInfo(self, state):
         self.gl.printInfoMouse = state
         self.viewInfo.setChecked(state)
+
+    def startSimu(self):
+        self.startSim()
 
     def showDialog(self):
         fname = QFileDialog.getOpenFileName(self, 'Open file', '.')
@@ -455,7 +456,13 @@ class MainWindow(QMainWindow):
                         if data["autorun"]==1:
                             self.startSim()
                         else :
-                            self.pauseSim()
+                            self.startSim()
+                            time.sleep(1)
+                            self.pauseSim(True)
+
+
+
+
 
 
 
@@ -485,7 +492,7 @@ class getUpdateThread(QThread):
         super(getUpdateThread, self).__init__(parent)
         self.simulation = simu
         self.dt=.1
-        self.running = False
+        self.running = True
 
     def __del__(self):
         self.wait()
@@ -495,7 +502,7 @@ class getUpdateThread(QThread):
         self.running = True
         self.simulation.start()
 
-    @pyqtSlot(str, str, int)
+    @pyqtSlot(str, str, bool)
     def pauseSim(self):
         self.running = not self.running
 
