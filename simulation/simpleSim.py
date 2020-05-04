@@ -12,14 +12,13 @@ from environment.object import TargetObjet, Dropoff, Pickup, Wall
 from helper.importer.configurator import Configurator
 from helper.importer.driveImporter import importationIMG, importationJSON
 from helper.drawPopulation import drawPopulation
+from simulation.simulation import Simulation
 
 
-class SimpleSimulation(threading.Thread):
+class SimpleSimulation(Simulation):
     def __init__(self):
-        threading.Thread.__init__(self)
-        self.drawPopulation = False
-        self.environment = Environment()
-        self.ready = False
+        Simulation.__init__(self)
+
 
     def loadDefault(self):
 
@@ -28,15 +27,4 @@ class SimpleSimulation(threading.Thread):
             self.environment.addAgent(StandardAgent(1))
 
         self.ready = True
-
-    def run(self):
-
-        if self.ready:
-            self.environment.start()
-            if self.drawPopulation:
-                drawPopulation(self.environment)
-            # TODO Scenario
-
-        else:
-            print("Erreur de simulation")
 

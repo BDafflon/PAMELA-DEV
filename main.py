@@ -7,6 +7,7 @@ from gui.pamelaView import PamGui
 from simulation.Drive.DriveSimulation import DriveSimulation
 from simulation.SIRM.SIRMSimulation import SIRMSimulation
 from simulation.simpleSim import SimpleSimulation
+from simulation.simulation import Simulation
 
 
 def runDriveSimulation(pathEnv, pathSce, pathStock):
@@ -24,16 +25,11 @@ def runDriveSimulation(pathEnv, pathSce, pathStock):
     return []
 
 def runSimpleSimulation(pathEnv, pathSce, pathStock):
-    s = SimpleSimulation()
-
-
-    s.loadDefault()
-
+    s = Simulation()
     g = PamGui(s)
     s.Gui = g
-    s.start()
-    g.run2()
-    g.stop2()
+    
+
 
 
 def runSIRMSimulation(pathEnv, pathSce, pathStock):

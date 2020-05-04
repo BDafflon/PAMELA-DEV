@@ -13,6 +13,9 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 def randomInt(m):
     return int(random.uniform(0, m))
 
+def randomRangeInt(n,m):
+    return int(random.uniform(n, m))
+
 
 def getNextByDistance(source, destinations):
     v = Vector2D(0, 0)
@@ -155,10 +158,17 @@ def inspectAgents(c):
     n=[]
     for i in l:
         print(i.__name__)
-        n.append(i.__name__)
+        n.append(i)
     return n
 
+def inspectAgentsDict(c):
+    n = {}
+    l = all_subclasses(c)
+    n[c.__name__]=c
+    for i in l:
+        n[i.__name__]=i
 
+    return n
 
 def all_subclasses(cls):
     return set(cls.__subclasses__()).union(

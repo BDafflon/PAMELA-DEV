@@ -30,6 +30,7 @@ class Environment(threading.Thread):
         self.influenceList = {}
         self.zone={}
 
+
     def addAgent(self, a):
         self.agents.append(a)
 

@@ -9,7 +9,8 @@ import time
 from PyQt5 import QtOpenGL, QtCore
 from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot, QPoint
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QAction, QMainWindow, QGridLayout, QWidget, QPushButton, QMenu
+from PyQt5.QtWidgets import QApplication, QAction, QMainWindow, QGridLayout, QWidget, QPushButton, QMenu, QFileDialog, \
+    QMessageBox
 from PyQt5.uic.Compiler.qtproxies import QtGui
 
 from agents.agent import Agent
@@ -182,14 +183,16 @@ class MainWindow(QMainWindow):
     def __init__(self, simu = None, control = None, parent=None):
 
         super(MainWindow, self).__init__(parent)
-
-
-
-
-
         self.simulation = simu
         self.controlSim = control
+        self.gui=True
         self.gl=GLWidget(simu.environment)
+
+
+        #TOGGLE
+        self.viewStatAct = None
+        self.viewVel = None
+        self.viewInfo = None
 
         # TODO Event Menu
         self.__createFileMenu()
@@ -261,9 +264,9 @@ class MainWindow(QMainWindow):
 
     def __createConfMenu(self):
         actOpen = QAction(  "&Load Scenario", self)
+        actOpen.triggered.connect(self.showDialog)
 
-
-        actSave = QAction(  "&Start Scenario", self)
+        actSave = QAction(  "&Restart Scenario", self)
         actSave.setStatusTip("Save File")
 
         actStop = QAction(  "S&top Scenario", self)
@@ -277,23 +280,23 @@ class MainWindow(QMainWindow):
 
     def __createDisplayMenu(self):
 
-        viewStatAct = QAction('View Fustrum', self, checkable=True)
-        viewStatAct.setChecked(self.gl.printFustrum)
-        viewStatAct.triggered.connect(self.toggleFustrum)
+        self.viewStatAct = QAction('View Fustrum', self, checkable=True)
+        self.viewStatAct.setChecked(self.gl.printFustrum)
+        self.viewStatAct.triggered.connect(self.toggleFustrum)
 
-        viewVel = QAction('View Velocity', self, checkable=True)
-        viewVel.setChecked(self.gl.printVel)
-        viewVel.triggered.connect(self.toggleVel)
+        self.viewVel = QAction('View Velocity', self, checkable=True)
+        self.viewVel.setChecked(self.gl.printVel)
+        self.viewVel.triggered.connect(self.toggleVel)
 
-        viewInfo = QAction('View Info', self, checkable=True)
-        viewInfo.setChecked(self.gl.printInfoMouse)
-        viewInfo.triggered.connect(self.toggleInfo)
+        self.viewInfo = QAction('View Info', self, checkable=True)
+        self.viewInfo.setChecked(self.gl.printInfoMouse)
+        self.viewInfo.triggered.connect(self.toggleInfo)
 
         menuBar = self.menuBar()
         environment = menuBar.addMenu("&View")
-        environment.addAction(viewStatAct)
-        environment.addAction(viewVel)
-        environment.addAction(viewInfo)
+        environment.addAction(self.viewStatAct)
+        environment.addAction(self.viewVel)
+        environment.addAction(self.viewInfo)
 
 
     def __createEnvMenu(self):
@@ -323,10 +326,10 @@ class MainWindow(QMainWindow):
         n = inspectAgents(Agent)
         for a in n :
 
-            impAct = QAction(a, self)
+            impAct = QAction(a.__name__, self)
             impMenu.addAction(impAct)
 
-            impActR = QAction(a, self)
+            impActR = QAction(a.__name__, self)
             impMenuR.addAction(impActR)
 
 
@@ -405,12 +408,46 @@ class MainWindow(QMainWindow):
 
     def toggleFustrum(self,state):
         self.gl.printFustrum = state
+        self.viewStatAct.setChecked(state)
 
     def toggleVel(self,state):
         self.gl.printVel = state
+        self.viewVel.setChecked(state)
 
     def toggleInfo(self, state):
         self.gl.printInfoMouse = state
+        self.viewInfo.setChecked(state)
+
+    def showDialog(self):
+        fname = QFileDialog.getOpenFileName(self, 'Open file', '.')
+
+        if fname[0]:
+            retour,m,data = self.simulation.loadScenario(fname[0])
+            if retour == -1:
+                msg = QMessageBox()
+                msg.setWindowTitle("Pamela Error")
+                msg.setText(m)
+                msg.setIcon(QMessageBox.Critical)
+                msg.setDetailedText(data)
+                x = msg.exec_()
+            else:
+                print(data)
+                if len(data)>0:
+                    if "printFustrum" in data:
+                        self.toggleFustrum(bool(data["printFustrum"]))
+                    if "printInfoMouse" in data:
+                        self.toggleInfo(bool(data["printInfoMouse"]))
+                    if "gui" in data:
+                        self.gui = bool(data["gui"])
+                    if "printVel" in data:
+                        self.toggleVel(bool(data["printVel"]))
+                    if "autorun" in data:
+                        if data["autorun"]==1:
+                            self.startSim()
+
+
+
+
 
     def close(self):
         print("Exit menu item clicked")
@@ -434,9 +471,9 @@ class getUpdateThread(QThread):
     def __init__(self, simu ,parent=None):
         QThread.__init__(self)
         super(getUpdateThread, self).__init__(parent)
-        self.env = simu.environment
+        self.simulation = simu
         self.dt=.1
-        self.running = True
+        self.running = False
 
     def __del__(self):
         self.wait()
@@ -444,6 +481,7 @@ class getUpdateThread(QThread):
     @pyqtSlot(str, str, int)
     def startSim(self):
         self.running = True
+        self.simulation.start()
 
     @pyqtSlot(str, str, int)
     def pauseSim(self):
@@ -452,10 +490,11 @@ class getUpdateThread(QThread):
     def run(self):
         print("run")
         while True:
-            print(self.dt)
+
             if self.running:
+
                 t = time.time()
-                self.env.update(self.dt)
+                self.simulation.environment.update(self.dt)
                 self.msleep(25)
                 self.dt= time.time() - t
             else:

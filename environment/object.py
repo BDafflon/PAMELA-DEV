@@ -5,7 +5,7 @@ from helper.vector2D import Vector2D
 class Object:
     def __init__(self):
         self.type = "Object"
-
+        self.nom = "Unknow"
 
 class Marchandise(Object):
     def __init__(self, pickup, n):
@@ -26,14 +26,14 @@ class EnvironmentalObject(Object):
 
 
 class TargetObjet(EnvironmentalObject):
-    def __init__(self, x, y):
+    def __init__(self, x=0, y=0):
         EnvironmentalObject.__init__(self)
         self.location = Vector2D(x, y)
         self.type = "Attractor"
 
 
 class Wall(EnvironmentalObject):
-    def __init__(self, x, y, h, w):
+    def __init__(self, x=0, y=0, h=0, w=0):
         EnvironmentalObject.__init__(self)
         self.location = Vector2D(x, y)
         self.id = 0
@@ -42,7 +42,7 @@ class Wall(EnvironmentalObject):
 
 
 class Dropoff(EnvironmentalObject):
-    def __init__(self, x, y, h, w, id):
+    def __init__(self, x=0, y=0, h=0, w=0, id=0):
         EnvironmentalObject.__init__(self)
         self.location = Vector2D((int(x+w/2), int(y+h/2)))
         self.id = id
@@ -52,7 +52,7 @@ class Dropoff(EnvironmentalObject):
 
 
 class Pickup(EnvironmentalObject):
-    def __init__(self, x, y, h, w, id):
+    def __init__(self, x=0, y=0, h=0, w=0, id=0):
         EnvironmentalObject.__init__(self)
         self.location = Vector2D(x, y)
         self.id = id
@@ -62,7 +62,7 @@ class Pickup(EnvironmentalObject):
 
 
 class PerceivedObject(EnvironmentalObject):
-    def __init__(self, location,aabb, type):
+    def __init__(self, location = None,aabb = None, type=None):
         self.type = type
         self.location = location
         self.aabb=aabb

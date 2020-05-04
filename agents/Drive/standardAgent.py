@@ -8,22 +8,8 @@ from helper.vector2D import Vector2D
 
 
 class StandardAgent(Agent):
-    def __init__(self):
-        Agent.__init__(self)
-        self.body = StadardAgentBody()
-        self.collisionDVel = 1
-        self.type = AgentType.MANU
-        self.famille = 1
-        self.body.mass = 80
-        self.body.fustrum.radius = 100
-        self.body.vitesseMax = 150.0
-        self.body.vitesseMin = 20.0
-        self.velocity = [random.uniform(-50.0, 50.0), random.uniform(-50.0, 50.0)]
-        self.target = Vector2D(0, 0)
-        self.obstacleFactor = 500
-        self.attractorFactor = 0.35
 
-    def __init__(self, f):
+    def __init__(self, f=1):
         Agent.__init__(self)
         self.body = StadardAgentBody()
         self.type = AgentType.STANDARD
