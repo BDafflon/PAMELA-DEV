@@ -186,6 +186,7 @@ class MainWindow(QMainWindow):
         self.simulation = simu
         self.controlSim = control
         self.gui=True
+        self.pauseS=False
         self.gl=GLWidget(simu.environment)
 
 
@@ -193,6 +194,7 @@ class MainWindow(QMainWindow):
         self.viewStatAct = None
         self.viewVel = None
         self.viewInfo = None
+        self.actPause = None
 
         # TODO Event Menu
         self.__createFileMenu()
@@ -266,8 +268,11 @@ class MainWindow(QMainWindow):
         actOpen = QAction(  "&Load Scenario", self)
         actOpen.triggered.connect(self.showDialog)
 
-        actSave = QAction(  "&Restart Scenario", self)
-        actSave.setStatusTip("Save File")
+        actSave = QAction(  "&(Re)start Scenario", self)
+
+        self.actPause = QAction("Pause Scenario", self,checkable=True)
+        self.actPause.setChecked(self.pauseS)
+        self.actPause.triggered.connect(self.pauseSim)
 
         actStop = QAction(  "S&top Scenario", self)
 
@@ -276,6 +281,7 @@ class MainWindow(QMainWindow):
         scenario = menuBar.addMenu("&Scenario")
         scenario.addAction(actOpen)
         scenario.addAction(actSave)
+        scenario.addAction(self.actPause)
         scenario.addAction(actStop)
 
     def __createDisplayMenu(self):
@@ -402,9 +408,12 @@ class MainWindow(QMainWindow):
     def startSim(self):
         self.signalStart.emit("foo", "baz", 10)
 
-    def pauseSim(self):
-        self.statusBar().showMessage("Pause")
+    def pauseSim(self,state):
+        self.pauseS = state
+        self.actPause.setChecked(state)
         self.signalPause.emit("foo","baz",10)
+        self.simulation.pause = state
+
 
     def toggleFustrum(self,state):
         self.gl.printFustrum = state
@@ -444,6 +453,8 @@ class MainWindow(QMainWindow):
                     if "autorun" in data:
                         if data["autorun"]==1:
                             self.startSim()
+                        else :
+                            self.pauseSim()
 
 
 
@@ -485,7 +496,8 @@ class getUpdateThread(QThread):
 
     @pyqtSlot(str, str, int)
     def pauseSim(self):
-        self.running = False
+        self.running = not self.running
+
 
     def run(self):
         print("run")

@@ -29,6 +29,7 @@ class Simulation(threading.Thread):
         self.ready = False
         self.event = []
         self.limitSimulation = 600
+        self.pause = False
 
     def loadDefault(self):
         self.ready = True
@@ -144,30 +145,34 @@ class Simulation(threading.Thread):
             print(self.event)
 
             while iterator < len(self.event):
-                elapseTime = int(time.time()) - startTime
                 time.sleep(1)
-                if elapseTime % 10 == 0:
-                    print("====================="+str(iterator*100/len(self.event))+"%("+str(elapseTime)+"s)=====================")
-                if elapseTime > self.limitSimulation:
-                    iterator = len(self.event)
+                if self.pause:
+                    startTime = int(time.time()) + elapseTime
+                else :
+                    elapseTime = int(time.time()) - startTime
 
-                else:
-                    if elapseTime > self.event[iterator]["time"]:
-                        print(self.event[iterator])
-                        if self.event[iterator]['type']== 'agent':
-                            self.environment.addAgent(self.event[iterator]['event'])
-                            print("-- Agent spawned")
-                            iterator+=1
-                        else :
-                            if self.event[iterator]['type'] == 'objet':
-                                self.environment.addObject(self.event[iterator]['event'])
-                                iterator += 1
-                                print("-- Object spawned")
-                            else:
-                                if self.event[iterator]['type'] == 'zone':
-                                    self.environment.zone[self.environment[iterator]['name']]=self.environment[iterator]['event']
-                                    print("-- Zone created")
+                    if elapseTime % 10 == 0:
+                        print("====================="+str(int(iterator*100/len(self.event)))+"%=====================")
+                    if elapseTime > self.limitSimulation:
+                        iterator = len(self.event)
+
+                    else:
+                        if elapseTime > self.event[iterator]["time"]:
+
+                            if self.event[iterator]['type']== 'agent':
+                                self.environment.addAgent(self.event[iterator]['event'])
+                                print("-- Agent spawned")
+                                iterator+=1
+                            else :
+                                if self.event[iterator]['type'] == 'objet':
+                                    self.environment.addObject(self.event[iterator]['event'])
                                     iterator += 1
+                                    print("-- Object spawned")
+                                else:
+                                    if self.event[iterator]['type'] == 'zone':
+                                        self.environment.zone[self.environment[iterator]['name']]=self.environment[iterator]['event']
+                                        print("-- Zone created")
+                                        iterator += 1
 
             print("===================== Scenario END =====================")
 
