@@ -60,7 +60,7 @@ class Simulation(threading.Thread):
                                 self.environment.addAgent(a)
                         else:
                             if e["entity"] == "object":
-                                print("obj")
+
                                 n = inspectAgentsDict(Object)
                                 if "type" in e:
                                     o = n[e["type"]]()
@@ -75,7 +75,7 @@ class Simulation(threading.Thread):
 
                             else :
                                 if e["entity"] == "zone":
-                                    print("zone")
+
                                     if "name" in e and "aabb" in e:
                                         self.environment.zone[e['name']]=AABB(Vector2D(e["aabb"][0],e["aabb"][1]),e["aabb"][2],e["aabb"][3])
             if "simulation" in jsonSim:
@@ -98,7 +98,7 @@ class Simulation(threading.Thread):
                                 self.event.append({"time" :e["timelaunch"], 'type':"agent",'event':a })
                         else:
                             if e["entity"] == "object":
-                                print("obj")
+
                                 n = inspectAgentsDict(Object)
                                 if "type" in e:
                                     o = n[e["type"]]()
@@ -113,7 +113,7 @@ class Simulation(threading.Thread):
                                     self.event.append({"time": e["timelaunch"], 'type':'objet', 'event': o})
                             else :
                                 if e["entity"] == "zone":
-                                    print("zone")
+
                                     if "name" in e and "aabb" in e:
                                         z = AABB(Vector2D(e["aabb"][0], e["aabb"][1]), e["aabb"][2], e["aabb"][3])
                                         self.event.append({"time": e["timelaunch"], 'type': 'zone', 'name' :e['name'],  'event': z})
@@ -142,7 +142,7 @@ class Simulation(threading.Thread):
             iterator = 0;
             startTime = int(time.time())
 
-            print(self.event)
+
 
             while iterator < len(self.event):
                 time.sleep(1)

@@ -269,13 +269,14 @@ class MainWindow(QMainWindow):
         actOpen.triggered.connect(self.showDialog)
 
         actSave = QAction(  "&(Re)start Scenario", self)
+       #TODO Restart
 
         self.actPause = QAction("Pause Scenario", self,checkable=True)
         self.actPause.setChecked(self.pauseS)
         self.actPause.triggered.connect(self.pauseSim)
 
         actStop = QAction(  "S&top Scenario", self)
-
+        #TODO STOP
 
         menuBar = self.menuBar()
         scenario = menuBar.addMenu("&Scenario")
@@ -440,7 +441,7 @@ class MainWindow(QMainWindow):
                 msg.setDetailedText(data)
                 x = msg.exec_()
             else:
-                print(data)
+
                 if len(data)>0:
                     if "printFustrum" in data:
                         self.toggleFustrum(bool(data["printFustrum"]))
