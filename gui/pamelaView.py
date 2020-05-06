@@ -12,6 +12,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QAction, QMainWindow, QGridLayout, QWidget, QPushButton, QMenu, QFileDialog, \
     QMessageBox
 from PyQt5.uic.Compiler.qtproxies import QtGui
+from pandas import np
 
 from agents.agent import Agent
 from gui.CustomWidget.zoomPanel import ZoomPanelWidget
@@ -47,8 +48,10 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.printInfoMouse = False
         self.width = 1280
         self.height = 720
-        self.scaleFactor = .2
+        self.scaleFactor = 1
         self.translation = Vector2D()
+        self.printGrid = True
+        self.step=50
 
 
 
@@ -85,10 +88,28 @@ class GLWidget(QtOpenGL.QGLWidget):
             self.drawObject(o)
 
 
+        if self.printGrid:
+            self.drawGrid()
         dt = time.time() - t
 
 
 
+    def drawGrid(self):
+
+
+        GL.glPushMatrix()
+        GL.glBegin(GL.GL_LINES)
+        GL.glColor3f(0.1, 0.1, 0.1)
+        for x in np.arange(self.translation.x%(self.step/self.scaleFactor),self.width,self.step/self.scaleFactor):
+            GL.glVertex3f(x, 0.0, 0.0)
+            GL.glVertex3f(x, float(self.height), 0.0)
+
+        for y in np.arange(self.translation.y%(self.step/self.scaleFactor),self.height,self.step/self.scaleFactor):
+            GL.glVertex3f( 0.0,y, 0.0)
+            GL.glVertex3f( float(self.width), y, 0.0)
+
+        GL.glEnd()
+        GL.glPopMatrix()
 
     def draw_center(self):
         GL.glPushMatrix()
@@ -105,7 +126,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         # apply the transformation for the boid
 
         if hasattr(o, 'aabb'):
-            GL.glTranslatef(self.translation.x+o.aabb.uperLeftLocation.x / self.scaleFactor, (self.translation.y + o.aabb.uperLeftLocation.y- o.aabb.height) / self.scaleFactor, 0.0)
+            GL.glTranslatef(self.translation.x+o.aabb.uperLeftLocation.x / self.scaleFactor, self.translation.y + o.aabb.uperLeftLocation.y / self.scaleFactor, 0.0)
             self.renderObject(o)
         else:
             GL.glTranslatef(self.translation.x+o.location.x/self.scaleFactor, self.translation.y+o.location.y/self.scaleFactor, 0.0)
@@ -165,10 +186,10 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def renderObject(self, b):
         GL.glBegin(GL.GL_POLYGON)
-        GL.glVertex2f(-(5)/ self.scaleFactor, -5/ self.scaleFactor)
-        GL.glVertex2f(5/ self.scaleFactor, -5/ self.scaleFactor)
-        GL.glVertex2f(5/ self.scaleFactor, 5/ self.scaleFactor)
-        GL.glVertex2f(-5/ self.scaleFactor, 5/ self.scaleFactor)
+        GL.glVertex2f(-(1)/ self.scaleFactor, -1/ self.scaleFactor)
+        GL.glVertex2f(1/ self.scaleFactor, -1/ self.scaleFactor)
+        GL.glVertex2f(1/ self.scaleFactor, 1/ self.scaleFactor)
+        GL.glVertex2f(-1/ self.scaleFactor, 1/ self.scaleFactor)
         GL.glEnd()
 
 
@@ -183,6 +204,7 @@ class MainWindow(QMainWindow):
     def __init__(self, simu = None, control = None, parent=None):
 
         super(MainWindow, self).__init__(parent)
+        self.setMouseTracking(True)
         self.simulation = simu
         self.controlSim = control
         self.gui=True
@@ -195,6 +217,7 @@ class MainWindow(QMainWindow):
         self.viewVel = None
         self.viewInfo = None
         self.actPause = None
+        self.viewGrid = None
 
         # TODO Event Menu
         self.__createFileMenu()
@@ -217,7 +240,7 @@ class MainWindow(QMainWindow):
 
 
 
-        self.statusBar().showMessage("Example of MenuBar with Python and Qt")
+
 
         self.setMinimumSize(1280,720)
         self.__createControl()
@@ -265,6 +288,8 @@ class MainWindow(QMainWindow):
         self.actPause.triggered.connect(self.pauseSim)
 
         actStop = QAction(  "S&top Scenario", self)
+
+        actCre = QAction("Create Scenario", self)
         #TODO STOP
 
         menuBar = self.menuBar()
@@ -272,6 +297,7 @@ class MainWindow(QMainWindow):
         scenario.addAction(actOpen)
         scenario.addAction(self.actPause)
         scenario.addAction(actStop)
+        scenario.addAction(actCre)
 
     def __createDisplayMenu(self):
 
@@ -287,22 +313,27 @@ class MainWindow(QMainWindow):
         self.viewInfo.setChecked(self.gl.printInfoMouse)
         self.viewInfo.triggered.connect(self.toggleInfo)
 
+        self.viewGrid = QAction('View Grid', self, checkable=True)
+        self.viewGrid.setChecked(self.gl.printGrid)
+        self.viewGrid.triggered.connect(self.toggleGrid)
+
         menuBar = self.menuBar()
         environment = menuBar.addMenu("&View")
         environment.addAction(self.viewStatAct)
         environment.addAction(self.viewVel)
         environment.addAction(self.viewInfo)
+        environment.addAction(self.viewGrid)
 
 
     def __createEnvMenu(self):
         actOpen = QAction(  "&Load Image Environment", self)
-
+        actOpen.triggered.connect(self.showDialogEnv)
 
         actSave = QAction(  "&Load json Environment", self)
-
+        actSave.triggered.connect(self.showDialogEnv)
 
         actStop = QAction(  "Clear Environment", self)
-
+        actStop.triggered.connect(self.clearEnv)
 
         menuBar = self.menuBar()
         environment = menuBar.addMenu("&Environment")
@@ -359,10 +390,18 @@ class MainWindow(QMainWindow):
     def mouseReleaseEvent(self, event):
        self.drag=False
 
+    def wheelEvent(self, event):
+        if event.angleDelta().y() < 0 :
+            self.zoomOut()
+        else:
+            if event.angleDelta().y() > 0 :
+                self.zoomIn()
+
     def mouseMoveEvent(self, event):
         dxy = Vector2D(event.x()-self.oldMousePos.x, event.y()-self.oldMousePos.y)
         self.oldMousePos= Vector2D(event.x(), event.y())
 
+        print("in env: "+str(int((event.x()-self.gl.translation.x)*self.gl.scaleFactor))+" "+str(int((event.y()-self.gl.translation.y)*self.gl.scaleFactor)))
         print(self.gl.translation)
         print(str(event.x())+" "+str(event.y()))
         if event.buttons() == QtCore.Qt.LeftButton :
@@ -417,8 +456,31 @@ class MainWindow(QMainWindow):
         self.gl.printInfoMouse = state
         self.viewInfo.setChecked(state)
 
+    def toggleGrid(self, state):
+        self.gl.printGrid = state
+        self.viewGrid.setChecked(state)
+
     def startSimu(self):
         self.startSim()
+
+    def clearEnv(self):
+        buttonReply = QMessageBox.question(self, 'Pamela message', "Clear environment? ("+str(len(self.simulation.environment.objects))+" object(s)).",
+                                           QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if buttonReply == QMessageBox.Yes:
+            self.simulation.environment.objects = []
+            self.simulation.environment.zone = {}
+        else:
+            print('No clicked.')
+
+    def showDialogEnv(self):
+        fname = QFileDialog.getOpenFileName(self, 'Open file', '.')
+
+        if fname[0]:
+            self.simulation.loadEnvironment(fname[0])
+            msg = QMessageBox()
+            msg.setWindowTitle("Pamela message")
+            msg.setText(str(len(self.simulation.environment.objects))+" object(s) imported")
+            x = msg.exec_()
 
     def showDialog(self):
         fname = QFileDialog.getOpenFileName(self, 'Open file', '.')

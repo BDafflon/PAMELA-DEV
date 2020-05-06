@@ -35,90 +35,114 @@ class Simulation(threading.Thread):
     def loadDefault(self):
         self.ready = True
 
+
+    def loadEnvironment(self,f):
+        objetList=[]
+        if f.endswith('.json'):
+            objetList = importationJSON(f)
+        else :
+            if f.endswith('.jpg') or f.endswith('.bmp') or f.endswith('.png'):
+                objetList = importationIMG(f)
+
+        if len(objetList)>0:
+            self.parseJson(objetList)
+
+
+    def parseJson(self,jsonSim):
+
+        if "start" in jsonSim:
+            start = jsonSim["start"]
+            for e in start:
+                if "entity" in e:
+                    if e["entity"] == "agent":
+                        n = inspectAgentsDict(Agent)
+                        if "type" in e:
+                            a = n[e['type']]()
+                            if "id" in e:
+                                a.id = e['id']
+                            if "position" in e:
+                                a.body.location = Vector2D(e["position"][0], e["position"][1])
+                            if "randomPosision" in e:
+                                a.body.location = Vector2D(
+                                    util.randomRangeInt(e["randomPosision"][0][0], e["randomPosision"][0][1]),
+                                    util.randomRangeInt(e["randomPosision"][1][0], e["randomPosision"][1][1]))
+                            if "customArgs" in e:
+                                for key, value in e["customArgs"].items():
+                                    setattr(a, key, value)
+                            self.environment.addAgent(a)
+                    else:
+                        if e["entity"] == "object":
+
+                            n = inspectAgentsDict(Object)
+                            if "type" in e:
+                                o = n[e["type"]]()
+                                if "name" in e:
+                                    o.name = e["name"]
+                                if "aabb" in e:
+                                    if hasattr(o, 'aabb'):
+                                        o.aabb = AABB(Vector2D(e["aabb"][0], e["aabb"][1]), e["aabb"][2], e["aabb"][3])
+                                if "customArgs" in e:
+                                    for key, value in e["customArgs"].items():
+                                        setattr(a, key, value)
+                            self.environment.addObject(o)
+
+                        else:
+                            if e["entity"] == "zone":
+                                if "name" in e and "aabb" in e:
+                                    self.environment.zone[e['name']] = AABB(Vector2D(e["aabb"][0], e["aabb"][1]),
+                                                                            e["aabb"][2], e["aabb"][3])
+
+        if "simulation" in jsonSim:
+            simulation = jsonSim["simulation"]
+            for e in simulation:
+                if "entity" in e:
+                    if e["entity"] == "agent":
+                        n = inspectAgentsDict(Agent)
+                        if "type" in e:
+                            a = n[e['type']]()
+                            if "id" in e:
+                                a.id = e['id']
+                            if "position" in e:
+                                a.body.location = Vector2D(e["position"][0], e["position"][1])
+                            if "randomPosision" in e:
+                                a.body.location = Vector2D(
+                                    util.randomRangeInt(e["randomPosision"][0][0], e["randomPosision"][0][1]),
+                                    util.randomRangeInt(e["randomPosision"][1][0], e["randomPosision"][1][1]))
+                            if "customArgs" in e:
+                                for key, value in e["customArgs"].items():
+                                    setattr(a, key, value)
+                            self.event.append({"time": e["timelaunch"], 'type': "agent", 'event': a})
+                    else:
+                        if e["entity"] == "object":
+
+                            n = inspectAgentsDict(Object)
+                            if "type" in e:
+                                o = n[e["type"]]()
+                                if "name" in e:
+                                    o.name = e["name"]
+                                if "aabb" in e:
+                                    if hasattr(o, 'aabb'):
+                                        o.aabb = AABB(Vector2D(e["aabb"][0], e["aabb"][1]), e["aabb"][2], e["aabb"][3])
+                                if "customArgs" in e:
+                                    for key, value in e["customArgs"].items():
+                                        setattr(a, key, value)
+                                self.event.append({"time": e["timelaunch"], 'type': 'objet', 'event': o})
+                        else:
+                            if e["entity"] == "zone":
+
+                                if "name" in e and "aabb" in e:
+                                    z = AABB(Vector2D(e["aabb"][0], e["aabb"][1]), e["aabb"][2], e["aabb"][3])
+                                    self.event.append(
+                                        {"time": e["timelaunch"], 'type': 'zone', 'name': e['name'], 'event': z})
+
+
     def loadScenario(self,f):
         print(f)
         try:
             with open(f, 'r') as f:
                 jsonSim = json.load(f)
 
-            if "start" in jsonSim :
-                start = jsonSim["start"]
-                for e in start:
-                    if "entity" in e :
-                        if e["entity"] == "agent":
-                            n = inspectAgentsDict(Agent)
-                            if "type" in e:
-                                a = n[e['type']]()
-                                if "id" in e:
-                                    a.id = e['id']
-                                if "position" in e:
-                                    a.body.location = Vector2D(e["position"][0],e["position"][1])
-                                if "randomPosision" in e:
-                                    a.body.location = Vector2D(util.randomRangeInt(e["randomPosision"][0][0],e["randomPosision"][0][1]), util.randomRangeInt(e["randomPosision"][1][0],e["randomPosision"][1][1]))
-                                if "customArgs" in e:
-                                    for key, value in e["customArgs"].items():
-                                        setattr(a,key,value)
-                                self.environment.addAgent(a)
-                        else:
-                            if e["entity"] == "object":
-
-                                n = inspectAgentsDict(Object)
-                                if "type" in e:
-                                    o = n[e["type"]]()
-                                    if "name" in e:
-                                        o.name= e["name"]
-                                    if "aabb" in e:
-                                        if hasattr(o, 'aabb'):
-                                            o.aabb = AABB(Vector2D(e["aabb"][0],e["aabb"][1]),e["aabb"][2],e["aabb"][3])
-                                    if "customArgs" in e:
-                                        for key, value in e["customArgs"].items():
-                                            setattr(a, key, value)
-
-                            else :
-                                if e["entity"] == "zone":
-
-                                    if "name" in e and "aabb" in e:
-                                        self.environment.zone[e['name']]=AABB(Vector2D(e["aabb"][0],e["aabb"][1]),e["aabb"][2],e["aabb"][3])
-            if "simulation" in jsonSim:
-                simulation = jsonSim["simulation"]
-                for e in simulation:
-                    if "entity" in e :
-                        if e["entity"] == "agent":
-                            n = inspectAgentsDict(Agent)
-                            if "type" in e:
-                                a = n[e['type']]()
-                                if "id" in e:
-                                    a.id = e['id']
-                                if "position" in e:
-                                    a.body.location = Vector2D(e["position"][0],e["position"][1])
-                                if "randomPosision" in e:
-                                    a.body.location = Vector2D(util.randomRangeInt(e["randomPosision"][0][0],e["randomPosision"][0][1]), util.randomRangeInt(e["randomPosision"][1][0],e["randomPosision"][1][1]))
-                                if "customArgs" in e:
-                                    for key, value in e["customArgs"].items():
-                                        setattr(a,key,value)
-                                self.event.append({"time" :e["timelaunch"], 'type':"agent",'event':a })
-                        else:
-                            if e["entity"] == "object":
-
-                                n = inspectAgentsDict(Object)
-                                if "type" in e:
-                                    o = n[e["type"]]()
-                                    if "name" in e:
-                                        o.name= e["name"]
-                                    if "aabb" in e:
-                                        if hasattr(o, 'aabb'):
-                                            o.aabb = AABB(Vector2D(e["aabb"][0],e["aabb"][1]),e["aabb"][2],e["aabb"][3])
-                                    if "customArgs" in e:
-                                        for key, value in e["customArgs"].items():
-                                            setattr(a, key, value)
-                                    self.event.append({"time": e["timelaunch"], 'type':'objet', 'event': o})
-                            else :
-                                if e["entity"] == "zone":
-
-                                    if "name" in e and "aabb" in e:
-                                        z = AABB(Vector2D(e["aabb"][0], e["aabb"][1]), e["aabb"][2], e["aabb"][3])
-                                        self.event.append({"time": e["timelaunch"], 'type': 'zone', 'name' :e['name'],  'event': z})
-
+            self.parseJson(jsonSim)
             self.ready = True
             if "configuration" in jsonSim:
 

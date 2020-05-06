@@ -56,6 +56,7 @@ def importationIMG(path):
     cnts = imutils.grab_contours(cnts)
 
     i=0
+    listeEnv = {}
     result = []
     for c in cnts:
 
@@ -85,31 +86,25 @@ def importationIMG(path):
                 if k[0] == 0 and k[1] == 255 and k[2]==0:
                     cv2.putText(image, "pickup", (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
                                 0.5, (255, 255, 255), 2)
-                    result.append({'type':'pickup','coord':[x, y, w, h]})
+                    result.append({'entity':'object','name':'pickup'+str(i),"type":"Pickup",'aabb':[x, y, w, h]})
                 else :
                     if k[0] == 0 and k[1] == 0 and k[2]==255:
                         cv2.putText(image, "dropoff", (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
                                     0.5, (255, 255, 255), 2)
-                        result.append({'type': 'dropoff', 'coord': [x, y, w, h]})
+                        result.append({'entity':'object','name':'dropoff'+str(i),"type":"Dropoff",'aabb':[x, y, w, h]})
                     else :
 
                         if k[0] == 0 and k[1] == 0 and k[2] == 0:
                             cv2.putText(image, "wall", (cX, cY), cv2.FONT_HERSHEY_SIMPLEX,
                                         0.5, (255, 255, 255), 2)
-                            result.append({'type': 'wall', 'coord': [x, y, w, h]})
+                            result.append({'entity':'object','name':'wall'+str(i),"type":"Wall",'aabb':[x, y, w, h]})
 
                 image = cv2.rectangle(image, (cX, cY), (cX, cY), (255,0,0), 5)
 
 
 
         i = i + 1
-    dimensions = image.shape
-    image = image_resize(image, height=800)
-    l = LauncherGui(tkinter.Tk(), "Environement",image)
-    print (l.validation)
-    if l.validation :
-        return result,dimensions
-    else :
-        return []
-    # show the output image
+    listeEnv["start"]=result
+
+    return listeEnv
 
