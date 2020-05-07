@@ -31,7 +31,7 @@ class SirmAgent(StandardAgent):
         self.attractorFactor = 0.35
         self.contamination = None
 
-    def __init__(self, f):
+    def __init__(self, f=1):
         StandardAgent.__init__(self, f)
         self.body = StadardAgentBody()
         self.type = AgentType.PATIENT

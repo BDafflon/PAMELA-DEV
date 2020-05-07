@@ -15,6 +15,8 @@ from PyQt5.uic.Compiler.qtproxies import QtGui
 from pandas import np
 
 from agents.agent import Agent
+from gui.CustomWidget.editorWidget import EditorWidget
+from gui.CustomWidget.settingWidget import SettingWidget
 from gui.CustomWidget.zoomPanel import ZoomPanelWidget
 from helper.util import inspectAgents
 from helper.vector2D import Vector2D
@@ -204,6 +206,7 @@ class MainWindow(QMainWindow):
     def __init__(self, simu = None, control = None, parent=None):
 
         super(MainWindow, self).__init__(parent)
+        self.setWindowTitle("Pamela Simulation")
         self.setMouseTracking(True)
         self.simulation = simu
         self.controlSim = control
@@ -218,6 +221,11 @@ class MainWindow(QMainWindow):
         self.viewInfo = None
         self.actPause = None
         self.viewGrid = None
+
+        #otherWidget
+        self.settingWidget = None
+        self.editorWidget = None
+
 
         # TODO Event Menu
         self.__createFileMenu()
@@ -264,7 +272,11 @@ class MainWindow(QMainWindow):
 
     def __createFileMenu(self):
         actOpen = QAction(  "&Configuration", self)
+        actOpen.triggered.connect(self.settingTrigger)
+        self.settingWidget = SettingWidget(self)
+
         actAide = QAction("&Aide", self)
+
 
         actExit = QAction("&Quit", self)
         actExit.setShortcut("Ctrl+Q")
@@ -290,6 +302,9 @@ class MainWindow(QMainWindow):
         actStop = QAction(  "S&top Scenario", self)
 
         actCre = QAction("Create Scenario", self)
+        actCre.triggered.connect(self.editorTrigger)
+        self.editorWidget = EditorWidget(self)
+
         #TODO STOP
 
         menuBar = self.menuBar()
@@ -444,6 +459,12 @@ class MainWindow(QMainWindow):
         self.simulation.pause = state
 
 
+    def editorTrigger(self):
+        self.editorWidget.show()
+
+    def settingTrigger(self):
+        self.settingWidget.show()
+
     def toggleFustrum(self,state):
         self.gl.printFustrum = state
         self.viewStatAct.setChecked(state)
@@ -516,6 +537,7 @@ class MainWindow(QMainWindow):
 
     def close(self):
         print("Exit menu item clicked")
+        QCoreApplication.quit()
         QCoreApplication.quit()
 
 class PamGui():

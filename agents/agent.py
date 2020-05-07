@@ -18,8 +18,10 @@ class Agent:
         print(self.id)
         print(len(self.body.fustrum.perceptionList))
 
-        # KDTREE
+    def getEditable(self):
+        return ['id']
 
+        # KDTREE
     def __len__(self):
         return 2
 

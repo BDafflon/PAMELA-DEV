@@ -57,19 +57,24 @@ class Simulation(threading.Thread):
                     if e["entity"] == "agent":
                         n = inspectAgentsDict(Agent)
                         if "type" in e:
-                            a = n[e['type']]()
-                            if "id" in e:
-                                a.id = e['id']
-                            if "position" in e:
-                                a.body.location = Vector2D(e["position"][0], e["position"][1])
-                            if "randomPosision" in e:
-                                a.body.location = Vector2D(
-                                    util.randomRangeInt(e["randomPosision"][0][0], e["randomPosision"][0][1]),
-                                    util.randomRangeInt(e["randomPosision"][1][0], e["randomPosision"][1][1]))
-                            if "customArgs" in e:
-                                for key, value in e["customArgs"].items():
-                                    setattr(a, key, value)
-                            self.environment.addAgent(a)
+                            nb=1
+                            if "number" in e:
+                                nb = e['number']
+
+                            for na in range(0,nb):
+                                a = n[e['type']]()
+                                if "id" in e:
+                                    a.id = e['id']
+                                if "position" in e:
+                                    a.body.location = Vector2D(e["position"][0], e["position"][1])
+                                if "randomPosision" in e:
+                                    a.body.location = Vector2D(
+                                        util.randomRangeInt(e["randomPosision"][0][0], e["randomPosision"][0][1]),
+                                        util.randomRangeInt(e["randomPosision"][1][0], e["randomPosision"][1][1]))
+                                if "customArgs" in e:
+                                    for key, value in e["customArgs"].items():
+                                        setattr(a, key, value)
+                                self.environment.addAgent(a)
                     else:
                         if e["entity"] == "object":
 

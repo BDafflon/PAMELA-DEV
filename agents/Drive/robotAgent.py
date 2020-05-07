@@ -23,7 +23,7 @@ class RobotAgent(Agent):
         self.obstacleFactor = 500
         self.target = Vector2D(0,0)
 
-    def __init__(self, f):
+    def __init__(self, f=1):
         Agent.__init__(self)
         self.body = RobotBody()
         self.type = AgentType.ROBOT
@@ -36,6 +36,9 @@ class RobotAgent(Agent):
         self.avoidanceFactor = 7.5
         self.obstacleFactor = 500
         self.target = Vector2D(0, 0)
+
+    def getEditable(self):
+        return Agent.getEditable().append(["famille","avoidanceFactor",'obstacleFactor'])
 
     def moveRandom(self):
         x = int(random.uniform(-2, 2))

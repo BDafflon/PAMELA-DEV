@@ -22,6 +22,11 @@ class StandardAgent(Agent):
         self.target = Vector2D(0, 0)
         self.obstacleFactor = 500
         self.attractorFactor = 0.35
+        self.name='t'
+
+    def getEditable(self):
+        return Agent.getEditable().append(["famille","avoidanceFactor",'obstacleFactor','type'])
+
 
     def moveRandom(self):
         x = int(random.uniform(-2, 2))
