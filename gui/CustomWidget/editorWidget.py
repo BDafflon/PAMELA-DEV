@@ -184,8 +184,30 @@ class EditorWidget(QMainWindow):
                     jsonEnv = json.load(f)
 
                 print(json)
+                self.newTrigger()
+                if "start" in jsonEnv:
+                    start= jsonEnv['start']
+                if "simulation" in jsonEnv:
+                    simulation = jsonEnv['simulation']
+
+                for e in start :
+                    self.entity[e['id']]=e
+                    i = self.addTreeItem(e,self.root)
+                    self.entity[e['id']]['item']=i
+                    print(self.entity[e['id']])
+
+                for e in simulation :
+                    self.entity[e['id']]=e
+                    i = self.addTreeItem(e,self.sim)
+                    self.entity[e['id']]['item']=i
+                    print(self.entity[e['id']])
             except Exception as e:
                 print(e)
+
+    def addTreeItem(self,e,tree):
+        print(e)
+        barA = QTreeWidgetItem(tree, [e["id"], "Agent", str(e['timelaunch']), e['type']])
+        return barA
 
     def newTrigger(self):
         try:
@@ -329,10 +351,10 @@ class EditorWidget(QMainWindow):
         self.tableWidget.setRowCount(0)
         self.tableWidget.setRowCount(len(members))
         self.tableWidget.setItem(0, 0, QTableWidgetItem("Spawn time"))
-        self.tableWidget.setItem(0, 1, QTableWidgetItem(e["timelaunch"]))
+        self.tableWidget.setItem(0, 1, QTableWidgetItem(str(e["timelaunch"])))
 
         self.tableWidget.setItem(1, 0, QTableWidgetItem("Number of agent"))
-        self.tableWidget.setItem(1, 1, QTableWidgetItem(e["number"]))
+        self.tableWidget.setItem(1, 1, QTableWidgetItem(str(e["number"])))
 
         self.tableWidget.setItem(2, 0, QTableWidgetItem("randomPosision"))
         self.tableWidget.setItem(2, 1, QTableWidgetItem(str(e["randomPosision"])))
@@ -342,7 +364,7 @@ class EditorWidget(QMainWindow):
             print(m)
             customArgs = e["customArgs"]
             if m in customArgs:
-                self.tableWidget.setItem(i, 1, QTableWidgetItem(customArgs[m]))
+                self.tableWidget.setItem(i, 1, QTableWidgetItem(str(customArgs[m])))
             if m == "id":
                 if "id" in e:
                     self.tableWidget.setItem(i, 1, QTableWidgetItem(e[m]))
