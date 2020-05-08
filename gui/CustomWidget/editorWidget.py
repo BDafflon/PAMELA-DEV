@@ -1,10 +1,12 @@
+import json
 import types
 from inspect import isfunction
 
+from PyQt5 import sip
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWidgets import QApplication, QAction, QMainWindow, QHBoxLayout, QSplitter, QFrame, QWidget, QTreeWidget, \
     QGridLayout, QTreeWidgetItem, QComboBox, QSpacerItem, QSizePolicy, QPushButton, QTableWidget, QHeaderView, \
-    QTableWidgetItem
+    QTableWidgetItem, QFileDialog
 from PyQt5.QtCore import *
 
 from agents.agent import Agent
@@ -127,8 +129,10 @@ class EditorWidget(QMainWindow):
         actNew.triggered.connect(self.newTrigger)
 
         actOpen = QAction("&Open", self)
+        actOpen.triggered.connect(self.openTrigger)
 
         actSave = QAction("&Save", self)
+        actSave.triggered.connect(self.saveTrigger)
 
         actSaveAs = QAction("&Save as", self)
 
@@ -147,8 +151,54 @@ class EditorWidget(QMainWindow):
         file.addSeparator()
         file.addAction(actExit)
 
+
+    def saveTrigger(self):
+        fname = QFileDialog.getSaveFileName(self, 'Open file', '.')
+
+        if fname[0]:
+
+            try:
+                export={}
+                export['start']=[]
+                export['simulation'] = []
+                e = self.entity.copy()
+                for k,v in e.items():
+                    del e[k]['item']
+                    if int(e[k]['timelaunch']) == 0:
+                        export['start'].append(e[k])
+                    else:
+                        export['simulation'].append(e[k])
+
+
+                with open(fname[0], "w", encoding='utf-8') as jsonfile:
+                    json.dump(export, jsonfile, ensure_ascii=False)
+            except Exception as e:
+                print(e)
+
+    def openTrigger(self):
+        fname = QFileDialog.getOpenFileName(self, 'Open file', '.')
+
+        if fname[0]:
+            try:
+                with open(fname[0], 'r') as f:
+                    jsonEnv = json.load(f)
+
+                print(json)
+            except Exception as e:
+                print(e)
+
     def newTrigger(self):
-        print("new")
+        try:
+            self.delItemTree(self.root)
+            self.delItemTree(self.sim)
+            self.root = QTreeWidgetItem(self.tw, ["Start"])
+            self.sim = QTreeWidgetItem(self.tw, ["Simulation"])
+            self.entity={}
+            for k,v in self.entity.items():
+                self.delItemTree(self.entity[k]["item"])
+                self.entity[k] = None
+        except Exception as e:
+            print(e)
 
     def selectionchange(self, i):
         print ("Current index", i, "selection changed ", self.cb.currentText())
@@ -161,6 +211,7 @@ class EditorWidget(QMainWindow):
 
             print()
             self.updateSettingLayout(members,a)
+            self.newButton.setText("Add")
         except Exception as e:
             print(e)
             try:
@@ -169,54 +220,93 @@ class EditorWidget(QMainWindow):
                 type = self.cb.currentText()
                 members = [attr for attr in dir(a) if not callable(getattr(a, attr)) and not attr.startswith("__")]
                 print(members)
+                self.newButton.setText("Add")
             except Exception as e1:
                 print(e1)
 
+
     def removeEntity(self):
-        print('d')
+        try :
+            column = 1
+            for row in range(3,self.tableWidget.rowCount()):
+                # item(row, 0) Returns the item for the given row and column if one has been set; otherwise returns nullptr.
+                _item = self.tableWidget.item(row, 0)
+                _item2 = self.tableWidget.item(row, 1)
+                if _item and _item2:
+                    if _item.text() == "id":
+                        if _item2.text() in self.entity:
+
+                            self.delItemTree(self.entity[_item2.text()]['item'])
+                            del self.entity[_item2.text()]
+                            print("ok")
+        except Exception as e1:
+            print(e1)
+
+
+    def delItemTree(self,item):
+        sip.delete(item)
+        self.newButton.setText("Add")
+        self.updateSettingLayout([])
 
     def addEntity(self):
 
-
-        type = self.cb.currentText()
-        event = {'entity': 'agent', 'type': type}
-        timelaunch = self.tableWidget.item(0, 1).text()
-        event["timelaunch"]=timelaunch
-        _item = self.tableWidget.item(1, 1).text()
-        event["number"] = _item
-        _item = self.tableWidget.item(2, 1).text()
-        _item=_item.replace("[", "").replace(']', "").split(",")
-
-        event["randomPosision"] = [[_item[0],_item[1]],[_item[2],_item[3]]]
-        event["customArgs"] = {}
+        try:
 
 
-        column = 1
-        for row in range(3,self.tableWidget.rowCount()):
-            # item(row, 0) Returns the item for the given row and column if one has been set; otherwise returns nullptr.
-            _item = self.tableWidget.item(row, 0)
-            _item2 = self.tableWidget.item(row, 1)
-            if _item and _item2:
+            type = self.cb.currentText()
+            event = {'entity': 'agent', 'type': type}
+            timelaunch = self.tableWidget.item(0, 1).text()
+            event["timelaunch"]=int(timelaunch)
+            _item = self.tableWidget.item(1, 1).text()
+            event["number"] = int(_item)
+            _item = self.tableWidget.item(2, 1).text()
+            _item=_item.replace("[", "").replace(']', "").split(",")
 
-                item = self.tableWidget.item(row, column).text()
-                print(f'row: {row}, column: {column}, item={item}')
-                event["customArgs"][_item]=_item2
-
-        print(event)
-        id=id_generator()
-        event["id"]=id
-        self.entity[id] = event
-
-        if int(timelaunch) == 0:
-            barA = QTreeWidgetItem(self.root, [id,"Agent", "0", self.cb.currentText()])
-        else :
-            barA = QTreeWidgetItem(self.sim, [id,"Agent", timelaunch, self.cb.currentText()])
-        self.tw.update()
+            event["randomPosision"] = [[int(_item[0]),int(_item[1])],[int(_item[2]),int(_item[3])]]
+            event["customArgs"] = {}
 
 
 
-    def sortTree(self):
-        print('sort')
+            column = 1
+            for row in range(3,self.tableWidget.rowCount()):
+                # item(row, 0) Returns the item for the given row and column if one has been set; otherwise returns nullptr.
+                _item = self.tableWidget.item(row, 0)
+                _item2 = self.tableWidget.item(row, 1)
+                if _item and _item2:
+                    if _item.text() == "id":
+                        if _item2.text() in self.entity:
+                            id = _item2.text()
+                    else:
+                        item = self.tableWidget.item(row, column).text()
+                        print(f'row: {row}, column: {column}, item={item}')
+                        event["customArgs"][_item]=_item2
+
+            print(event)
+            if self.newButton.text() == "Add":
+                id=id_generator()
+            else :
+                self.delItemTree(self.entity[id]["item"])
+                self.entity[id] = None
+            print(id)
+
+
+            event["id"]=id
+            self.entity[id] = event
+
+            if int(timelaunch) == 0:
+                barA = QTreeWidgetItem(self.root, [id,"Agent", "0", self.cb.currentText()])
+                event['item'] =barA
+            else :
+                barA = QTreeWidgetItem(self.sim, [id,"Agent", timelaunch, self.cb.currentText()])
+                self.tw.sortItems(2, Qt.AscendingOrder)
+                event['item'] = barA
+            self.newButton.setText("Add")
+        except Exception as e:
+            print(e)
+                #self.sim.sortChildren(2)
+
+
+
 
     def triggerItem(self,item):
         print(item.text(0))
@@ -259,9 +349,10 @@ class EditorWidget(QMainWindow):
             self.tableWidget.setItem(i, 0, QTableWidgetItem(m))
 
             i += 1
+        self.newButton.setText("Update")
 
 
-    def updateSettingLayout(self,membre,a):
+    def updateSettingLayout(self,membre,a=None):
             self.tableWidget.setRowCount(0)
             self.tableWidget.setRowCount(len(membre))
             self.tableWidget.setItem(0, 0, QTableWidgetItem("Spawn time"))
