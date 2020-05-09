@@ -206,7 +206,7 @@ class EditorWidget(QMainWindow):
 
     def addTreeItem(self,e,tree):
         print(e)
-        barA = QTreeWidgetItem(tree, [e["id"], "Agent", str(e['timelaunch']), e['type']])
+        barA = QTreeWidgetItem(tree, [e["id"], e['entity'], str(e['timelaunch']), e['type']])
         return barA
 
     def newTrigger(self):
@@ -232,7 +232,7 @@ class EditorWidget(QMainWindow):
             members = [attr for attr in dir(a) if not hasattr(getattr(a, attr), '__dict__') and  not callable(getattr(a, attr)) and not attr.startswith("__")]
 
             print()
-            self.updateSettingLayout(members,a)
+            self.updateSettingLayout(members,"agent")
             self.newButton.setText("Add")
         except Exception as e:
             print(e)
@@ -242,6 +242,7 @@ class EditorWidget(QMainWindow):
                 type = self.cb.currentText()
                 members = [attr for attr in dir(a) if not callable(getattr(a, attr)) and not attr.startswith("__")]
                 print(members)
+                self.updateSettingLayout(members, "objet")
                 self.newButton.setText("Add")
             except Exception as e1:
                 print(e1)
@@ -270,21 +271,34 @@ class EditorWidget(QMainWindow):
         self.newButton.setText("Add")
         self.updateSettingLayout([])
 
-    def addEntity(self):
+    def addEntity(self, a=""):
 
         try:
 
 
             type = self.cb.currentText()
-            event = {'entity': 'agent', 'type': type}
+            n = inspectAgentsDict(Agent)
+            if type in n:
+                a="agent"
+
+            else:
+                n = inspectAgentsDict(Object)
+                if type in n:
+                    a='objet'
+
+            event = {'entity': a, 'type': type}
             timelaunch = self.tableWidget.item(0, 1).text()
             event["timelaunch"]=int(timelaunch)
             _item = self.tableWidget.item(1, 1).text()
             event["number"] = int(_item)
             _item = self.tableWidget.item(2, 1).text()
             _item=_item.replace("[", "").replace(']', "").split(",")
+            if a == "agent":
+                event["randomPosision"] = [[int(_item[0]),int(_item[1])],[int(_item[2]),int(_item[3])]]
+            else :
+                if a =='objet':
+                    event["aabb"] = [int(_item[0]), int(_item[1]), int(_item[2]), int(_item[3])]
 
-            event["randomPosision"] = [[int(_item[0]),int(_item[1])],[int(_item[2]),int(_item[3])]]
             event["customArgs"] = {}
 
 
@@ -316,10 +330,10 @@ class EditorWidget(QMainWindow):
             self.entity[id] = event
 
             if int(timelaunch) == 0:
-                barA = QTreeWidgetItem(self.root, [id,"Agent", "0", self.cb.currentText()])
+                barA = QTreeWidgetItem(self.root, [id,a, "0", self.cb.currentText()])
                 event['item'] =barA
             else :
-                barA = QTreeWidgetItem(self.sim, [id,"Agent", timelaunch, self.cb.currentText()])
+                barA = QTreeWidgetItem(self.sim, [id,a, timelaunch, self.cb.currentText()])
                 self.tw.sortItems(2, Qt.AscendingOrder)
                 event['item'] = barA
             self.newButton.setText("Add")
@@ -340,57 +354,77 @@ class EditorWidget(QMainWindow):
 
     def updateSetting(self,e):
 
-        n = inspectAgentsDict(Agent)
+        try :
+            if e["entity"] == "agent":
+                n = inspectAgentsDict(Agent)
+            else:
+                if e["entity"] == "objet":
+                    n = inspectAgentsDict(Object)
 
-        type = e['type']
-        a = n[type]()
-        members = [attr for attr in dir(a) if
-                   not hasattr(getattr(a, attr), '__dict__') and not callable(getattr(a, attr)) and not attr.startswith(
-                       "__")]
+            type = e['type']
+            a = n[type]()
+            members = [attr for attr in dir(a) if
+                       not hasattr(getattr(a, attr), '__dict__') and not callable(getattr(a, attr)) and not attr.startswith(
+                           "__")]
 
-        self.tableWidget.setRowCount(0)
-        self.tableWidget.setRowCount(len(members))
-        self.tableWidget.setItem(0, 0, QTableWidgetItem("Spawn time"))
-        self.tableWidget.setItem(0, 1, QTableWidgetItem(str(e["timelaunch"])))
+            self.tableWidget.setRowCount(0)
+            self.tableWidget.setRowCount(len(members)+2)
+            self.tableWidget.setItem(0, 0, QTableWidgetItem("Spawn time"))
+            self.tableWidget.setItem(0, 1, QTableWidgetItem(str(e["timelaunch"])))
 
-        self.tableWidget.setItem(1, 0, QTableWidgetItem("Number of agent"))
-        self.tableWidget.setItem(1, 1, QTableWidgetItem(str(e["number"])))
+            self.tableWidget.setItem(1, 0, QTableWidgetItem("Number of "+e["entity"]))
+            self.tableWidget.setItem(1, 1, QTableWidgetItem(str(e["number"])))
 
-        self.tableWidget.setItem(2, 0, QTableWidgetItem("randomPosision"))
-        self.tableWidget.setItem(2, 1, QTableWidgetItem(str(e["randomPosision"])))
+            if e["entity"]=="agent":
+                self.tableWidget.setItem(2, 0, QTableWidgetItem("randomPosision"))
+                self.tableWidget.setItem(2, 1, QTableWidgetItem(str(e["randomPosision"])))
+            else:
+                if e['entity'] == "objet":
+                    self.tableWidget.setItem(2, 0, QTableWidgetItem("AABB"))
+                    self.tableWidget.setItem(2, 1, QTableWidgetItem(str(e["aabb"])))
 
-        i = 3
-        for m in members:
-            print(m)
-            customArgs = e["customArgs"]
-            if m in customArgs:
-                self.tableWidget.setItem(i, 1, QTableWidgetItem(str(customArgs[m])))
-            if m == "id":
-                if "id" in e:
-                    self.tableWidget.setItem(i, 1, QTableWidgetItem(e[m]))
-            self.tableWidget.setItem(i, 0, QTableWidgetItem(m))
+            i = 3
+            for m in members:
+                if m != "aabb" and m != "randomPosision" :
+                    print(m)
+                    customArgs = e["customArgs"]
+                    if m in customArgs:
+                        self.tableWidget.setItem(i, 1, QTableWidgetItem(str(customArgs[m])))
+                    else :
+                        self.tableWidget.setItem(i, 1,QTableWidgetItem(""))
+                    if m == "id":
+                        if "id" in e:
+                            self.tableWidget.setItem(i, 1, QTableWidgetItem(e[m]))
+                    self.tableWidget.setItem(i, 0, QTableWidgetItem(m))
 
-            i += 1
-        self.newButton.setText("Update")
+                i += 1
+            self.newButton.setText("Update")
+        except Exception as e:
+            print(e)
 
 
-    def updateSettingLayout(self,membre,a=None):
+    def updateSettingLayout(self,membre,a=""):
             self.tableWidget.setRowCount(0)
             self.tableWidget.setRowCount(len(membre))
             self.tableWidget.setItem(0, 0, QTableWidgetItem("Spawn time"))
             self.tableWidget.setItem(0, 1, QTableWidgetItem("0"))
 
-            self.tableWidget.setItem(1, 0, QTableWidgetItem("Number of agent"))
+            self.tableWidget.setItem(1, 0, QTableWidgetItem("Number of "+a))
             self.tableWidget.setItem(1, 1, QTableWidgetItem("1"))
 
-            self.tableWidget.setItem(2, 0, QTableWidgetItem("randomPosision"))
-            self.tableWidget.setItem(2, 1, QTableWidgetItem("[0,100],[1,100]"))
+            if a=="agent":
+                self.tableWidget.setItem(2, 0, QTableWidgetItem("randomPosision"))
+                self.tableWidget.setItem(2, 1, QTableWidgetItem("[0,100],[1,100]"))
+            else :
+                self.tableWidget.setItem(2, 0, QTableWidgetItem("AABB"))
+                self.tableWidget.setItem(2, 1, QTableWidgetItem("[0,0,1,100]"))
 
             i=3
             for m in membre:
                 print(m)
-                self.tableWidget.setItem(i,0, QTableWidgetItem(m))
-                i+=1
+                if m != "aabb":
+                    self.tableWidget.setItem(i,0, QTableWidgetItem(m))
+                    i+=1
 
 
 
