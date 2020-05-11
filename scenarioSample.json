@@ -78,7 +78,7 @@
          }
       }
    ],
-   "configuration" : {"autorun":0, "gui":1,"printFustrum":1,"printVel":0,"printInfoMouse":0},
+   "configuration" : {"autorun":0, "gui":1,"printFustrum":1,"printVel":0,"printInfoMouse":0,"simulationDuration": 600},
    "simulation":[
       {
          "entity":"agent",

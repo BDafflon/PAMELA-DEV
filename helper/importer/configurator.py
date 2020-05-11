@@ -1,10 +1,6 @@
 import tkinter
 from tkinter.filedialog import askopenfilename
 
-import PIL
-from PIL import ImageTk
-import cv2
-
 
 class Configurator:
     def __init__(self, window,f,fs,fsc):

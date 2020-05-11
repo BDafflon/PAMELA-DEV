@@ -1,12 +1,7 @@
-from random import randint
-
 from environment.application.Drive import agentType
 from environment.application.Drive.smirAgentState import SmirAgentState
-from environment.application.Drive.agentType import AgentType
 from environment.environment import Environment
-import time
 
-from helper import util
 from helper.vector2D import Vector2D
 
 

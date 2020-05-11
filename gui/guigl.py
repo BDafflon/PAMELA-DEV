@@ -1,18 +1,15 @@
 import math
-import pyglet
 
+import pyglet
 from pyglet.gl import (
     Config,
     glEnable, glBlendFunc, glLoadIdentity, glClearColor,
-    GL_BLEND, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_COLOR_BUFFER_BIT, GL_POLYGON, gl, glVertex3f)
-
+    GL_BLEND, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_POLYGON)
 from pyglet.gl import (
     glPushMatrix, glPopMatrix, glBegin, glEnd, glColor3f,
     glVertex2f, glTranslatef, glRotatef,
     GL_LINE_LOOP, GL_LINES, GL_TRIANGLES)
-
 from pyglet.window import key, mouse
-
 
 from helper.vector2D import Vector2D
 

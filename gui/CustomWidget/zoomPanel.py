@@ -1,6 +1,5 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QVBoxLayout, QShortcut
+from PyQt5.QtWidgets import QShortcut
 
 
 class TranslucentWidgetSignals(QtCore.QObject):

@@ -1,6 +1,6 @@
 
-from random import *
 from math import *
+from random import *
 
 
 class Vector2D:

@@ -1,22 +1,13 @@
 import csv
 import threading
-import time
-import tkinter
 
-from agents.Drive.robotAgent import RobotAgent
-from agents.Drive.standardAgent import StandardAgent
 from agents.SIRM.sirmAgent import SirmAgent
-from environment.application.Drive.smirAgentState import SmirAgentState
-from environment.application.Drive.agentType import AgentType
-
 from environment.application.Drive.environmentDrive import EnvironmentDrive
-from environment.application.SIRM.contamination import Contamination
-
+from environment.application.Drive.smirAgentState import SmirAgentState
 from environment.object import TargetObjet, Dropoff, Pickup, Wall
 from helper.BoundingBox.aabb import AABB
-from helper.importer.configurator import Configurator
+from helper.drawPopulation import Afficheur
 from helper.importer.driveImporter import importationIMG, importationJSON
-from helper.drawPopulation import drawPopulation, Afficheur
 from helper.vector2D import Vector2D, randint
 
 

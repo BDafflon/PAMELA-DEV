@@ -3,9 +3,8 @@ from random import random, randint
 
 from agents.Drive.standardAgent import StandardAgent
 from environment.animateAction import AnimateAction
-from environment.application.Drive.smirAgentState import SmirAgentState
-
 from environment.application.Drive.agentType import AgentType
+from environment.application.Drive.smirAgentState import SmirAgentState
 from environment.application.Drive.stardardAgentBody import StadardAgentBody
 from environment.application.SIRM.contamination import Contamination
 from environment.application.SIRM.sickness import Sickness
@@ -18,8 +17,8 @@ class SirmAgent(StandardAgent):
         StandardAgent.__init__(self)
         self.body = StadardAgentBody()
         self.collisionDVel = 1
-        self.type = AgentType.PATIENT
-        self.stat = SmirAgentState.SEIN
+        self.type = AgentType.STANDARD
+        self.stat = SmirAgentState.SAIN
         self.famille = 1
         self.body.mass = 80
         self.body.fustrum.radius = 20
@@ -34,7 +33,7 @@ class SirmAgent(StandardAgent):
     def __init__(self, f=1):
         StandardAgent.__init__(self, f)
         self.body = StadardAgentBody()
-        self.type = AgentType.PATIENT
+        self.type = AgentType.STANDARD
         self.famille = f
         self.body.fustrum.radius = 20
         self.contamination = None

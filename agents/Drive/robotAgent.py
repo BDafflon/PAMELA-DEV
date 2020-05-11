@@ -1,4 +1,5 @@
 import random
+
 from agents.agent import Agent
 from environment.animateAction import AnimateAction
 from environment.application.Drive.agentType import AgentType

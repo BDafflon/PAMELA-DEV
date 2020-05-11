@@ -2,7 +2,6 @@ import tkinter
 
 import PIL
 from PIL import ImageTk
-import cv2
 
 
 class LauncherGui:

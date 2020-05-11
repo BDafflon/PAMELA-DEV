@@ -1,10 +1,7 @@
 import json
-import tkinter
 
 import cv2
 import imutils
-
-from gui.launcherGui import LauncherGui
 
 
 def importationJSON(path):

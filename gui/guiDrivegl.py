@@ -1,10 +1,8 @@
-from pyglet import image
 from pyglet.gl import (
     glBegin, glEnd, glColor3f,
     glVertex2f, GL_TRIANGLES, GL_POLYGON)
 
 from environment.application.Drive.smirAgentState import SmirAgentState
-from environment.application.Drive.agentType import AgentType
 from gui.guigl import GuiGL
 
 # Define some colors

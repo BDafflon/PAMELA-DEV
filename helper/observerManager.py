@@ -1,5 +1,4 @@
 import csv
-from csv import *
 
 
 class ObserverManager:

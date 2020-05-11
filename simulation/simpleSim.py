@@ -1,17 +1,6 @@
-import csv
-import threading
-import time
-import tkinter
-
-from agents.Drive.robotAgent import RobotAgent
 from agents.Drive.standardAgent import StandardAgent
-from environment.application.Drive.environmentDrive import EnvironmentDrive
-from environment.environment import Environment
 
-from environment.object import TargetObjet, Dropoff, Pickup, Wall
-from helper.importer.configurator import Configurator
-from helper.importer.driveImporter import importationIMG, importationJSON
-from helper.drawPopulation import drawPopulation
+from environment.object import TargetObjet
 from simulation.simulation import Simulation
 
 

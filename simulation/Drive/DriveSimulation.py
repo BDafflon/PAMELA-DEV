@@ -1,16 +1,14 @@
 import csv
 import threading
-import time
 import tkinter
 
 from agents.Drive.robotAgent import RobotAgent
 from agents.Drive.standardAgent import StandardAgent
 from environment.application.Drive.environmentDrive import EnvironmentDrive
-
 from environment.object import TargetObjet, Dropoff, Pickup, Wall
+from helper.drawPopulation import drawPopulation
 from helper.importer.configurator import Configurator
 from helper.importer.driveImporter import importationIMG, importationJSON
-from helper.drawPopulation import drawPopulation
 
 
 class DriveSimulation(threading.Thread):

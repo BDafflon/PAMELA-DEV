@@ -1,14 +1,13 @@
+import ctypes
+import threading
+import time
 from random import randint
 
 from environment.application.Drive.agentType import AgentType
 from environment.object import PerceivedObject
 from helper import util
-import time
-
 from helper.datastructure import kdtree
 from helper.vector2D import Vector2D
-import threading
-import ctypes
 
 
 class clock:

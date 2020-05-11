@@ -1,7 +1,6 @@
+from environment.fustrum import CircularFustrum
 from helper import util
 from helper.vector2D import Vector2D
-from environment.fustrum import CircularFustrum
-
 
 _BOID_COLLISION_DISTANCE = 45.0
 _OBSTACLE_COLLISION_DISTANCE = 250.0

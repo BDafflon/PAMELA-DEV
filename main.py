@@ -1,12 +1,7 @@
-import test
-
-from agents.Drive.standardAgent import StandardAgent
-from environment.environment import Environment
 from gui.guiDrivegl import GuiDriveGL
 from gui.pamelaView import PamGui
 from simulation.Drive.DriveSimulation import DriveSimulation
 from simulation.SIRM.SIRMSimulation import SIRMSimulation
-from simulation.simpleSim import SimpleSimulation
 from simulation.simulation import Simulation
 
 

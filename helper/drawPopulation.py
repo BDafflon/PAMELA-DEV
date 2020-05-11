@@ -1,10 +1,7 @@
-import random
+from threading import Thread
+
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-import random
-import sys
-from threading import Thread
-import time
 
 data = []
 def update(i,   dataEnv):

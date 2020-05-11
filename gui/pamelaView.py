@@ -2,14 +2,13 @@
 
 """PySide port of the opengl/samplebuffers example from Qt v4.x"""
 
-import sys
 import math
+import sys
 import time
 
 from PyQt5 import QtOpenGL, QtCore
-from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot, QPoint, QCoreApplication
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QApplication, QAction, QMainWindow, QGridLayout, QWidget, QPushButton, QMenu, QFileDialog, \
+from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot, QCoreApplication
+from PyQt5.QtWidgets import QApplication, QAction, QMainWindow, QGridLayout, QWidget, QMenu, QFileDialog, \
     QMessageBox
 from PyQt5.uic.Compiler.qtproxies import QtGui
 from pandas import np

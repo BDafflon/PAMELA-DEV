@@ -1,6 +1,7 @@
 import random
-from helper import util
+
 from environment.body import Body
+from helper import util
 from helper.observer import Observer
 
 
