@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWidgets import QAction, QMainWindow, QHBoxLayout, QSplitter, QFrame, QWidget, QTreeWidget, \
     QGridLayout, QTreeWidgetItem, QComboBox, QPushButton, QTableWidget, QTableWidgetItem, QFileDialog, QVBoxLayout, \
-    QTabWidget, QGroupBox, QRadioButton, QLabel, QSpacerItem, QSizePolicy, QLineEdit, QTextEdit, QCheckBox
+    QTabWidget, QGroupBox, QLabel, QTextEdit, QCheckBox
 
 from agents.SIRM.sirmAgent import SirmAgent
 from agents.agent import Agent
@@ -191,8 +191,18 @@ class MyTableWidget(QWidget):
         self.myLayoutRight.addWidget(self.newButton)
         self.myLayoutRight.addWidget(self.removeButton)
 
+    def getComboBoxIndex(self,v="Zone"):
+        print("V "+v)
+        index = self.cb.findText(v, Qt.MatchFixedString)
+        print("index "+str(index))
+        return index
+
+    def setComboBox(self,i=0):
+        self.cb.setCurrentIndex(i)
+
     def __createComboBoxAgent(self):
         self.cb = QComboBox()
+        self.cb.addItem("Entity type")
         self.cb.addItem("Zone")
 
 
@@ -238,6 +248,9 @@ class MyTableWidget(QWidget):
             e = self.entity[item.text(0)]
             print(e)
 
+            if "type" in e:
+                index = self.getComboBoxIndex(e['type'])
+                self.setComboBox(index)
             self.updateSetting(e)
 
     def updateSetting(self,e):
@@ -260,16 +273,19 @@ class MyTableWidget(QWidget):
             self.tableWidget.setItem(0, 0, QTableWidgetItem("Spawn time"))
             self.tableWidget.setItem(0, 1, QTableWidgetItem(str(e["timelaunch"])))
 
-            self.tableWidget.setItem(1, 0, QTableWidgetItem("Number of "+e["entity"]))
-            self.tableWidget.setItem(1, 1, QTableWidgetItem(str(e["number"])))
+
 
             if e["entity"]=="agent":
-                self.tableWidget.setItem(2, 0, QTableWidgetItem("randomPosision"))
-                self.tableWidget.setItem(2, 1, QTableWidgetItem(str(e["randomPosision"])))
+                self.tableWidget.setItem(1, 0, QTableWidgetItem("randomPosision"))
+                self.tableWidget.setItem(1, 1, QTableWidgetItem(str(e["randomPosision"])))
             else:
                 if e['entity'] == "objet":
-                    self.tableWidget.setItem(2, 0, QTableWidgetItem("AABB"))
-                    self.tableWidget.setItem(2, 1, QTableWidgetItem(str(e["aabb"])))
+                    self.tableWidget.setItem(1, 0, QTableWidgetItem("AABB"))
+                    self.tableWidget.setItem(1, 1, QTableWidgetItem(str(e["aabb"])))
+
+            if e["entity"] != "zone":
+                self.tableWidget.setItem(2, 0, QTableWidgetItem("Number of " + e["entity"]))
+                self.tableWidget.setItem(2, 1, QTableWidgetItem(str(e["number"])))
 
             i = 3
             for m in members:
@@ -293,19 +309,25 @@ class MyTableWidget(QWidget):
 
     def updateSettingLayout(self,membre,a=""):
             self.tableWidget.setRowCount(0)
+            if len(membre)==0:
+                return
             self.tableWidget.setRowCount(len(membre))
+
             self.tableWidget.setItem(0, 0, QTableWidgetItem("Spawn time"))
             self.tableWidget.setItem(0, 1, QTableWidgetItem("0"))
 
-            self.tableWidget.setItem(1, 0, QTableWidgetItem("Number of "+a))
-            self.tableWidget.setItem(1, 1, QTableWidgetItem("1"))
+
 
             if a=="agent":
-                self.tableWidget.setItem(2, 0, QTableWidgetItem("randomPosision"))
-                self.tableWidget.setItem(2, 1, QTableWidgetItem("[0,100],[1,100]"))
+                self.tableWidget.setItem(1, 0, QTableWidgetItem("randomPosision"))
+                self.tableWidget.setItem(1, 1, QTableWidgetItem("[0,100],[1,100]"))
             else :
-                self.tableWidget.setItem(2, 0, QTableWidgetItem("AABB"))
-                self.tableWidget.setItem(2, 1, QTableWidgetItem("[0,0,1,100]"))
+                self.tableWidget.setItem(1, 0, QTableWidgetItem("AABB"))
+                self.tableWidget.setItem(1, 1, QTableWidgetItem("[0,0,1,100]"))
+
+            if a != "zone":
+                self.tableWidget.setItem(2, 0, QTableWidgetItem("Number of "+a))
+                self.tableWidget.setItem(2, 1, QTableWidgetItem("1"))
 
             i=3
             for m in membre:
@@ -313,6 +335,7 @@ class MyTableWidget(QWidget):
                 if m != "aabb":
                     self.tableWidget.setItem(i,0, QTableWidgetItem(m))
                     i+=1
+
     def selectionchange(self, i):
         print ("Current index", i, "selection changed ", self.cb.currentText())
         try:
@@ -339,6 +362,12 @@ class MyTableWidget(QWidget):
                 self.newButton.setText("Add")
             except Exception as e1:
                 print("erreur zone")
+                if self.cb.currentText() == "Zone":
+                    members= ["nom","aabb"]
+                    self.updateSettingLayout(members, "zone")
+                    self.newButton.setText("Add")
+                else :
+                    self.updateSettingLayout([])
                 print(e1)
 
 
@@ -383,9 +412,9 @@ class MyTableWidget(QWidget):
             event = {'entity': a, 'type': type}
             timelaunch = self.tableWidget.item(0, 1).text()
             event["timelaunch"]=int(timelaunch)
-            _item = self.tableWidget.item(1, 1).text()
-            event["number"] = int(_item)
             _item = self.tableWidget.item(2, 1).text()
+            event["number"] = int(_item)
+            _item = self.tableWidget.item(1, 1).text()
             _item=_item.replace("[", "").replace(']', "").split(",")
             if a == "agent":
                 event["randomPosision"] = [[int(_item[0]),int(_item[1])],[int(_item[2]),int(_item[3])]]
@@ -430,6 +459,8 @@ class MyTableWidget(QWidget):
                 barA = QTreeWidgetItem(self.sim, [id,a, timelaunch, self.cb.currentText()])
                 self.tw.sortItems(2, Qt.AscendingOrder)
                 event['item'] = barA
+
+            self.setComboBox(0)
             self.newButton.setText("Add")
         except Exception as e:
             print(e)
