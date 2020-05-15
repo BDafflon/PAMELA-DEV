@@ -100,7 +100,7 @@ class GLWidget(QtOpenGL.QGLWidget):
 
         GL.glPushMatrix()
         GL.glBegin(GL.GL_LINES)
-        GL.glColor3f(0.1, 0.1, 0.1)
+        GL.glColor3f(0.863, 0.863, 0.863)
         for x in np.arange(self.translation.x%(self.step/self.scaleFactor),self.width,self.step/self.scaleFactor):
             GL.glVertex3f(x, 0.0, 0.0)
             GL.glVertex3f(x, float(self.height), 0.0)
@@ -143,6 +143,7 @@ class GLWidget(QtOpenGL.QGLWidget):
 
         GL.glTranslatef(self.translation.x+b.body.location.x/self.scaleFactor, self.translation.y+b.body.location.y/self.scaleFactor, 0.0)
 
+
         # a = signedAngle()
         GL.glRotatef(math.degrees(math.atan2(b.body.velocity.x, b.body.velocity.y)), 0.0, 0.0, -1.0)
 
@@ -178,7 +179,13 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glEnd()
     #TODO couleur agent
     def render_agent(self, b):
-        GL.glColor3f(0.6, 0.6, 0.6)
+        if hasattr(b,'color'):
+            if isinstance(b.color, str):
+                b.color = b.color.replace("[", "").replace(']', "").split(",")
+                x = np.array(b.color)
+                b.color= x.astype(np.float)
+            GL.glColor3f(b.color[0],b.color[1],b.color[2])
+
         GL.glBegin(GL.GL_TRIANGLES)
         GL.glVertex2f(-(1) / self.scaleFactor, 0.0)
         GL.glVertex2f(1 / self.scaleFactor, 0.0)

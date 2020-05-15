@@ -14,6 +14,7 @@ class Agent:
         self.stat = 0
         self.observer = Observer(self.id,"Agent")
         self.kill = False
+        self.color = [1,0,0]
 
     def update(self):
         print(self.id)

@@ -17,7 +17,7 @@ class EditorWidget(QMainWindow):
 
     def __init__(self, parent=None):
         super().__init__()
-        self.title = 'PyQt5 tabs - pythonspot.com'
+        self.title = 'Pamela Editor'
 
 
 
@@ -320,6 +320,7 @@ class MyTableWidget(QWidget):
 
             if a=="agent":
                 self.tableWidget.setItem(1, 0, QTableWidgetItem("randomPosision"))
+
                 self.tableWidget.setItem(1, 1, QTableWidgetItem("[0,100],[1,100]"))
             else :
                 self.tableWidget.setItem(1, 0, QTableWidgetItem("AABB"))
@@ -438,7 +439,7 @@ class MyTableWidget(QWidget):
                     else:
                         item = self.tableWidget.item(row, column).text()
                         print(f'row: {row}, column: {column}, item={item}')
-                        event["customArgs"][_item]=_item2
+                        event["customArgs"][_item.text()]=_item2.text()
 
             print(event)
             if self.newButton.text() == "Add":
