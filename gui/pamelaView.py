@@ -590,11 +590,12 @@ class getUpdateThread(QThread):
 
                 t = time.time()
                 self.simulation.environment.update(self.dt)
-                self.msleep(25)
+                self.msleep(10)
                 self.dt= time.time() - t
             else:
                 self.dt = .1
                 self.msleep(25)
+            print(self.dt)
 
 
 

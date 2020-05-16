@@ -28,6 +28,7 @@ class Environment(threading.Thread):
         self.perceptionList = {}
         self.influenceList = {}
         self.zone={}
+        self.tree = None
 
 
     def addAgent(self, a):
@@ -74,22 +75,21 @@ class Environment(threading.Thread):
         return None
 
     def update(self, dt):
+
         self.clock = (time.time())
-
         self.influenceList = {}
-
+        if len(self.agents)>0:
+            self.tree = kdtree.create(self.agents)
         for agent in self.agents:
-
             if not agent.kill :
                 self.computePerception(agent)
-
-        for agent in self.agents:
-            if not agent.kill :
                 self.influenceList[agent.id] = None
                 self.influenceList[agent.id] = agent.update()
 
         self.applyInfluence(dt)
-        # print("dt : " + str(dt))
+
+        print("dt : " + str(time.time() - self.clock))
+
 
     def applyInfluence(self, dt):
         actionList = {}
@@ -124,11 +124,12 @@ class Environment(threading.Thread):
 
 
     def computePerception(self, a):
+
         self.perceptionList[a] = []
 
-        tree = kdtree.create(self.agents)
-        n = tree.search_nn_dist(a, a.body.fustrum.radius)
-        self.perceptionList[a] = n
+        if self.tree is not None:
+            n = self.tree.search_nn_dist(a, a.body.fustrum.radius)
+            self.perceptionList[a] = n
 
 
         for objet in self.objects:
@@ -147,6 +148,7 @@ class Environment(threading.Thread):
                     self.perceptionList[a].append(objet)
 
         a.body.fustrum.perceptionList = self.perceptionList[a]
+
 
     def getAgentBody(self, k):
         for a in self.agents:
