@@ -38,7 +38,13 @@ class Environment(threading.Thread):
     def addObject(self, o):
         self.objects.append(o)
 
-
+    def getContent(self,point2d):
+        for o in self.objects:
+            if hasattr(o,'aabb'):
+                if o.aabb.inside(point2d):
+                    txt = str(o)
+                    return txt
+        return ""
     def getPopulation(self):
         data={}
         for d in AgentType:
@@ -88,7 +94,7 @@ class Environment(threading.Thread):
 
         self.applyInfluence(dt)
 
-        print("dt : " + str(time.time() - self.clock))
+
 
 
     def applyInfluence(self, dt):

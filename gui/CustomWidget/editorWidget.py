@@ -408,7 +408,7 @@ class MyTableWidget(QWidget):
             else:
                 n = inspectAgentsDict(Object)
                 if type in n:
-                    a='objet'
+                    a='object'
 
             event = {'entity': a, 'type': type}
             timelaunch = self.tableWidget.item(0, 1).text()

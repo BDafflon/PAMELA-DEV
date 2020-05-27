@@ -7,6 +7,9 @@ class Object:
         self.type = "Object"
         self.nom = "Unknow"
 
+    def __str__(self):
+        return 'Type :'+self.type+" nom :"+self.nom
+
 class Marchandise(Object):
     def __init__(self, pickup, n):
         EnvironmentalObject.__init__(self)

@@ -42,16 +42,7 @@ class EnvironmentDrive(Environment):
 
         return data
 
-    def getContent(self,point2d):
-        for o in self.objects:
-            if hasattr(o,'aabb'):
-                if o.aabb.inside(point2d):
-                    txt = o.type +" "+str(o.id)+" "+str(o.aabb.uperLeftLocation.y)+" :\n"
-                    if hasattr(o, 'stock'):
-                        if(len(o.stock)>0):
 
-                            txt=txt+ '\n'.join(map(str, o.stock))
-                        return txt
 
     def update(self, dt):
         self.influenceList = {}

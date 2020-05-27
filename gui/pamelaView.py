@@ -39,13 +39,15 @@ class GLWidget(QtOpenGL.QGLWidget):
         QtOpenGL.QGLWidget.__init__(self, QtOpenGL.QGLFormat(QtOpenGL.QGL.SampleBuffers), parent)
 
         self.environment=env
-
+        self.setMouseTracking(True)
         self.startTimer(40)
         self.setWindowTitle(self.tr("PAMELA View"))
         self.agentColor = {}
         self.printFustrum = False
         self.printVel = False
         self.printInfo = False
+        self.printTxt = ""
+        self.mouseLocation = Vector2D()
         self.printInfoMouse = False
         self.width = 1280
         self.height = 720
@@ -80,18 +82,24 @@ class GLWidget(QtOpenGL.QGLWidget):
 
 
     def paintGL(self):
-        t = time.time()
-        GL.glClear(GL.GL_COLOR_BUFFER_BIT)
+        try:
+            t = time.time()
+            GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
-        for b in self.environment.agents:
-            self.drawAgent(b)
-        for o in self.environment.objects:
-            self.drawObject(o)
+            for b in self.environment.agents:
+                self.drawAgent(b)
+            for o in self.environment.objects:
+                self.drawObject(o)
 
 
-        if self.printGrid:
-            self.drawGrid()
-        dt = time.time() - t
+            if self.printInfoMouse:
+                self.renderTxt()
+
+            if self.printGrid:
+                self.drawGrid()
+            dt = time.time() - t
+        except Exception as e:
+            print(e)
 
 
 
@@ -193,13 +201,26 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glEnd()
 
     def renderObject(self, b):
-        GL.glBegin(GL.GL_POLYGON)
-        GL.glVertex2f(-(1)/ self.scaleFactor, -1/ self.scaleFactor)
-        GL.glVertex2f(1/ self.scaleFactor, -1/ self.scaleFactor)
-        GL.glVertex2f(1/ self.scaleFactor, 1/ self.scaleFactor)
-        GL.glVertex2f(-1/ self.scaleFactor, 1/ self.scaleFactor)
-        GL.glEnd()
+        try:
+            GL.glBegin(GL.GL_POLYGON)
+            if hasattr(b, 'aabb'):
+                GL.glVertex2f(0, 0)
+                GL.glVertex2f(b.aabb.width/ self.scaleFactor, 0)
+                GL.glVertex2f(b.aabb.width/ self.scaleFactor, b.aabb.height/ self.scaleFactor)
+                GL.glVertex2f(0, b.aabb.height/ self.scaleFactor)
+            else :
+                GL.glVertex2f(-(1)/ self.scaleFactor, -1/ self.scaleFactor)
+                GL.glVertex2f(1/ self.scaleFactor, -1/ self.scaleFactor)
+                GL.glVertex2f(1/ self.scaleFactor, 1/ self.scaleFactor)
+                GL.glVertex2f(-1/ self.scaleFactor, 1/ self.scaleFactor)
+            GL.glEnd()
+        except Exception as e:
+            print(e)
 
+    def renderTxt(self):
+        print("txt :"+self.printTxt)
+        GL.glColor3f(0,0,0)
+        self.renderText(self.mouseLocation.x+50,self.mouseLocation.y,self.printTxt)
 
     def timerEvent(self, event):
         self.update()
@@ -213,7 +234,7 @@ class MainWindow(QMainWindow):
 
         super(MainWindow, self).__init__(parent)
         self.setWindowTitle("Pamela Simulation")
-        self.setMouseTracking(True)
+
         self.simulation = simu
         self.controlSim = control
         self.gui=True
@@ -254,11 +275,10 @@ class MainWindow(QMainWindow):
 
 
 
-
-
         self.setMinimumSize(1280,720)
         self.__createControl()
         self._popframe.show()
+        self.setMouseTracking(True)
         self.show()
 
 
@@ -419,12 +439,18 @@ class MainWindow(QMainWindow):
                 self.zoomIn()
 
     def mouseMoveEvent(self, event):
+
+        txt = self.simulation.environment.getContent(Vector2D(int((event.x()-self.gl.translation.x)*self.gl.scaleFactor),int((event.y()-self.gl.translation.y)*self.gl.scaleFactor)))
+
+        self.gl.printTxt = txt
+        print(txt)
+        self.gl.mouseLocation = Vector2D(event.x(), event.y())
+
         dxy = Vector2D(event.x()-self.oldMousePos.x, event.y()-self.oldMousePos.y)
         self.oldMousePos= Vector2D(event.x(), event.y())
 
         print("in env: "+str(int((event.x()-self.gl.translation.x)*self.gl.scaleFactor))+" "+str(int((event.y()-self.gl.translation.y)*self.gl.scaleFactor)))
-        print(self.gl.translation)
-        print(str(event.x())+" "+str(event.y()))
+
         if event.buttons() == QtCore.Qt.LeftButton :
             print("left")
             #TODO Corriger drag & drop
@@ -595,7 +621,7 @@ class getUpdateThread(QThread):
             else:
                 self.dt = .1
                 self.msleep(25)
-            print(self.dt)
+
 
 
 
