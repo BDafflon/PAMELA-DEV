@@ -1,17 +1,14 @@
 #!/usr/bin/env python
 
 """PySide port of the opengl/samplebuffers example from Qt v4.x"""
-
 import math
 import sys
 import time
 
-from PyQt5 import QtOpenGL, QtCore
-from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot, QCoreApplication
-from PyQt5.QtWidgets import QApplication, QAction, QMainWindow, QGridLayout, QWidget, QMenu, QFileDialog, \
-    QMessageBox
-from PyQt5.uic.Compiler.qtproxies import QtGui
-from pandas import np
+import numpy as np
+from PyQt5 import QtCore, QtGui, QtWidgets, QtOpenGL
+from PyQt5.QtCore import QCoreApplication, pyqtSignal, QThread, pyqtSlot
+from PyQt5.QtWidgets import QMainWindow, QAction, QGridLayout, QWidget, QMenu, QMessageBox, QFileDialog, QApplication
 
 from agents.agent import Agent
 from gui.CustomWidget.editorWidget import EditorWidget
@@ -185,7 +182,7 @@ class GLWidget(QtOpenGL.QGLWidget):
                        (b.body.fustrum.radius/self.scaleFactor * math.cos(math.radians(i))))
         #glVertex2f(0.0, 0.0)
         GL.glEnd()
-    #TODO couleur agent
+
     def render_agent(self, b):
         if hasattr(b,'color'):
             if isinstance(b.color, str):
@@ -443,22 +440,22 @@ class MainWindow(QMainWindow):
         txt = self.simulation.environment.getContent(Vector2D(int((event.x()-self.gl.translation.x)*self.gl.scaleFactor),int((event.y()-self.gl.translation.y)*self.gl.scaleFactor)))
 
         self.gl.printTxt = txt
-        print(txt)
+        #print(txt)
         self.gl.mouseLocation = Vector2D(event.x(), event.y())
 
         dxy = Vector2D(event.x()-self.oldMousePos.x, event.y()-self.oldMousePos.y)
         self.oldMousePos= Vector2D(event.x(), event.y())
 
-        print("in env: "+str(int((event.x()-self.gl.translation.x)*self.gl.scaleFactor))+" "+str(int((event.y()-self.gl.translation.y)*self.gl.scaleFactor)))
+        #print("in env: "+str(int((event.x()-self.gl.translation.x)*self.gl.scaleFactor))+" "+str(int((event.y()-self.gl.translation.y)*self.gl.scaleFactor)))
 
         if event.buttons() == QtCore.Qt.LeftButton :
-            print("left")
+            #print("left")
             #TODO Corriger drag & drop
             self.gl.translation.x += dxy.x
             self.gl.translation.y += dxy.y
 
         else :
-            print("right")
+            #print("right")
             o = self.simulation.environment.getFirstObjectByName("Attractor")
             if o is not None:
 
@@ -466,17 +463,17 @@ class MainWindow(QMainWindow):
                 o.location.y = (event.y()-self.gl.translation.y)*self.gl.scaleFactor
 
     def zoomIn(self):
-        print("zoom In")
+        #print("zoom In")
         self.gl.scaleFactor-=.1
         if self.gl.scaleFactor <=0:
             self.gl.scaleFactor = .1
 
     def zoomOut(self):
-        print("zoom Out")
+        #print("zoom Out")
         self.gl.scaleFactor += .1
 
     def razZoom(self):
-        print("zoom Out")
+        #print("zoom Out")
         self.gl.scaleFactor =1
         self.gl.translation = Vector2D()
 

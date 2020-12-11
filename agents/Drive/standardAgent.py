@@ -29,9 +29,7 @@ class StandardAgent(Agent):
         return Agent.getEditable().append(["famille","avoidanceFactor",'obstacleFactor','type'])
 
 
-    def moveRandom(self):
-        x = int(random.uniform(-2, 2))
-        y = int(random.uniform(-2, 2))
+
 
         return Vector2D(x, y)
 
@@ -70,7 +68,8 @@ class StandardAgent(Agent):
         self.velocity[1] += self.attractorFactor * attractor_vector[1]
 
         self.velocity = util.limit_magnitude(self.velocity, self.body.vitesseMax, self.body.vitesseMin)
-        inf.move = Vector2D(self.velocity[0], self.velocity[1])
+        inf.move = self.moveRandom()
+        print(inf.move)
         self.body.velocity = inf.move
         return inf
 

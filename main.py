@@ -1,46 +1,12 @@
-from gui.guiDrivegl import GuiDriveGL
 from gui.pamelaView import PamGui
-from simulation.Drive.DriveSimulation import DriveSimulation
-from simulation.SIRM.SIRMSimulation import SIRMSimulation
-from simulation.simulation import Simulation
+from simulation.simulation import SimulationMas
 
-
-def runDriveSimulation(pathEnv, pathSce, pathStock):
-    s = DriveSimulation(pathEnv, pathSce, pathStock)
-    s.drawPopulation = False
-    s.loadDefault()
-
-    g = GuiDriveGL(s.environment)
-
-    s.Gui = g
-    s.start()
-    g.run2()
-    g.stop2()
-
-    return []
-
-def runSimpleSimulation(pathEnv, pathSce, pathStock):
-    s = Simulation()
+print("start")
+def runSimpleSimulation(pathEnv="", pathSce="", pathStock=""):
+    s = SimulationMas()
     g = PamGui(s)
     s.Gui = g
-    
 
 
-
-def runSIRMSimulation(pathEnv, pathSce, pathStock):
-    s = SIRMSimulation(pathEnv, pathSce, pathStock)
-    s.drawPopulation = False
-    s.loadDefault()
-
-
-    g = PamGui(s)
-
-    s.Gui = g
-    s.start()
-    g.run2()
-    g.stop2()
-
-    return []
-
-runSimpleSimulation("", ".\\simulation\\Drive\\drive.csv", ".\\simulation\\Drive\\stock.csv")
+runSimpleSimulation("./test.json", "", "")
 

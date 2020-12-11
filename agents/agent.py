@@ -1,8 +1,10 @@
 import random
 
+from environment.animateAction import AnimateAction
 from environment.body import Body
 from helper import util
 from helper.observer import Observer
+from helper.vector2D import Vector2D
 
 
 class Agent:
@@ -16,9 +18,19 @@ class Agent:
         self.kill = False
         self.color = [1,0,0]
 
+    def moveRandom(self):
+        x = int(random.uniform(-2, 2))
+        y = int(random.uniform(-2, 2))
+        return Vector2D(x,y)
+
     def update(self):
         print(self.id)
         print(len(self.body.fustrum.perceptionList))
+        inf = AnimateAction(None, None, None)
+
+        inf.move = self.moveRandom()
+        self.body.velocity = inf.move
+        return inf
 
     def getEditable(self):
         return ['id']

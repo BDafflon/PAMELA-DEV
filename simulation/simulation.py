@@ -1,4 +1,4 @@
-import json
+
 import json
 import threading
 import time
@@ -14,16 +14,18 @@ from helper.util import inspectAgentsDict
 from helper.vector2D import Vector2D
 
 
-class Simulation(threading.Thread):
+class SimulationMas(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.drawPopulation = False
-        self.environment = Environment()
-        self.ready = False
-        self.event = []
-        self.limitSimulation = 600
-        self.pause = False
-
+        try:
+            self.drawPopulation = False
+            self.environment = Environment()
+            self.ready = False
+            self.event = []
+            self.limitSimulation = 600
+            self.pause = False
+        except Exception as e:
+            print(e)
 
     def loadDefault(self):
         self.ready = True
@@ -52,7 +54,7 @@ class Simulation(threading.Thread):
                             if "type" in e:
                                 nb=1
                                 if "number" in e:
-                                    nb = e['number']
+                                    nb = int(e['number'])
 
                                 for na in range(0,nb):
                                     a = n[e['type']]()

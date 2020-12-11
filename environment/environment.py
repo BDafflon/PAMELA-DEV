@@ -1,4 +1,5 @@
 import ctypes
+import multiprocessing
 import threading
 import time
 from random import randint
@@ -7,6 +8,7 @@ from environment.application.Drive.agentType import AgentType
 from environment.object import PerceivedObject
 from helper import util
 from helper.datastructure import kdtree
+from helper.util import chunkIt
 from helper.vector2D import Vector2D
 
 
@@ -80,6 +82,14 @@ class Environment(threading.Thread):
                 return a
         return None
 
+    def subUpdate(self,agent):
+        print("sub")
+        if not agent.kill:
+            self.computePerception(agent)
+            self.influenceList[agent.id] = None
+            self.influenceList[agent.id] = agent.update()
+
+
     def update(self, dt):
 
         self.clock = (time.time())
@@ -93,6 +103,7 @@ class Environment(threading.Thread):
                 self.influenceList[agent.id] = agent.update()
 
         self.applyInfluence(dt)
+        print(time.time() - self.clock)
 
 
 
