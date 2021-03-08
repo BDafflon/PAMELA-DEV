@@ -18,7 +18,7 @@
                100
             ]
          ],
-         "number": 4,
+         "number":0,
          "customArgs":{
             "famille":1,
             "target":[
@@ -28,33 +28,9 @@
          }
       },
       {
-         "entity":"agent",
-         "id":1343434,
-         "type":"StandardAgent",
-         "position":[
-            23,
-            54
-         ],
-         "randomPosision":[
-            [
-               0,
-               100
-            ],
-            [
-               0,
-               100
-            ]
-         ],
-         "customArgs":{
-            "famille":2
-         }
-      },
-
-      {
          "entity":"object",
          "name":"Building1",
          "type":"Building",
-         "r": 0,
          "aabb":[
             0,
             0,
@@ -62,26 +38,216 @@
             200
          ],
          "customArgs":{
-
+            "orientation":0
          }
       },
       {
          "entity":"object",
-         "name":"Building2",
-         "type":"Building",
-         "r": 90,
+         "name":"Turn",
+         "type":"Turn",
          "aabb":[
             0,
+            200,
+            200,
+            200
+         ],
+         "customArgs":{
+            "orientation":180
+         }
+      },
+      {
+         "entity":"object",
+         "name":"Road",
+         "type":"Road",
+         "aabb":[
+            0,
+            400,
+            200,
+            200
+         ],
+         "customArgs":{
+            "orientation":0
+         }
+      },
+      {
+         "entity":"object",
+         "name":"Turn",
+         "type":"Turn",
+         "aabb":[
+            0,
+            600,
+            200,
+            200
+         ],
+         "customArgs":{
+            "orientation":90
+         }
+      }
+      ,
+      {
+         "entity":"object",
+         "name":"Turn",
+         "type":"Turn",
+         "aabb":[
+            200,
             0,
             200,
             200
          ],
          "customArgs":{
+            "orientation":180
+         }
+      },
 
+      {
+         "entity":"object",
+         "name":"HalfRoad",
+         "type":"HalfRoad",
+         "aabb":[
+            200,
+            200,
+            200,
+            200
+         ],
+         "customArgs":{
+            "orientation":-90
+         }
+      },
+      {
+         "entity":"object",
+         "name":"House",
+         "type":"House",
+         "aabb":[
+            200,
+            400,
+            200,
+            200
+         ],
+         "customArgs":{
+            "orientation":-90
+         }
+      },
+      {
+         "entity":"object",
+         "name":"Road",
+         "type":"Road",
+         "aabb":[
+            200,
+            600,
+            200,
+            200
+         ],
+         "customArgs":{
+            "orientation":-90
+         }
+      },
+      {
+         "entity":"object",
+         "name":"Road",
+         "type":"Road",
+         "aabb":[
+            400,
+            0,
+            200,
+            200
+         ],
+         "customArgs":{
+            "orientation":-90
+         }
+      },
+      {
+         "entity":"object",
+         "name":"Turn",
+         "type":"Turn",
+         "aabb":[
+            400,
+            200,
+            200,
+            200
+         ],
+         "customArgs":{
+            "orientation":-90
+         }
+      },
+      {
+         "entity":"object",
+         "name":"HalfRoad",
+         "type":"HalfRoad",
+         "aabb":[
+            400,
+            400,
+            200,
+            200
+         ],
+         "customArgs":{
+            "orientation":0
+         }
+      },
+      {
+         "entity":"object",
+         "name":"Turn",
+         "type":"Turn",
+         "aabb":[
+            400,
+            600,
+            200,
+            200
+         ],
+         "customArgs":{
+            "orientation":0
+         }
+      },
+      {
+         "entity":"object",
+         "name":"Turn",
+         "type":"Turn",
+         "aabb":[
+            600,
+            0,
+            200,
+            200
+         ],
+         "customArgs":{
+            "orientation":-90
+         }
+      },
+      {
+         "entity":"object",
+         "name":"Road",
+         "type":"Road",
+         "aabb":[
+            600,
+            200,
+            200,
+            200
+         ],
+         "customArgs":{
+            "orientation":0
+         }
+      },
+      {
+         "entity":"object",
+         "name":"Turn",
+         "type":"Turn",
+         "aabb":[
+            600,
+            400,
+            200,
+            200
+         ],
+         "customArgs":{
+            "orientation":0
          }
       }
    ],
-   "configuration" : {"autorun":0, "gui":1,"printFustrum":1,"printVel":0,"printInfoMouse":0,"simulationDuration": 600},
+   "configuration":{
+      "autorun":0,
+      "gui":1,
+      "printFustrum":1,
+      "printVel":0,
+      "printInfoMouse":0,
+      "simulationDuration":600
+   },
    "simulation":[
       {
          "entity":"agent",
