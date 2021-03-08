@@ -2,12 +2,18 @@
 
 """PySide port of the opengl/samplebuffers example from Qt v4.x"""
 import math
+import os
 import sys
 import time
+from os import listdir
+from os.path import isfile, join
 
 import numpy as np
+from OpenGL.raw.GL.VERSION.GL_1_0 import GL_TEXTURE_2D, GL_RGB, GL_UNSIGNED_BYTE
+from PIL import Image
 from PyQt5 import QtCore, QtGui, QtWidgets, QtOpenGL
 from PyQt5.QtCore import QCoreApplication, pyqtSignal, QThread, pyqtSlot
+from PyQt5.QtGui import QOpenGLTexture, QImage
 from PyQt5.QtWidgets import QMainWindow, QAction, QGridLayout, QWidget, QMenu, QMessageBox, QFileDialog, QApplication
 
 from agents.agent import Agent
@@ -26,6 +32,8 @@ except ImportError:
                             QtGui.QMessageBox.Ok | QtGui.QMessageBox.Default,
                             QtGui.QMessageBox.NoButton)
     sys.exit(1)
+
+
 
 
 class GLWidget(QtOpenGL.QGLWidget):
@@ -52,7 +60,12 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.translation = Vector2D()
         self.printGrid = True
         self.step=50
+        self.textures={}
+        print(os.getcwd())
 
+        self.textures={f :  join('./gui/ressources/textures/', f) for f in listdir('./gui/ressources/textures/') if isfile(join('./gui/ressources/textures/', f))}
+
+        print(self.textures)
 
 
     def initializeGL(self):
@@ -80,7 +93,9 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def paintGL(self):
         try:
+
             t = time.time()
+
             GL.glClear(GL.GL_COLOR_BUFFER_BIT)
 
             for b in self.environment.agents:
@@ -129,7 +144,6 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def drawObject(self, o):
         GL.glPushMatrix()
-        # apply the transformation for the boid
 
         if hasattr(o, 'aabb'):
             GL.glTranslatef(self.translation.x+o.aabb.uperLeftLocation.x / self.scaleFactor, self.translation.y + o.aabb.uperLeftLocation.y / self.scaleFactor, 0.0)
@@ -199,18 +213,26 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def renderObject(self, b):
         try:
-            GL.glBegin(GL.GL_POLYGON)
-            if hasattr(b, 'aabb'):
-                GL.glVertex2f(0, 0)
-                GL.glVertex2f(b.aabb.width/ self.scaleFactor, 0)
-                GL.glVertex2f(b.aabb.width/ self.scaleFactor, b.aabb.height/ self.scaleFactor)
-                GL.glVertex2f(0, b.aabb.height/ self.scaleFactor)
-            else :
-                GL.glVertex2f(-(1)/ self.scaleFactor, -1/ self.scaleFactor)
-                GL.glVertex2f(1/ self.scaleFactor, -1/ self.scaleFactor)
-                GL.glVertex2f(1/ self.scaleFactor, 1/ self.scaleFactor)
-                GL.glVertex2f(-1/ self.scaleFactor, 1/ self.scaleFactor)
-            GL.glEnd()
+            if hasattr(b, "texture"):
+                print("texture ", b.texture)
+                print(self.textures[b.texture])
+
+
+
+
+            else:
+                GL.glBegin(GL.GL_POLYGON)
+                if hasattr(b, 'aabb'):
+                    GL.glVertex2f(0, 0)
+                    GL.glVertex2f(b.aabb.width/ self.scaleFactor, 0)
+                    GL.glVertex2f(b.aabb.width/ self.scaleFactor, b.aabb.height/ self.scaleFactor)
+                    GL.glVertex2f(0, b.aabb.height/ self.scaleFactor)
+                else :
+                    GL.glVertex2f(-(1)/ self.scaleFactor, -1/ self.scaleFactor)
+                    GL.glVertex2f(1/ self.scaleFactor, -1/ self.scaleFactor)
+                    GL.glVertex2f(1/ self.scaleFactor, 1/ self.scaleFactor)
+                    GL.glVertex2f(-1/ self.scaleFactor, 1/ self.scaleFactor)
+                GL.glEnd()
         except Exception as e:
             print(e)
 

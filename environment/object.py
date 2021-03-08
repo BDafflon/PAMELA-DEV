@@ -69,3 +69,74 @@ class PerceivedObject(EnvironmentalObject):
         self.type = type
         self.location = location
         self.aabb=aabb
+
+
+class Building(EnvironmentalObject):
+    def __init__(self, x=0, y=0, h=200, w=200, r=0):
+        EnvironmentalObject.__init__(self)
+        self.location = Vector2D(x, y)
+        self.id = 0
+        self.type = "Building"
+        self.aabb = AABB(Vector2D(x, y), h, w)
+        self.rotation = r
+        self.texture = "building.png"
+
+
+class Crossroad(EnvironmentalObject):
+    def __init__(self, x=0, y=0, h=200, w=200, r=0):
+        EnvironmentalObject.__init__(self)
+        self.location = Vector2D(x, y)
+        self.id = 0
+        self.type = "Crossroad"
+        self.aabb = AABB(Vector2D(x, y), h, w)
+        self.rotation = r
+
+
+class Grass(EnvironmentalObject):
+    def __init__(self, x=0, y=0, h=200, w=200, r=0):
+        EnvironmentalObject.__init__(self)
+        self.location = Vector2D(x, y)
+        self.id = 0
+        self.type = "Grass"
+        self.aabb = AABB(Vector2D(x, y), h, w)
+        self.rotation = r
+
+
+class HalfRoad(EnvironmentalObject):
+    def __init__(self, x=0, y=0, h=200, w=200, r=0):
+        EnvironmentalObject.__init__(self)
+        self.location = Vector2D(x, y)
+        self.id = 0
+        self.type = "HalfRoad"
+        self.aabb = AABB(Vector2D(x, y), h, w)
+        self.rotation = r
+
+
+class House(EnvironmentalObject):
+    def __init__(self, x=0, y=0, h=200, w=200, r=0):
+        EnvironmentalObject.__init__(self)
+        self.location = Vector2D(x, y)
+        self.id = 0
+        self.type = "House"
+        self.aabb = AABB(Vector2D(x, y), h, w)
+        self.rotation = r
+
+
+class Road(EnvironmentalObject):
+    def __init__(self, x=0, y=0, h=200, w=200, r=0):
+        EnvironmentalObject.__init__(self)
+        self.location = Vector2D(x, y)
+        self.id = 0
+        self.type = "Road"
+        self.aabb = AABB(Vector2D(x, y), h, w)
+        self.rotation = r
+
+
+class Turn(EnvironmentalObject):
+    def __init__(self, x=0, y=0, h=200, w=200, r=0):
+        EnvironmentalObject.__init__(self)
+        self.location = Vector2D(x, y)
+        self.id = 0
+        self.type = "Turn"
+        self.aabb = AABB(Vector2D(x, y), h, w)
+        self.rotation = r

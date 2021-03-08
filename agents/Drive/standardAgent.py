@@ -69,7 +69,7 @@ class StandardAgent(Agent):
 
         self.velocity = util.limit_magnitude(self.velocity, self.body.vitesseMax, self.body.vitesseMin)
         inf.move = self.moveRandom()
-        print(inf.move)
+
         self.body.velocity = inf.move
         return inf
 

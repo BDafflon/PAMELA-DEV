@@ -103,7 +103,7 @@ class Environment(threading.Thread):
                 self.influenceList[agent.id] = agent.update()
 
         self.applyInfluence(dt)
-        print(time.time() - self.clock)
+        #print(time.time() - self.clock)
 
 
 

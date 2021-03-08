@@ -49,15 +49,17 @@
             "famille":2
          }
       },
+
       {
          "entity":"object",
-         "name":"drop1",
-         "type":"Dropoff",
+         "name":"Building1",
+         "type":"Building",
+         "r": 0,
          "aabb":[
             0,
             0,
-            50,
-            50
+            200,
+            200
          ],
          "customArgs":{
 
@@ -65,13 +67,14 @@
       },
       {
          "entity":"object",
-         "name":"pickup1",
-         "type":"Pickup",
+         "name":"Building2",
+         "type":"Building",
+         "r": 90,
          "aabb":[
-            500,
-            500,
-            50,
-            50
+            0,
+            0,
+            200,
+            200
          ],
          "customArgs":{
 
