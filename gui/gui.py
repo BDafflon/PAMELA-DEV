@@ -2,21 +2,12 @@
 
 """PySide port of the opengl/samplebuffers example from Qt v4.x"""
 import math
-import os
 import sys
 import time
-from os import listdir
-from os.path import isfile, join
 
-import numpy
 import numpy as np
-import pygame
-from OpenGL.raw.GL.VERSION.GL_1_0 import GL_TEXTURE_2D, GL_RGB, GL_UNSIGNED_BYTE, GL_RGBA
-
-from PIL import Image
-from PyQt5 import  QtOpenGL, QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets, QtOpenGL
 from PyQt5.QtCore import QCoreApplication, pyqtSignal, QThread, pyqtSlot
-from PyQt5.QtGui import QOpenGLTexture, QImage
 from PyQt5.QtWidgets import QMainWindow, QAction, QGridLayout, QWidget, QMenu, QMessageBox, QFileDialog, QApplication
 
 from agents.agent import Agent
@@ -37,13 +28,9 @@ except ImportError:
     sys.exit(1)
 
 
-
-
 class GLWidget(QtOpenGL.QGLWidget):
     GL_MULTISAMPLE = 0x809D
     rot = 0.0
-
-
 
     def __init__(self, env = None, parent=None):
         QtOpenGL.QGLWidget.__init__(self, QtOpenGL.QGLFormat(QtOpenGL.QGL.SampleBuffers), parent)
@@ -65,25 +52,6 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.translation = Vector2D()
         self.printGrid = True
         self.step=50
-        self.textures={}
-        print(os.getcwd())
-
-        for f in listdir('./gui/ressources/textures/'):
-            if isfile(join('./gui/ressources/textures/', f)):
-                #image = Image.open(join('./gui/ressources/textures/', f))
-                img = pygame.image.load(join('./gui/ressources/textures/', f))
-
-                #data = np.asarray(image)
-
-                # summarize shape
-                width = img.get_width()
-                height = img.get_height()
-
-                image_data = pygame.image.tostring(img, "RGBA", 1)
-
-                img = QOpenGLTexture(QImage(join('./gui/ressources/textures/', f)).mirrored());
-                self.textures[f]={'width':width,'height':height,'image_data':image_data,'img':img}
-
 
 
 
@@ -112,11 +80,8 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def paintGL(self):
         try:
-
             t = time.time()
-
             GL.glClear(GL.GL_COLOR_BUFFER_BIT)
-            GL.glColor3f(1, 1, 1)
 
             for b in self.environment.agents:
                 self.drawAgent(b)
@@ -164,21 +129,11 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def drawObject(self, o):
         GL.glPushMatrix()
-
+        # apply the transformation for the boid
 
         if hasattr(o, 'aabb'):
-
-            GL.glTranslatef(self.translation.x, self.translation.y, 0)
-            GL.glTranslatef(o.aabb.uperLeftLocation.x / self.scaleFactor+o.aabb.width / self.scaleFactor /2,o.aabb.uperLeftLocation.y / self.scaleFactor+o.aabb.height/self.scaleFactor/2,0)
-            GL.glRotate(o.orientation,0,0,1)
-
-            GL.glTranslatef(-o.aabb.width / self.scaleFactor /2,-o.aabb.height/self.scaleFactor/2, 0.0)
-
-
+            GL.glTranslatef(self.translation.x+o.aabb.uperLeftLocation.x / self.scaleFactor, self.translation.y + o.aabb.uperLeftLocation.y / self.scaleFactor, 0.0)
             self.renderObject(o)
-
-
-
         else:
             GL.glTranslatef(self.translation.x+o.location.x/self.scaleFactor, self.translation.y+o.location.y/self.scaleFactor, 0.0)
             self.renderObject(o)
@@ -241,35 +196,14 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glVertex2f(1 / self.scaleFactor, 0.0)
         GL.glVertex2f(0.0, 1 * 3.0 / self.scaleFactor)
         GL.glEnd()
-        GL.glColor3f(1,1,1)
 
     def renderObject(self, b):
-
         try:
-
-
-            if hasattr(b, "texture"):
-
-
-                bgImgGL = GL.glGenTextures(1)
-                GL.glBindTexture(GL_TEXTURE_2D, bgImgGL)
-                GL.glTexParameteri(GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR)
-                GL.glTexImage2D(GL_TEXTURE_2D, 0, 4, self.textures[b.texture]['width'], 200, 0, GL_RGBA, GL_UNSIGNED_BYTE, self.textures[b.texture]['image_data'])
-                GL.glEnable(GL_TEXTURE_2D)
-
-
-            GL.glBegin(GL.GL_QUADS)
+            GL.glBegin(GL.GL_POLYGON)
             if hasattr(b, 'aabb'):
-                GL.glTexCoord2f(0.0, 0.0)
                 GL.glVertex2f(0, 0)
-
-                GL.glTexCoord2f(1.0, 0.0)
                 GL.glVertex2f(b.aabb.width/ self.scaleFactor, 0)
-
-                GL.glTexCoord2f(1.0, 1.0)
                 GL.glVertex2f(b.aabb.width/ self.scaleFactor, b.aabb.height/ self.scaleFactor)
-
-                GL. glTexCoord2f(0, 1.0)
                 GL.glVertex2f(0, b.aabb.height/ self.scaleFactor)
             else :
                 GL.glVertex2f(-(1)/ self.scaleFactor, -1/ self.scaleFactor)
@@ -277,8 +211,6 @@ class GLWidget(QtOpenGL.QGLWidget):
                 GL.glVertex2f(1/ self.scaleFactor, 1/ self.scaleFactor)
                 GL.glVertex2f(-1/ self.scaleFactor, 1/ self.scaleFactor)
             GL.glEnd()
-            GL.glDisable(GL_TEXTURE_2D)
-
         except Exception as e:
             print(e)
 

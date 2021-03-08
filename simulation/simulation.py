@@ -83,7 +83,7 @@ class SimulationMas(threading.Thread):
                                             o.aabb = AABB(Vector2D(e["aabb"][0], e["aabb"][1]), e["aabb"][2], e["aabb"][3])
                                     if "customArgs" in e:
                                         for key, value in e["customArgs"].items():
-                                            setattr(a, key, value)
+                                            setattr(o, key, value)
                                 self.environment.addObject(o)
 
                             else:

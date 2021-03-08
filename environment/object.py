@@ -23,7 +23,7 @@ class Marchandise(Object):
 class EnvironmentalObject(Object):
     def __init__(self):
         Object.__init__(self)
-        self.location = Vector2D(30, 30)
+        self.location = Vector2D(0, 0)
         self.orientation = 0
         self.type = "EnvironmentalObject"
 
@@ -78,7 +78,6 @@ class Building(EnvironmentalObject):
         self.id = 0
         self.type = "Building"
         self.aabb = AABB(Vector2D(x, y), h, w)
-        self.rotation = r
         self.texture = "building.png"
 
 
@@ -89,7 +88,7 @@ class Crossroad(EnvironmentalObject):
         self.id = 0
         self.type = "Crossroad"
         self.aabb = AABB(Vector2D(x, y), h, w)
-        self.rotation = r
+        self.texture = "crossroad.png"
 
 
 class Grass(EnvironmentalObject):
@@ -99,7 +98,8 @@ class Grass(EnvironmentalObject):
         self.id = 0
         self.type = "Grass"
         self.aabb = AABB(Vector2D(x, y), h, w)
-        self.rotation = r
+        self.texture = "grass.png"
+
 
 
 class HalfRoad(EnvironmentalObject):
@@ -109,7 +109,8 @@ class HalfRoad(EnvironmentalObject):
         self.id = 0
         self.type = "HalfRoad"
         self.aabb = AABB(Vector2D(x, y), h, w)
-        self.rotation = r
+        self.texture = "half-road.png"
+
 
 
 class House(EnvironmentalObject):
@@ -119,7 +120,8 @@ class House(EnvironmentalObject):
         self.id = 0
         self.type = "House"
         self.aabb = AABB(Vector2D(x, y), h, w)
-        self.rotation = r
+        self.texture = "house.png"
+
 
 
 class Road(EnvironmentalObject):
@@ -129,7 +131,8 @@ class Road(EnvironmentalObject):
         self.id = 0
         self.type = "Road"
         self.aabb = AABB(Vector2D(x, y), h, w)
-        self.rotation = r
+        self.texture = "road.png"
+
 
 
 class Turn(EnvironmentalObject):
@@ -139,4 +142,4 @@ class Turn(EnvironmentalObject):
         self.id = 0
         self.type = "Turn"
         self.aabb = AABB(Vector2D(x, y), h, w)
-        self.rotation = r
+        self.texture = "turn.png"
