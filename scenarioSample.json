@@ -3,27 +3,130 @@
       {
          "entity":"agent",
          "id":134234,
-         "type":"StandardAgent",
+         "type":"CarAgent",
          "position":[
-            23,
-            54
+            325,
+            126
          ],
-         "randomPosision":[
-            [
-               0,
-               100
-            ],
-            [
-               0,
-               100
-            ]
-         ],
-         "number":0,
+
+         "number":1,
          "customArgs":{
+            "startWayPoint": 0,
+            "wayPoint": [[325,125],[675,125],[675,475],[475,475],[475,675],[125,675],[125,325],[325,325]],
+            "texture": {
+               "width":200,
+               "height":200,
+               "file": "car2.png",
+               "orientation":180
+            },
             "famille":1,
             "target":[
-               300,
-               300
+               0,
+               0
+            ]
+         }
+      },
+      {
+         "entity":"agent",
+         "id":1342345,
+         "type":"CarAgent",
+         "position":[
+            700,
+            101
+         ],
+
+         "number":1,
+         "customArgs":{
+            "startWayPoint": 1,
+            "wayPoint": [[325,125],[675,125],[675,475],[475,475],[475,675],[125,675],[125,325],[325,325]],
+            "texture": {
+               "width":200,
+               "height":200,
+               "file": "car2.png",
+               "orientation":180
+            },
+            "famille":1,
+            "target":[
+               0,
+               0
+            ]
+         }
+      },
+      {
+         "entity":"agent",
+         "id":1342346,
+         "type":"CarAgent",
+         "position":[
+            700,
+            501
+         ],
+
+         "number":1,
+         "customArgs":{
+            "startWayPoint": 2,
+            "wayPoint": [[325,125],[675,125],[675,475],[475,475],[475,675],[125,675],[125,325],[325,325]],
+            "texture": {
+               "width":200,
+               "height":200,
+               "file": "car2.png",
+               "orientation":180
+            },
+            "famille":1,
+            "target":[
+               0,
+               0
+            ]
+         }
+      },
+      {
+         "entity":"agent",
+         "id":1342347,
+         "type":"CarAgent",
+         "position":[
+            500,
+            101
+         ],
+
+         "number":1,
+         "customArgs":{
+            "startWayPoint": 1,
+            "wayPoint": [[325,125],[675,125],[675,475],[475,475],[475,675],[125,675],[125,325],[325,325]],
+            "texture": {
+               "width":200,
+               "height":200,
+               "file": "car2.png",
+               "orientation":180
+            },
+            "famille":1,
+            "target":[
+               0,
+               0
+            ]
+         }
+      },
+      {
+         "entity":"agent",
+         "id":1342349,
+         "type":"CarAgent",
+         "position":[
+            275,
+            276
+         ],
+
+         "number":1,
+         "customArgs":{
+            "startWayPoint": 0,
+            "wayPoint": [[275,275], [75,275] ,[75,725],[525,725],[525,525],[725,525],[725,75], [275,75]],
+            "texture": {
+               "width":200,
+               "height":200,
+               "file": "car2.png",
+               "orientation":180
+            },
+            "famille":1,
+            "target":[
+               0,
+               0
             ]
          }
       },

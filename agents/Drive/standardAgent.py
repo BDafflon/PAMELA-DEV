@@ -1,6 +1,7 @@
 import random
 
-from agents.agent import Agent
+from agents.agent import *
+from agents.Drive.carAgent import CarAgent
 from environment.animateAction import AnimateAction
 from environment.application.Drive.agentType import AgentType
 from environment.application.Drive.stardardAgentBody import StadardAgentBody

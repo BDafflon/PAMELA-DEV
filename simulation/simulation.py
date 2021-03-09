@@ -47,6 +47,7 @@ class SimulationMas(threading.Thread):
         try:
             if "start" in jsonSim:
                 start = jsonSim["start"]
+
                 for e in start:
                     if "entity" in e:
                         if e["entity"] == "agent":
@@ -85,6 +86,9 @@ class SimulationMas(threading.Thread):
                                         for key, value in e["customArgs"].items():
                                             setattr(o, key, value)
                                 self.environment.addObject(o)
+                                if len(self.environment.objects) == 43:
+                                    print("43")
+                                print(len(self.environment.objects))
 
                             else:
                                 if e["entity"] == "zone":
@@ -135,7 +139,7 @@ class SimulationMas(threading.Thread):
                                         self.event.append(
                                             {"time": e["timelaunch"], 'type': 'zone', 'name': e['name'], 'event': z})
         except Exception as e:
-            print(e)
+            print("exception",e)
 
     def loadScenario(self,f):
         print(f)

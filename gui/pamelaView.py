@@ -118,17 +118,20 @@ class GLWidget(QtOpenGL.QGLWidget):
             GL.glClear(GL.GL_COLOR_BUFFER_BIT)
             GL.glColor3f(1, 1, 1)
 
-            for b in self.environment.agents:
-                self.drawAgent(b)
+
+
             for o in self.environment.objects:
                 self.drawObject(o)
-
+            for b in self.environment.agents:
+                self.drawAgent(b)
 
             if self.printInfoMouse:
                 self.renderTxt()
 
             if self.printGrid:
                 self.drawGrid()
+
+
             dt = time.time() - t
         except Exception as e:
             print(e)
@@ -154,15 +157,18 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def draw_center(self):
         GL.glPushMatrix()
+        GL.glTranslatef(self.translation.x+200, self.translation.y+200, 0)
         GL.glColor3f(1,0,0)
         GL.glBegin(GL.GL_TRIANGLES)
-        GL.glVertex2f(-(1) / self.scaleFactor, 0.0)
-        GL.glVertex2f(1 / self.scaleFactor, 0.0)
-        GL.glVertex2f(0.0, 1 * 3.0 / self.scaleFactor)
+        GL.glVertex2f(-(10) / self.scaleFactor, 0.0)
+        GL.glVertex2f(10 / self.scaleFactor, 0.0)
+        GL.glVertex2f(0.0, 10 * 3.0 / self.scaleFactor)
         GL.glEnd()
+        GL.glColor3f(1, 1, 1)
         GL.glPopMatrix()
 
     def drawObject(self, o):
+
         GL.glPushMatrix()
 
 
@@ -189,13 +195,21 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def drawAgent(self, b):
         GL.glPushMatrix()
-        # apply the transformation for the boid
+        # apply th e transformation for the boid
 
-        GL.glTranslatef(self.translation.x+b.body.location.x/self.scaleFactor, self.translation.y+b.body.location.y/self.scaleFactor, 0.0)
+        if hasattr(b,'texture'):
 
+            GL.glTranslatef(self.translation.x, self.translation.y, 0)
 
-        # a = signedAngle()
-        GL.glRotatef(math.degrees(math.atan2(b.body.velocity.x, b.body.velocity.y)), 0.0, 0.0, -1.0)
+            GL.glTranslatef(b.body.location.x/self.scaleFactor  ,
+                            b.body.location.y/self.scaleFactor  , 0)
+            GL.glRotate(b.texture["orientation"]-math.degrees(math.atan2(b.body.velocity.x, b.body.velocity.y)), 0, 0, 1)
+            #print(math.degrees(math.atan2(b.body.velocity.x, b.body.velocity.y)))
+            GL.glTranslatef(-b.texture['width'] / self.scaleFactor / 2, -b.texture['height'] / self.scaleFactor / 2, 0.0)
+        else:
+            GL.glTranslatef(self.translation.x+b.body.location.x/self.scaleFactor, self.translation.y+b.body.location.y/self.scaleFactor, 0.0)
+            # a = signedAngle()
+            GL.glRotatef(math.degrees(math.atan2(b.body.velocity.x, b.body.velocity.y)), 0.0, 0.0, -1.0)
 
         # render the boid's velocity
         if self.printVel:
@@ -236,11 +250,38 @@ class GLWidget(QtOpenGL.QGLWidget):
                 b.color= x.astype(np.float)
             GL.glColor3f(b.color[0],b.color[1],b.color[2])
 
-        GL.glBegin(GL.GL_TRIANGLES)
-        GL.glVertex2f(-(1) / self.scaleFactor, 0.0)
-        GL.glVertex2f(1 / self.scaleFactor, 0.0)
-        GL.glVertex2f(0.0, 1 * 3.0 / self.scaleFactor)
-        GL.glEnd()
+        if hasattr(b,"texture"):
+            #print(b.body.location)
+            GL.glEnable(GL.GL_BLEND);
+            GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+            bgImgGL = GL.glGenTextures(1)
+            GL.glBindTexture(GL_TEXTURE_2D, bgImgGL)
+            GL.glTexParameteri(GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR)
+            GL.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.textures[b.texture['file']]['width'], self.textures[b.texture['file']]['height'], 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                            self.textures[b.texture['file']]['image_data'])
+            GL.glEnable(GL_TEXTURE_2D)
+
+            GL.glBegin(GL.GL_QUADS)
+            GL.glTexCoord2f(0.0, 0.0)
+            GL.glVertex2f(0, 0)
+
+            GL.glTexCoord2f(1.0, 0.0)
+            GL.glVertex2f(b.texture['width'] / self.scaleFactor, 0)
+
+            GL.glTexCoord2f(1.0, 1.0)
+            GL.glVertex2f(b.texture['width'] / self.scaleFactor, b.texture['height'] / self.scaleFactor)
+
+            GL.glTexCoord2f(0, 1.0)
+            GL.glVertex2f(0, b.texture['height'] / self.scaleFactor)
+            GL.glEnd()
+            GL.glDisable(GL_TEXTURE_2D)
+
+        else:
+            GL.glBegin(GL.GL_TRIANGLES)
+            GL.glVertex2f(-(10) / self.scaleFactor, 0.0)
+            GL.glVertex2f(10 / self.scaleFactor, 0.0)
+            GL.glVertex2f(0.0, 10 * 3.0 / self.scaleFactor)
+            GL.glEnd()
         GL.glColor3f(1,1,1)
 
     def renderObject(self, b):

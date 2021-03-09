@@ -21,8 +21,8 @@ c= clock()
 class Environment(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.boardW = 1280
-        self.boardH = 720
+        self.boardW = 100000
+        self.boardH = 100000
         self.running = 1
         self.clock=0
         self.agents = []

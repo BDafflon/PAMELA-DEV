@@ -10,5 +10,5 @@ def runSimpleSimulation(pathEnv="", pathSce="", pathStock=""):
 
 
 
-runSimpleSimulation("./scenarioSample.json", "", "")
+runSimpleSimulation("./test.json", "", "")
 
