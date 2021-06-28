@@ -1,6 +1,4 @@
-#!/usr/bin/env python
 
-"""PySide port of the opengl/samplebuffers example from Qt v4.x"""
 import math
 import os
 import sys
@@ -8,12 +6,10 @@ import time
 from os import listdir
 from os.path import isfile, join
 
-import numpy
 import numpy as np
 import pygame
 from OpenGL.raw.GL.VERSION.GL_1_0 import GL_TEXTURE_2D, GL_RGB, GL_UNSIGNED_BYTE, GL_RGBA
 
-from PIL import Image
 from PyQt5 import  QtOpenGL, QtCore, QtGui
 from PyQt5.QtCore import QCoreApplication, pyqtSignal, QThread, pyqtSlot
 from PyQt5.QtGui import QOpenGLTexture, QImage
