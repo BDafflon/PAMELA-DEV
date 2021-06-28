@@ -11,4 +11,7 @@ Using pamela is very simple. The "Agent" class can be specified or you can use t
 You must know the basics of multi-agent systems : https://en.wikipedia.org/wiki/Multi-agent_system
 
 ## Scenario and setup.
-Pamela has a configuration wizard. However, if you are comfortable with json files, it will be easier to use the files proposed in the scenario folder.
+Pamela has a configuration wizard. 
+![alt text](https://github.com/BDafflon/PAMELA-DEV/blob/master/doc/conf2-1.png)
+
+However, if you are comfortable with json files, it will be easier to use the files proposed in the scenario folder.
