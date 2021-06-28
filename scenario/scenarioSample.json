@@ -346,7 +346,7 @@
    "configuration":{
       "autorun":0,
       "gui":1,
-      "printFustrum":1,
+      "printFustrum":0,
       "printVel":0,
       "printInfoMouse":0,
       "simulationDuration":600
@@ -354,7 +354,7 @@
    "simulation":[
       {
          "entity":"agent",
-         "timelaunch":2,
+         "timelaunch":200,
          "id":134234,
          "type":"StandardAgent",
          "position":[
@@ -381,7 +381,7 @@
       },
       {
          "entity":"agent",
-         "timelaunch":3,
+         "timelaunch":300,
          "id":1265334,
          "type":"StandardAgent",
          "position":[
@@ -408,7 +408,7 @@
       },
       {
          "entity":"agent",
-         "timelaunch":10,
+         "timelaunch":1000,
          "id":12334,
          "type":"StandardAgent",
          "position":[

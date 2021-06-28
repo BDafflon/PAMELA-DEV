@@ -8,8 +8,10 @@ def runSimpleSimulation(pathEnv=""):
     s.loadEnvironment(pathEnv)
     g = PamGui(s)
     s.Gui = g
+    s.run()
+
 
 
 if __name__ =="__main__":
-    runSimpleSimulation("scenario/scenarioSample.json")
+    runSimpleSimulation("scenario/scenarioSample4.json")
 

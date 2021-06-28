@@ -1,5 +1,6 @@
 
 import json
+import random
 import threading
 import time
 
@@ -24,6 +25,7 @@ class SimulationMas(threading.Thread):
             self.event = []
             self.limitSimulation = 600
             self.pause = False
+            self.end=False
         except Exception as e:
             print(e)
 
@@ -60,7 +62,7 @@ class SimulationMas(threading.Thread):
                                 for na in range(0,nb):
                                     a = n[e['type']]()
                                     if "id" in e:
-                                        a.id = e['id']
+                                        a.id = e['id']+str(random.randint(100,100000))
                                     if "position" in e:
                                         a.body.location = Vector2D(e["position"][0], e["position"][1])
                                     if "randomPosision" in e:
@@ -138,8 +140,10 @@ class SimulationMas(threading.Thread):
                                         z = AABB(Vector2D(e["aabb"][0], e["aabb"][1]), e["aabb"][2], e["aabb"][3])
                                         self.event.append(
                                             {"time": e["timelaunch"], 'type': 'zone', 'name': e['name'], 'event': z})
+
         except Exception as e:
             print("exception",e)
+        self.ready=True
 
     def loadScenario(self,f):
         print(f)
@@ -162,20 +166,25 @@ class SimulationMas(threading.Thread):
 
 
     def run(self):
-
+        print("Run scenario")
         if self.ready:
-            self.environment.start()
             if self.drawPopulation:
                 drawPopulation(self.environment)
             # TODO Scenario
             print("=====================Scenario START =====================")
+            print("=====================Events :",len(self.event)," =====================")
             iterator = 0;
             startTime = int(time.time())
             elapseTime = 0
 
 
             while iterator < len(self.event):
-                time.sleep(1)
+
+                try:
+                    time.sleep(0.5)
+                except Exception as e:
+                    print(e)
+                print(iterator)
                 if self.pause:
                     startTime = int(time.time()) + elapseTime
                 else :
@@ -205,7 +214,7 @@ class SimulationMas(threading.Thread):
                                         iterator += 1
 
             print("===================== Scenario END =====================")
-
+            self.end=True
 
 
 

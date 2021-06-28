@@ -717,6 +717,9 @@ class getUpdateThread(QThread):
             if self.running:
 
                 t = time.time()
+                if not self.simulation.is_alive() and not self.simulation.end:
+                    self.simulation.start()
+
                 self.simulation.environment.update(self.dt)
                 self.msleep(10)
                 self.dt= time.time() - t

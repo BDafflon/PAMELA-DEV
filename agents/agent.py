@@ -19,8 +19,8 @@ class Agent:
         self.color = [1,0,0]
 
     def moveRandom(self):
-        x = int(random.uniform(-2, 2))
-        y = int(random.uniform(-2, 2))
+        x = int(random.uniform(-20, 20))
+        y = int(random.uniform(-20, 20))
         return Vector2D(x,y)
 
     def update(self):

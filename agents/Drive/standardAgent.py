@@ -18,21 +18,17 @@ class StandardAgent(Agent):
         self.famille = f
         self.body.mass = 80
         self.body.fustrum.radius = 10
-        self.body.vitesseMax = 5.0
+        self.body.vitesseMax = 50.0
         self.body.vitesseMin = 1.0
         self.velocity = [random.uniform(-50.0, 50.0), random.uniform(-50.0, 50.0)]
-        self.target = Vector2D(0, 0)
-        self.obstacleFactor = 500
-        self.attractorFactor = 0.35
+        self.target = Vector2D(random.randint(0,1000), random.randint(0,1000))
+        self.obstacleFactor = 0
+        self.attractorFactor = 0
         self.name='t'
 
     def getEditable(self):
         return Agent.getEditable().append(["famille","avoidanceFactor",'obstacleFactor','type'])
 
-
-
-
-        return Vector2D(x, y)
 
     def filtrePerception(self):
         walls = []
@@ -58,20 +54,19 @@ class StandardAgent(Agent):
     def update(self):
         inf = AnimateAction(None, None, None)
 
-        walls, other, dropoff, pickp = self.filtrePerception()
-        obstacle_avoidance_vector = self.avoid_collisions(walls)
-        attractor_vector = self.attraction(other)
+        if self.target.distance(self.body.location)<10:
+            self.target = Vector2D(random.randint(0, 1000), random.randint(0, 1000))
 
-        self.velocity[0] += self.obstacleFactor * obstacle_avoidance_vector[0]
-        self.velocity[1] += self.obstacleFactor * obstacle_avoidance_vector[1]
+        direction = Vector2D(self.target.x - self.body.location.x, self.target.y - self.body.location.y)
 
-        self.velocity[0] += self.attractorFactor * attractor_vector[0]
-        self.velocity[1] += self.attractorFactor * attractor_vector[1]
+        self.velocity[0] += direction.x
+        self.velocity[1] += direction.y
 
         self.velocity = util.limit_magnitude(self.velocity, self.body.vitesseMax, self.body.vitesseMin)
-        inf.move = self.moveRandom()
 
+        inf.move = Vector2D(self.velocity[0], self.velocity[1])
         self.body.velocity = inf.move
+
         return inf
 
     def avoid_collisions(self, objs):
