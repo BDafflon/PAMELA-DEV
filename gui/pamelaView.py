@@ -39,8 +39,6 @@ class GLWidget(QtOpenGL.QGLWidget):
     GL_MULTISAMPLE = 0x809D
     rot = 0.0
 
-
-
     def __init__(self, env = None, parent=None):
         QtOpenGL.QGLWidget.__init__(self, QtOpenGL.QGLFormat(QtOpenGL.QGL.SampleBuffers), parent)
 
@@ -90,6 +88,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glMatrixMode(GL.GL_MODELVIEW)
         GL.glLoadIdentity()
         GL.glClearColor(1.0, 1.0, 1.0, 1.0)
+        self.bgImgGL = GL.glGenTextures(1)
 
 
 
@@ -108,13 +107,9 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def paintGL(self):
         try:
-
             t = time.time()
-
-            GL.glClear(GL.GL_COLOR_BUFFER_BIT)
+            GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
             GL.glColor3f(1, 1, 1)
-
-
 
             for o in self.environment.objects:
                 self.drawObject(o)
@@ -166,16 +161,11 @@ class GLWidget(QtOpenGL.QGLWidget):
     def drawObject(self, o):
 
         GL.glPushMatrix()
-
-
         if hasattr(o, 'aabb'):
-
             GL.glTranslatef(self.translation.x, self.translation.y, 0)
             GL.glTranslatef(o.aabb.uperLeftLocation.x / self.scaleFactor+o.aabb.width / self.scaleFactor /2,o.aabb.uperLeftLocation.y / self.scaleFactor+o.aabb.height/self.scaleFactor/2,0)
             GL.glRotate(o.orientation,0,0,1)
-
             GL.glTranslatef(-o.aabb.width / self.scaleFactor /2,-o.aabb.height/self.scaleFactor/2, 0.0)
-
 
             self.renderObject(o)
 
@@ -196,7 +186,6 @@ class GLWidget(QtOpenGL.QGLWidget):
         if hasattr(b,'texture'):
 
             GL.glTranslatef(self.translation.x, self.translation.y, 0)
-
             GL.glTranslatef(b.body.location.x/self.scaleFactor  ,
                             b.body.location.y/self.scaleFactor  , 0)
             GL.glRotate(b.texture["orientation"]-math.degrees(math.atan2(b.body.velocity.x, b.body.velocity.y)), 0, 0, 1)
@@ -283,16 +272,17 @@ class GLWidget(QtOpenGL.QGLWidget):
     def renderObject(self, b):
 
         try:
-
-
             if hasattr(b, "texture"):
 
+                try:
 
-                bgImgGL = GL.glGenTextures(1)
-                GL.glBindTexture(GL_TEXTURE_2D, bgImgGL)
-                GL.glTexParameteri(GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR)
-                GL.glTexImage2D(GL_TEXTURE_2D, 0, 4, self.textures[b.texture]['width'], 200, 0, GL_RGBA, GL_UNSIGNED_BYTE, self.textures[b.texture]['image_data'])
-                GL.glEnable(GL_TEXTURE_2D)
+                    GL.glBindTexture(GL_TEXTURE_2D, self.bgImgGL)
+                    GL.glTexParameteri(GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR)
+                    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR)
+                    GL.glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.textures[b.texture]['width'], 200, 0, GL_RGBA, GL_UNSIGNED_BYTE, self.textures[b.texture]['image_data'])
+                    GL.glEnable(GL_TEXTURE_2D)
+                except Exception as e:
+                    print("Render error item", e)
 
 
             GL.glBegin(GL.GL_QUADS)
@@ -317,7 +307,7 @@ class GLWidget(QtOpenGL.QGLWidget):
             GL.glDisable(GL_TEXTURE_2D)
 
         except Exception as e:
-            print(e)
+            print("Render error",e)
 
     def renderTxt(self):
         print("txt :"+self.printTxt)

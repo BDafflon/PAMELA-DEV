@@ -7,10 +7,14 @@ import numpy as np
 
 def createArray(num, dimensions):
     array = []
-    for i in range(0, dimensions):
+    for i in range(0,3):
         array.append([])
-        for j in range(0, dimensions):
-            array[i].append(num);
+
+    for j in range(0, dimensions):
+            array[0].append(num)
+            array[1].append(num)
+            array[2].append(num)
+
     return array
 
 
@@ -22,42 +26,15 @@ def coutN(m, i, j):
 
 
 def createMap():
-    dimensions = 10
-    nbRoad = 5
+    dimensions = 100
+    nbRoad = 1
     m = createArray(0, dimensions)
+    for i in range(len(m[1])):
+        m[1][i]=2
     mf = copy.deepcopy(m)
 
-    for n in range(0, nbRoad):
-        x = random.randint(1, dimensions - 2)
-        y = random.randint(1, dimensions - 2)
 
-        x2 = random.randint(1, dimensions - 2)
-        y2 = random.randint(1, dimensions - 2)
 
-        xf = max(x, x2)
-        xf2 = min(x, x2)
-
-        yf = max(y, y2)
-        yf2 = min(y, y2)
-
-        m[xf][yf] = 1
-        m[xf2][yf2] = 1
-
-        r = random.randint(0, 1)
-        print(xf, yf, xf2, yf2, r)
-        if r == 0:
-            for i in range(xf2, xf):
-                m[i][yf] = 1
-            for i in range(yf2, yf):
-                m[xf][i] = 1
-        else:
-            for i in range(yf2, yf):
-                m[xf][i] = 1
-            for i in range(xf2, xf):
-                m[i][yf] = 1
-    for i in range(1,len(m)-1):
-        for j in range(1,len(m[i])-1):
-            mf[i][j]=coutN(m,i,j)
     return mf
 
 
@@ -65,12 +42,12 @@ def createMap():
 
 
 def createTexture(m):
-    mf=createArray({},len(m))
+    mf=createArray({},100)
     texH=200
     texW=200
 
-    for i in range(0, len(m) ):
-        for j in range(0, len(m[i])):
+    for i in range(0, 3 ):
+        for j in range(0, 100-1):
             if m[i][j] == 0:
                 orientation=[0,90,-90,180]
                 typeB=["Building","House","Grass","Grass","Grass"]

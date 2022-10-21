@@ -35,6 +35,9 @@ class SimulationMas(threading.Thread):
 
     def loadEnvironment(self,f):
         objetList=[]
+        if f=="" or f is None:
+            self.loadDefault()
+
         if f.endswith('.json'):
             objetList = importationJSON(f)
         else :

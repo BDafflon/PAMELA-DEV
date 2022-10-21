@@ -13,5 +13,5 @@ def runSimpleSimulation(pathEnv=""):
 
 
 if __name__ =="__main__":
-    runSimpleSimulation("scenario/scenarioSample4.json")
+    runSimpleSimulation("./scenario/test.json")
 
